@@ -198,3 +198,98 @@ a {
     }
   }
 }
+
+// Homepage specific styles
+.hover-lift {
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  
+  &:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1) !important;
+  }
+}
+
+// Hero Carousel Custom Styling
+#heroCarousel {
+  .carousel-item {
+    min-height: 600px;
+    
+    @media (max-width: 768px) {
+      min-height: 500px;
+    }
+  }
+  
+  .carousel-indicators {
+    bottom: 2rem;
+    
+    button {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background-color: rgba(255, 255, 255, 0.5);
+      border: 2px solid transparent;
+      transition: all 0.3s ease;
+      
+      &.active {
+        background-color: rgba(255, 255, 255, 1);
+        width: 32px;
+        border-radius: 6px;
+      }
+    }
+  }
+  
+  .carousel-control-prev,
+  .carousel-control-next {
+    width: 50px;
+    height: 50px;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(0, 0, 0, 0.3);
+    border-radius: 50%;
+    opacity: 0.8;
+    transition: opacity 0.3s ease;
+    
+    &:hover {
+      opacity: 1;
+      background-color: rgba(0, 0, 0, 0.5);
+    }
+    
+    @media (max-width: 768px) {
+      width: 40px;
+      height: 40px;
+    }
+  }
+  
+  .carousel-control-prev {
+    left: 2rem;
+  }
+  
+  .carousel-control-next {
+    right: 2rem;
+  }
+  
+  // Hero content responsive adjustments
+  .hero-content {
+    @media (max-width: 768px) {
+      text-align: center;
+      
+      .hero-headline {
+        font-size: 2rem;
+      }
+      
+      .hero-excerpt {
+        font-size: 1rem;
+      }
+      
+      .hero-cta {
+        width: 100%;
+      }
+    }
+    
+    @media (min-width: 769px) and (max-width: 992px) {
+      .hero-headline {
+        font-size: 2.5rem;
+      }
+    }
+  }
+}
