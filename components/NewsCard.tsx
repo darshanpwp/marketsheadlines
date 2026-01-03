@@ -11,48 +11,48 @@ export default function NewsCard({ page }: NewsCardProps) {
   const readingTime = calculateReadingTime(page.content);
 
   return (
-    <article className="group relative overflow-hidden rounded-lg border border-zinc-200 bg-white transition-shadow hover:shadow-lg dark:border-zinc-800 dark:bg-zinc-900">
-      <Link href={`/news/${page.slug}`}>
+    <article className="card h-100 shadow-sm border-0">
+      <Link href={`/news/${page.slug}`} className="text-decoration-none">
         {page.featuredMediaDetails?.source_url && (
-          <div className="relative aspect-video overflow-hidden bg-zinc-100 dark:bg-zinc-800">
+          <div className="position-relative aspect-video overflow-hidden">
             <Image
               src={page.featuredMediaDetails.source_url}
               alt={page.featuredMediaDetails.alt_text || page.title}
               fill
-              className="object-cover transition-transform group-hover:scale-105"
+              className="object-fit-cover"
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             />
           </div>
         )}
 
-        <div className="p-6">
-          <div className="flex items-center gap-3 text-sm text-zinc-500 dark:text-zinc-400">
+        <div className="card-body">
+          <div className="d-flex align-items-center gap-2 text-secondary small mb-2">
             <time dateTime={page.date}>{formatDate(page.date)}</time>
             <span>•</span>
             <span>{readingTime} min read</span>
           </div>
 
-          <h2 className="mt-2 text-xl font-semibold text-zinc-900 group-hover:text-zinc-600 dark:text-zinc-50 dark:group-hover:text-zinc-300">
+          <h2 className="card-title h5 fw-semibold mb-3 text-dark">
             {page.title}
           </h2>
 
           <div
-            className="mt-3 line-clamp-3 text-sm text-zinc-600 dark:text-zinc-400 [&>p]:m-0"
+            className="card-text text-secondary small line-clamp-3"
             dangerouslySetInnerHTML={{ __html: page.excerpt }}
           />
 
           {page.authorDetails && (
-            <div className="mt-4 flex items-center gap-3">
+            <div className="d-flex align-items-center gap-2 mt-3">
               {page.authorDetails.avatar_urls?.['48'] && (
                 <Image
                   src={page.authorDetails.avatar_urls['48']}
                   alt={page.authorDetails.name}
                   width={32}
                   height={32}
-                  className="rounded-full"
+                  className="rounded-circle"
                 />
               )}
-              <span className="text-sm font-medium text-zinc-700 dark:text-zinc-300">
+              <span className="small fw-medium">
                 {page.authorDetails.name}
               </span>
             </div>

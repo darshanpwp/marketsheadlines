@@ -1,0 +1,60 @@
+// Import compiled Bootstrap CSS to avoid SCSS import resolution issues
+@import "bootstrap/dist/css/bootstrap.min.css";
+
+// Custom CSS Variables for Dark Mode
+:root {
+  --bs-body-bg: #ffffff;
+  --bs-body-color: #171717;
+  --bs-border-color: #e5e5e5;
+  --bs-card-bg: #ffffff;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bs-body-bg: #0a0a0a;
+    --bs-body-color: #ededed;
+    --bs-border-color: #27272a;
+    --bs-card-bg: #18181b;
+  }
+}
+
+body {
+  font-family: var(--bs-font-sans-serif);
+  background: var(--bs-body-bg);
+  color: var(--bs-body-color);
+}
+
+// Custom card styling for dark mode
+.card {
+  background-color: var(--bs-card-bg);
+  border-color: var(--bs-border-color);
+}
+
+// Custom link styling
+a {
+  text-decoration: none;
+  
+  &:hover {
+    text-decoration: none;
+  }
+}
+
+// Image aspect ratio helper
+.aspect-video {
+  aspect-ratio: 16 / 9;
+}
+
+// Line clamp utilities
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
