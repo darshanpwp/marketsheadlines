@@ -418,3 +418,49 @@ export interface CPTWithDetails extends CPT {
     slug: string;
   }>;
 }
+
+/**
+ * Represents a Single Menu Item returned by the menus API.
+ */
+export interface WordPressMenuItem {
+  /** Unique ID of the menu item (post ID of the nav_menu_item). */
+  ID: number;
+  /** Display title of the menu item. */
+  title: string;
+  /** URL the menu item points to. */
+  url: string;
+  /** ID of the parent menu item (0 if top-level). */
+  menu_item_parent: string;
+  /** CSS classes associated with the menu item. */
+  classes: string[];
+  /** Target attribute for the link (e.g., '_blank'). */
+  target: string;
+  /** Title attribute for the link. */
+  attr_title: string;
+  /** Description of the menu item. */
+  description: string;
+  /** URL slug of the linked object. */
+  slug: string;
+  /** Type of object (e.g., 'page', 'custom', 'post'). */
+  object: string;
+  /** Unique ID of the linked object. */
+  object_id: string;
+  /** Nested child menu items. */
+  child_items?: WordPressMenuItem[];
+}
+
+/**
+ * Represents a Menu object with its items.
+ */
+export interface WordPressMenu {
+  /** Unique ID of the menu term. */
+  term_id: number;
+  /** Display name of the menu. */
+  name: string;
+  /** URL slug of the menu. */
+  slug: string;
+  /** Number of items in the menu. */
+  count: number;
+  /** Array of menu items. */
+  items: WordPressMenuItem[];
+}
