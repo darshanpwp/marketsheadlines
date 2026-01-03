@@ -1,0 +1,1112 @@
+﻿[
+    {
+        "id":  3504417,
+        "date":  "2025-09-24T13:08:50",
+        "date_gmt":  "2025-09-24T17:08:50",
+        "guid":  {
+                     "rendered":  "https://dev-new-marketsheadlines.pantheonsite.io/?page_id=3504417"
+                 },
+        "modified":  "2025-09-24T13:08:50",
+        "modified_gmt":  "2025-09-24T17:08:50",
+        "slug":  "the-rates-debate-dividing-the-fed",
+        "status":  "publish",
+        "type":  "page",
+        "link":  "https://dev-new-marketsheadlines.pantheonsite.io/the-rates-debate-dividing-the-fed/",
+        "title":  {
+                      "rendered":  "The Rates Debate Dividing the Fed"
+                  },
+        "content":  {
+                        "rendered":  "\u003cp\u003eJerome Powell and some of the more dovish policymakers at the central bank are at odds over how to handle “challenging” inflation and unemployment.\u003c/p\u003e\n",
+                        "protected":  false
+                    },
+        "excerpt":  {
+                        "rendered":  "\u003cp\u003eJerome Powell and some of the more dovish policymakers at the central bank are at odds over how to handle “challenging” inflation and unemployment.\u003c/p\u003e\n",
+                        "protected":  false
+                    },
+        "author":  9,
+        "featured_media":  3502785,
+        "parent":  0,
+        "menu_order":  0,
+        "comment_status":  "close",
+        "ping_status":  "closed",
+        "template":  "",
+        "meta":  {
+                     "footnotes":  ""
+                 },
+        "class_list":  [
+                           "post-3504417",
+                           "page",
+                           "type-page",
+                           "status-publish",
+                           "has-post-thumbnail",
+                           "hentry"
+                       ],
+        "_links":  {
+                       "self":  [
+                                    {
+                                        "href":  "https://dev-new-marketsheadlines.pantheonsite.io/wp-json/wp/v2/pages/3504417",
+                                        "targetHints":  {
+                                                            "allow":  [
+                                                                          "GET",
+                                                                          "POST",
+                                                                          "PUT",
+                                                                          "PATCH",
+                                                                          "DELETE"
+                                                                      ]
+                                                        }
+                                    }
+                                ],
+                       "collection":  [
+                                          {
+                                              "href":  "https://dev-new-marketsheadlines.pantheonsite.io/wp-json/wp/v2/pages"
+                                          }
+                                      ],
+                       "about":  [
+                                     {
+                                         "href":  "https://dev-new-marketsheadlines.pantheonsite.io/wp-json/wp/v2/types/page"
+                                     }
+                                 ],
+                       "author":  [
+                                      {
+                                          "embeddable":  true,
+                                          "href":  "https://dev-new-marketsheadlines.pantheonsite.io/wp-json/wp/v2/users/9"
+                                      }
+                                  ],
+                       "replies":  [
+                                       {
+                                           "embeddable":  true,
+                                           "href":  "https://dev-new-marketsheadlines.pantheonsite.io/wp-json/wp/v2/comments?post=3504417"
+                                       }
+                                   ],
+                       "version-history":  [
+                                               {
+                                                   "count":  1,
+                                                   "href":  "https://dev-new-marketsheadlines.pantheonsite.io/wp-json/wp/v2/pages/3504417/revisions"
+                                               }
+                                           ],
+                       "predecessor-version":  [
+                                                   {
+                                                       "id":  3504418,
+                                                       "href":  "https://dev-new-marketsheadlines.pantheonsite.io/wp-json/wp/v2/pages/3504417/revisions/3504418"
+                                                   }
+                                               ],
+                       "wp:featuredmedia":  [
+                                                {
+                                                    "embeddable":  true,
+                                                    "href":  "https://dev-new-marketsheadlines.pantheonsite.io/wp-json/wp/v2/media/3502785"
+                                                }
+                                            ],
+                       "wp:attachment":  [
+                                             {
+                                                 "href":  "https://dev-new-marketsheadlines.pantheonsite.io/wp-json/wp/v2/media?parent=3504417"
+                                             }
+                                         ],
+                       "curies":  [
+                                      {
+                                          "name":  "wp",
+                                          "href":  "https://api.w.org/{rel}",
+                                          "templated":  true
+                                      }
+                                  ]
+                   }
+    },
+    {
+        "id":  3504415,
+        "date":  "2025-09-24T13:08:50",
+        "date_gmt":  "2025-09-24T17:08:50",
+        "guid":  {
+                     "rendered":  "https://dev-new-marketsheadlines.pantheonsite.io/?page_id=3504415"
+                 },
+        "modified":  "2025-09-24T13:08:50",
+        "modified_gmt":  "2025-09-24T17:08:50",
+        "slug":  "karen-attiah-says-firing-by-washington-post-violated-labor-agreement",
+        "status":  "publish",
+        "type":  "page",
+        "link":  "https://dev-new-marketsheadlines.pantheonsite.io/karen-attiah-says-firing-by-washington-post-violated-labor-agreement/",
+        "title":  {
+                      "rendered":  "Karen Attiah Says Firing by Washington Post Violated Labor Agreement"
+                  },
+        "content":  {
+                        "rendered":  "\u003cp\u003eThe company fired Karen Attiah this month for her social media posts related to Charlie Kirk’s assassination.\u003c/p\u003e\n",
+                        "protected":  false
+                    },
+        "excerpt":  {
+                        "rendered":  "\u003cp\u003eThe company fired Karen Attiah this month for her social media posts related to Charlie Kirk’s assassination.\u003c/p\u003e\n",
+                        "protected":  false
+                    },
+        "author":  9,
+        "featured_media":  3502785,
+        "parent":  0,
+        "menu_order":  0,
+        "comment_status":  "close",
+        "ping_status":  "closed",
+        "template":  "",
+        "meta":  {
+                     "footnotes":  ""
+                 },
+        "class_list":  [
+                           "post-3504415",
+                           "page",
+                           "type-page",
+                           "status-publish",
+                           "has-post-thumbnail",
+                           "hentry"
+                       ],
+        "_links":  {
+                       "self":  [
+                                    {
+                                        "href":  "https://dev-new-marketsheadlines.pantheonsite.io/wp-json/wp/v2/pages/3504415",
+                                        "targetHints":  {
+                                                            "allow":  [
+                                                                          "GET",
+                                                                          "POST",
+                                                                          "PUT",
+                                                                          "PATCH",
+                                                                          "DELETE"
+                                                                      ]
+                                                        }
+                                    }
+                                ],
+                       "collection":  [
+                                          {
+                                              "href":  "https://dev-new-marketsheadlines.pantheonsite.io/wp-json/wp/v2/pages"
+                                          }
+                                      ],
+                       "about":  [
+                                     {
+                                         "href":  "https://dev-new-marketsheadlines.pantheonsite.io/wp-json/wp/v2/types/page"
+                                     }
+                                 ],
+                       "author":  [
+                                      {
+                                          "embeddable":  true,
+                                          "href":  "https://dev-new-marketsheadlines.pantheonsite.io/wp-json/wp/v2/users/9"
+                                      }
+                                  ],
+                       "replies":  [
+                                       {
+                                           "embeddable":  true,
+                                           "href":  "https://dev-new-marketsheadlines.pantheonsite.io/wp-json/wp/v2/comments?post=3504415"
+                                       }
+                                   ],
+                       "version-history":  [
+                                               {
+                                                   "count":  1,
+                                                   "href":  "https://dev-new-marketsheadlines.pantheonsite.io/wp-json/wp/v2/pages/3504415/revisions"
+                                               }
+                                           ],
+                       "predecessor-version":  [
+                                                   {
+                                                       "id":  3504416,
+                                                       "href":  "https://dev-new-marketsheadlines.pantheonsite.io/wp-json/wp/v2/pages/3504415/revisions/3504416"
+                                                   }
+                                               ],
+                       "wp:featuredmedia":  [
+                                                {
+                                                    "embeddable":  true,
+                                                    "href":  "https://dev-new-marketsheadlines.pantheonsite.io/wp-json/wp/v2/media/3502785"
+                                                }
+                                            ],
+                       "wp:attachment":  [
+                                             {
+                                                 "href":  "https://dev-new-marketsheadlines.pantheonsite.io/wp-json/wp/v2/media?parent=3504415"
+                                             }
+                                         ],
+                       "curies":  [
+                                      {
+                                          "name":  "wp",
+                                          "href":  "https://api.w.org/{rel}",
+                                          "templated":  true
+                                      }
+                                  ]
+                   }
+    },
+    {
+        "id":  3504413,
+        "date":  "2025-09-24T13:08:50",
+        "date_gmt":  "2025-09-24T17:08:50",
+        "guid":  {
+                     "rendered":  "https://dev-new-marketsheadlines.pantheonsite.io/?page_id=3504413"
+                 },
+        "modified":  "2025-09-24T13:08:50",
+        "modified_gmt":  "2025-09-24T17:08:50",
+        "slug":  "apple-postpones-savant-show-about-online-hate-groups",
+        "status":  "publish",
+        "type":  "page",
+        "link":  "https://dev-new-marketsheadlines.pantheonsite.io/apple-postpones-savant-show-about-online-hate-groups/",
+        "title":  {
+                      "rendered":  "Apple Postpones ‘Savant’ Show About Online Hate Groups"
+                  },
+        "content":  {
+                        "rendered":  "\u003cp\u003eJessica Chastain, the show’s star and one of its producers, criticized the decision on social media on Wednesday.\u003c/p\u003e\n",
+                        "protected":  false
+                    },
+        "excerpt":  {
+                        "rendered":  "\u003cp\u003eJessica Chastain, the show’s star and one of its producers, criticized the decision on social media on Wednesday.\u003c/p\u003e\n",
+                        "protected":  false
+                    },
+        "author":  9,
+        "featured_media":  3502785,
+        "parent":  0,
+        "menu_order":  0,
+        "comment_status":  "close",
+        "ping_status":  "closed",
+        "template":  "",
+        "meta":  {
+                     "footnotes":  ""
+                 },
+        "class_list":  [
+                           "post-3504413",
+                           "page",
+                           "type-page",
+                           "status-publish",
+                           "has-post-thumbnail",
+                           "hentry"
+                       ],
+        "_links":  {
+                       "self":  [
+                                    {
+                                        "href":  "https://dev-new-marketsheadlines.pantheonsite.io/wp-json/wp/v2/pages/3504413",
+                                        "targetHints":  {
+                                                            "allow":  [
+                                                                          "GET",
+                                                                          "POST",
+                                                                          "PUT",
+                                                                          "PATCH",
+                                                                          "DELETE"
+                                                                      ]
+                                                        }
+                                    }
+                                ],
+                       "collection":  [
+                                          {
+                                              "href":  "https://dev-new-marketsheadlines.pantheonsite.io/wp-json/wp/v2/pages"
+                                          }
+                                      ],
+                       "about":  [
+                                     {
+                                         "href":  "https://dev-new-marketsheadlines.pantheonsite.io/wp-json/wp/v2/types/page"
+                                     }
+                                 ],
+                       "author":  [
+                                      {
+                                          "embeddable":  true,
+                                          "href":  "https://dev-new-marketsheadlines.pantheonsite.io/wp-json/wp/v2/users/9"
+                                      }
+                                  ],
+                       "replies":  [
+                                       {
+                                           "embeddable":  true,
+                                           "href":  "https://dev-new-marketsheadlines.pantheonsite.io/wp-json/wp/v2/comments?post=3504413"
+                                       }
+                                   ],
+                       "version-history":  [
+                                               {
+                                                   "count":  1,
+                                                   "href":  "https://dev-new-marketsheadlines.pantheonsite.io/wp-json/wp/v2/pages/3504413/revisions"
+                                               }
+                                           ],
+                       "predecessor-version":  [
+                                                   {
+                                                       "id":  3504414,
+                                                       "href":  "https://dev-new-marketsheadlines.pantheonsite.io/wp-json/wp/v2/pages/3504413/revisions/3504414"
+                                                   }
+                                               ],
+                       "wp:featuredmedia":  [
+                                                {
+                                                    "embeddable":  true,
+                                                    "href":  "https://dev-new-marketsheadlines.pantheonsite.io/wp-json/wp/v2/media/3502785"
+                                                }
+                                            ],
+                       "wp:attachment":  [
+                                             {
+                                                 "href":  "https://dev-new-marketsheadlines.pantheonsite.io/wp-json/wp/v2/media?parent=3504413"
+                                             }
+                                         ],
+                       "curies":  [
+                                      {
+                                          "name":  "wp",
+                                          "href":  "https://api.w.org/{rel}",
+                                          "templated":  true
+                                      }
+                                  ]
+                   }
+    },
+    {
+        "id":  3504411,
+        "date":  "2025-09-24T13:08:50",
+        "date_gmt":  "2025-09-24T17:08:50",
+        "guid":  {
+                     "rendered":  "https://dev-new-marketsheadlines.pantheonsite.io/?page_id=3504411"
+                 },
+        "modified":  "2025-09-24T13:08:50",
+        "modified_gmt":  "2025-09-24T17:08:50",
+        "slug":  "a-federal-shutdown-may-be-imminent-how-would-it-affect-the-economy",
+        "status":  "publish",
+        "type":  "page",
+        "link":  "https://dev-new-marketsheadlines.pantheonsite.io/a-federal-shutdown-may-be-imminent-how-would-it-affect-the-economy/",
+        "title":  {
+                      "rendered":  "A Federal Shutdown May Be Imminent. How Would It Affect the Economy?"
+                  },
+        "content":  {
+                        "rendered":  "\u003cp\u003eCongress and the White House have days to fund the government and avert a disruptive and potentially costly lapse in funding.\u003c/p\u003e\n",
+                        "protected":  false
+                    },
+        "excerpt":  {
+                        "rendered":  "\u003cp\u003eCongress and the White House have days to fund the government and avert a disruptive and potentially costly lapse in funding.\u003c/p\u003e\n",
+                        "protected":  false
+                    },
+        "author":  9,
+        "featured_media":  3502785,
+        "parent":  0,
+        "menu_order":  0,
+        "comment_status":  "close",
+        "ping_status":  "closed",
+        "template":  "",
+        "meta":  {
+                     "footnotes":  ""
+                 },
+        "class_list":  [
+                           "post-3504411",
+                           "page",
+                           "type-page",
+                           "status-publish",
+                           "has-post-thumbnail",
+                           "hentry"
+                       ],
+        "_links":  {
+                       "self":  [
+                                    {
+                                        "href":  "https://dev-new-marketsheadlines.pantheonsite.io/wp-json/wp/v2/pages/3504411",
+                                        "targetHints":  {
+                                                            "allow":  [
+                                                                          "GET",
+                                                                          "POST",
+                                                                          "PUT",
+                                                                          "PATCH",
+                                                                          "DELETE"
+                                                                      ]
+                                                        }
+                                    }
+                                ],
+                       "collection":  [
+                                          {
+                                              "href":  "https://dev-new-marketsheadlines.pantheonsite.io/wp-json/wp/v2/pages"
+                                          }
+                                      ],
+                       "about":  [
+                                     {
+                                         "href":  "https://dev-new-marketsheadlines.pantheonsite.io/wp-json/wp/v2/types/page"
+                                     }
+                                 ],
+                       "author":  [
+                                      {
+                                          "embeddable":  true,
+                                          "href":  "https://dev-new-marketsheadlines.pantheonsite.io/wp-json/wp/v2/users/9"
+                                      }
+                                  ],
+                       "replies":  [
+                                       {
+                                           "embeddable":  true,
+                                           "href":  "https://dev-new-marketsheadlines.pantheonsite.io/wp-json/wp/v2/comments?post=3504411"
+                                       }
+                                   ],
+                       "version-history":  [
+                                               {
+                                                   "count":  1,
+                                                   "href":  "https://dev-new-marketsheadlines.pantheonsite.io/wp-json/wp/v2/pages/3504411/revisions"
+                                               }
+                                           ],
+                       "predecessor-version":  [
+                                                   {
+                                                       "id":  3504412,
+                                                       "href":  "https://dev-new-marketsheadlines.pantheonsite.io/wp-json/wp/v2/pages/3504411/revisions/3504412"
+                                                   }
+                                               ],
+                       "wp:featuredmedia":  [
+                                                {
+                                                    "embeddable":  true,
+                                                    "href":  "https://dev-new-marketsheadlines.pantheonsite.io/wp-json/wp/v2/media/3502785"
+                                                }
+                                            ],
+                       "wp:attachment":  [
+                                             {
+                                                 "href":  "https://dev-new-marketsheadlines.pantheonsite.io/wp-json/wp/v2/media?parent=3504411"
+                                             }
+                                         ],
+                       "curies":  [
+                                      {
+                                          "name":  "wp",
+                                          "href":  "https://api.w.org/{rel}",
+                                          "templated":  true
+                                      }
+                                  ]
+                   }
+    },
+    {
+        "id":  3504409,
+        "date":  "2025-09-24T13:08:49",
+        "date_gmt":  "2025-09-24T17:08:49",
+        "guid":  {
+                     "rendered":  "https://dev-new-marketsheadlines.pantheonsite.io/?page_id=3504409"
+                 },
+        "modified":  "2025-09-24T13:08:50",
+        "modified_gmt":  "2025-09-24T17:08:50",
+        "slug":  "germany-woos-indian-workers-spooked-by-trumps-h-1b-visa-fee",
+        "status":  "publish",
+        "type":  "page",
+        "link":  "https://dev-new-marketsheadlines.pantheonsite.io/germany-woos-indian-workers-spooked-by-trumps-h-1b-visa-fee/",
+        "title":  {
+                      "rendered":  "Germany Woos Indian Workers Spooked by Trump’s H-1B Visa Fee"
+                  },
+        "content":  {
+                        "rendered":  "\u003cp\u003eSelling the prospect of high wages and stable migration rules, Germany’s ambassador to India makes a pitch to skilled Indian workers.\u003c/p\u003e\n",
+                        "protected":  false
+                    },
+        "excerpt":  {
+                        "rendered":  "\u003cp\u003eSelling the prospect of high wages and stable migration rules, Germany’s ambassador to India makes a pitch to skilled Indian workers.\u003c/p\u003e\n",
+                        "protected":  false
+                    },
+        "author":  9,
+        "featured_media":  3502785,
+        "parent":  0,
+        "menu_order":  0,
+        "comment_status":  "close",
+        "ping_status":  "closed",
+        "template":  "",
+        "meta":  {
+                     "footnotes":  ""
+                 },
+        "class_list":  [
+                           "post-3504409",
+                           "page",
+                           "type-page",
+                           "status-publish",
+                           "has-post-thumbnail",
+                           "hentry"
+                       ],
+        "_links":  {
+                       "self":  [
+                                    {
+                                        "href":  "https://dev-new-marketsheadlines.pantheonsite.io/wp-json/wp/v2/pages/3504409",
+                                        "targetHints":  {
+                                                            "allow":  [
+                                                                          "GET",
+                                                                          "POST",
+                                                                          "PUT",
+                                                                          "PATCH",
+                                                                          "DELETE"
+                                                                      ]
+                                                        }
+                                    }
+                                ],
+                       "collection":  [
+                                          {
+                                              "href":  "https://dev-new-marketsheadlines.pantheonsite.io/wp-json/wp/v2/pages"
+                                          }
+                                      ],
+                       "about":  [
+                                     {
+                                         "href":  "https://dev-new-marketsheadlines.pantheonsite.io/wp-json/wp/v2/types/page"
+                                     }
+                                 ],
+                       "author":  [
+                                      {
+                                          "embeddable":  true,
+                                          "href":  "https://dev-new-marketsheadlines.pantheonsite.io/wp-json/wp/v2/users/9"
+                                      }
+                                  ],
+                       "replies":  [
+                                       {
+                                           "embeddable":  true,
+                                           "href":  "https://dev-new-marketsheadlines.pantheonsite.io/wp-json/wp/v2/comments?post=3504409"
+                                       }
+                                   ],
+                       "version-history":  [
+                                               {
+                                                   "count":  1,
+                                                   "href":  "https://dev-new-marketsheadlines.pantheonsite.io/wp-json/wp/v2/pages/3504409/revisions"
+                                               }
+                                           ],
+                       "predecessor-version":  [
+                                                   {
+                                                       "id":  3504410,
+                                                       "href":  "https://dev-new-marketsheadlines.pantheonsite.io/wp-json/wp/v2/pages/3504409/revisions/3504410"
+                                                   }
+                                               ],
+                       "wp:featuredmedia":  [
+                                                {
+                                                    "embeddable":  true,
+                                                    "href":  "https://dev-new-marketsheadlines.pantheonsite.io/wp-json/wp/v2/media/3502785"
+                                                }
+                                            ],
+                       "wp:attachment":  [
+                                             {
+                                                 "href":  "https://dev-new-marketsheadlines.pantheonsite.io/wp-json/wp/v2/media?parent=3504409"
+                                             }
+                                         ],
+                       "curies":  [
+                                      {
+                                          "name":  "wp",
+                                          "href":  "https://api.w.org/{rel}",
+                                          "templated":  true
+                                      }
+                                  ]
+                   }
+    },
+    {
+        "id":  3504407,
+        "date":  "2025-09-24T13:08:49",
+        "date_gmt":  "2025-09-24T17:08:49",
+        "guid":  {
+                     "rendered":  "https://dev-new-marketsheadlines.pantheonsite.io/?page_id=3504407"
+                 },
+        "modified":  "2025-09-24T13:08:49",
+        "modified_gmt":  "2025-09-24T17:08:49",
+        "slug":  "social-security-workers-struggle-to-meet-demand-after-doge-cuts",
+        "status":  "publish",
+        "type":  "page",
+        "link":  "https://dev-new-marketsheadlines.pantheonsite.io/social-security-workers-struggle-to-meet-demand-after-doge-cuts/",
+        "title":  {
+                      "rendered":  "Social Security Workers Struggle to Meet Demand After DOGE Cuts"
+                  },
+        "content":  {
+                        "rendered":  "\u003cp\u003eAfter this year’s staffing cuts, some people wait for hours, others sail through. But overburdened field office workers carry the weight.\u003c/p\u003e\n",
+                        "protected":  false
+                    },
+        "excerpt":  {
+                        "rendered":  "\u003cp\u003eAfter this year’s staffing cuts, some people wait for hours, others sail through. But overburdened field office workers carry the weight.\u003c/p\u003e\n",
+                        "protected":  false
+                    },
+        "author":  9,
+        "featured_media":  3502785,
+        "parent":  0,
+        "menu_order":  0,
+        "comment_status":  "close",
+        "ping_status":  "closed",
+        "template":  "",
+        "meta":  {
+                     "footnotes":  ""
+                 },
+        "class_list":  [
+                           "post-3504407",
+                           "page",
+                           "type-page",
+                           "status-publish",
+                           "has-post-thumbnail",
+                           "hentry"
+                       ],
+        "_links":  {
+                       "self":  [
+                                    {
+                                        "href":  "https://dev-new-marketsheadlines.pantheonsite.io/wp-json/wp/v2/pages/3504407",
+                                        "targetHints":  {
+                                                            "allow":  [
+                                                                          "GET",
+                                                                          "POST",
+                                                                          "PUT",
+                                                                          "PATCH",
+                                                                          "DELETE"
+                                                                      ]
+                                                        }
+                                    }
+                                ],
+                       "collection":  [
+                                          {
+                                              "href":  "https://dev-new-marketsheadlines.pantheonsite.io/wp-json/wp/v2/pages"
+                                          }
+                                      ],
+                       "about":  [
+                                     {
+                                         "href":  "https://dev-new-marketsheadlines.pantheonsite.io/wp-json/wp/v2/types/page"
+                                     }
+                                 ],
+                       "author":  [
+                                      {
+                                          "embeddable":  true,
+                                          "href":  "https://dev-new-marketsheadlines.pantheonsite.io/wp-json/wp/v2/users/9"
+                                      }
+                                  ],
+                       "replies":  [
+                                       {
+                                           "embeddable":  true,
+                                           "href":  "https://dev-new-marketsheadlines.pantheonsite.io/wp-json/wp/v2/comments?post=3504407"
+                                       }
+                                   ],
+                       "version-history":  [
+                                               {
+                                                   "count":  1,
+                                                   "href":  "https://dev-new-marketsheadlines.pantheonsite.io/wp-json/wp/v2/pages/3504407/revisions"
+                                               }
+                                           ],
+                       "predecessor-version":  [
+                                                   {
+                                                       "id":  3504408,
+                                                       "href":  "https://dev-new-marketsheadlines.pantheonsite.io/wp-json/wp/v2/pages/3504407/revisions/3504408"
+                                                   }
+                                               ],
+                       "wp:featuredmedia":  [
+                                                {
+                                                    "embeddable":  true,
+                                                    "href":  "https://dev-new-marketsheadlines.pantheonsite.io/wp-json/wp/v2/media/3502785"
+                                                }
+                                            ],
+                       "wp:attachment":  [
+                                             {
+                                                 "href":  "https://dev-new-marketsheadlines.pantheonsite.io/wp-json/wp/v2/media?parent=3504407"
+                                             }
+                                         ],
+                       "curies":  [
+                                      {
+                                          "name":  "wp",
+                                          "href":  "https://api.w.org/{rel}",
+                                          "templated":  true
+                                      }
+                                  ]
+                   }
+    },
+    {
+        "id":  3504269,
+        "date":  "2025-09-24T07:06:21",
+        "date_gmt":  "2025-09-24T11:06:21",
+        "guid":  {
+                     "rendered":  "https://dev-new-marketsheadlines.pantheonsite.io/?page_id=3504269"
+                 },
+        "modified":  "2025-09-24T07:06:21",
+        "modified_gmt":  "2025-09-24T11:06:21",
+        "slug":  "disney-raises-prices-for-streaming-plans-in-the-u-s",
+        "status":  "publish",
+        "type":  "page",
+        "link":  "https://dev-new-marketsheadlines.pantheonsite.io/disney-raises-prices-for-streaming-plans-in-the-u-s/",
+        "title":  {
+                      "rendered":  "Disney Raises Prices for Streaming Plans in the U.S."
+                  },
+        "content":  {
+                        "rendered":  "\u003cp\u003eThe price hike goes into effect on Oct. 21 and covers the Disney+ service, as well as plans that bundle it with Hulu, ESPN Select and HBO Max.\u003c/p\u003e\n",
+                        "protected":  false
+                    },
+        "excerpt":  {
+                        "rendered":  "\u003cp\u003eThe price hike goes into effect on Oct. 21 and covers the Disney+ service, as well as plans that bundle it with Hulu, ESPN Select and HBO Max.\u003c/p\u003e\n",
+                        "protected":  false
+                    },
+        "author":  9,
+        "featured_media":  3502785,
+        "parent":  0,
+        "menu_order":  0,
+        "comment_status":  "close",
+        "ping_status":  "closed",
+        "template":  "",
+        "meta":  {
+                     "footnotes":  ""
+                 },
+        "class_list":  [
+                           "post-3504269",
+                           "page",
+                           "type-page",
+                           "status-publish",
+                           "has-post-thumbnail",
+                           "hentry"
+                       ],
+        "_links":  {
+                       "self":  [
+                                    {
+                                        "href":  "https://dev-new-marketsheadlines.pantheonsite.io/wp-json/wp/v2/pages/3504269",
+                                        "targetHints":  {
+                                                            "allow":  [
+                                                                          "GET",
+                                                                          "POST",
+                                                                          "PUT",
+                                                                          "PATCH",
+                                                                          "DELETE"
+                                                                      ]
+                                                        }
+                                    }
+                                ],
+                       "collection":  [
+                                          {
+                                              "href":  "https://dev-new-marketsheadlines.pantheonsite.io/wp-json/wp/v2/pages"
+                                          }
+                                      ],
+                       "about":  [
+                                     {
+                                         "href":  "https://dev-new-marketsheadlines.pantheonsite.io/wp-json/wp/v2/types/page"
+                                     }
+                                 ],
+                       "author":  [
+                                      {
+                                          "embeddable":  true,
+                                          "href":  "https://dev-new-marketsheadlines.pantheonsite.io/wp-json/wp/v2/users/9"
+                                      }
+                                  ],
+                       "replies":  [
+                                       {
+                                           "embeddable":  true,
+                                           "href":  "https://dev-new-marketsheadlines.pantheonsite.io/wp-json/wp/v2/comments?post=3504269"
+                                       }
+                                   ],
+                       "version-history":  [
+                                               {
+                                                   "count":  1,
+                                                   "href":  "https://dev-new-marketsheadlines.pantheonsite.io/wp-json/wp/v2/pages/3504269/revisions"
+                                               }
+                                           ],
+                       "predecessor-version":  [
+                                                   {
+                                                       "id":  3504270,
+                                                       "href":  "https://dev-new-marketsheadlines.pantheonsite.io/wp-json/wp/v2/pages/3504269/revisions/3504270"
+                                                   }
+                                               ],
+                       "wp:featuredmedia":  [
+                                                {
+                                                    "embeddable":  true,
+                                                    "href":  "https://dev-new-marketsheadlines.pantheonsite.io/wp-json/wp/v2/media/3502785"
+                                                }
+                                            ],
+                       "wp:attachment":  [
+                                             {
+                                                 "href":  "https://dev-new-marketsheadlines.pantheonsite.io/wp-json/wp/v2/media?parent=3504269"
+                                             }
+                                         ],
+                       "curies":  [
+                                      {
+                                          "name":  "wp",
+                                          "href":  "https://api.w.org/{rel}",
+                                          "templated":  true
+                                      }
+                                  ]
+                   }
+    },
+    {
+        "id":  3504267,
+        "date":  "2025-09-24T07:06:20",
+        "date_gmt":  "2025-09-24T11:06:20",
+        "guid":  {
+                     "rendered":  "https://dev-new-marketsheadlines.pantheonsite.io/?page_id=3504267"
+                 },
+        "modified":  "2025-09-24T07:06:20",
+        "modified_gmt":  "2025-09-24T11:06:20",
+        "slug":  "why-obamacare-bills-may-double-next-year",
+        "status":  "publish",
+        "type":  "page",
+        "link":  "https://dev-new-marketsheadlines.pantheonsite.io/why-obamacare-bills-may-double-next-year/",
+        "title":  {
+                      "rendered":  "Why Obamacare Bills May Double Next Year"
+                  },
+        "content":  {
+                        "rendered":  "\u003cp\u003eExtensive subsidies that reduce premium costs for millions are set to expire, unless Congress extends them.\u003c/p\u003e\n",
+                        "protected":  false
+                    },
+        "excerpt":  {
+                        "rendered":  "\u003cp\u003eExtensive subsidies that reduce premium costs for millions are set to expire, unless Congress extends them.\u003c/p\u003e\n",
+                        "protected":  false
+                    },
+        "author":  9,
+        "featured_media":  3502785,
+        "parent":  0,
+        "menu_order":  0,
+        "comment_status":  "close",
+        "ping_status":  "closed",
+        "template":  "",
+        "meta":  {
+                     "footnotes":  ""
+                 },
+        "class_list":  [
+                           "post-3504267",
+                           "page",
+                           "type-page",
+                           "status-publish",
+                           "has-post-thumbnail",
+                           "hentry"
+                       ],
+        "_links":  {
+                       "self":  [
+                                    {
+                                        "href":  "https://dev-new-marketsheadlines.pantheonsite.io/wp-json/wp/v2/pages/3504267",
+                                        "targetHints":  {
+                                                            "allow":  [
+                                                                          "GET",
+                                                                          "POST",
+                                                                          "PUT",
+                                                                          "PATCH",
+                                                                          "DELETE"
+                                                                      ]
+                                                        }
+                                    }
+                                ],
+                       "collection":  [
+                                          {
+                                              "href":  "https://dev-new-marketsheadlines.pantheonsite.io/wp-json/wp/v2/pages"
+                                          }
+                                      ],
+                       "about":  [
+                                     {
+                                         "href":  "https://dev-new-marketsheadlines.pantheonsite.io/wp-json/wp/v2/types/page"
+                                     }
+                                 ],
+                       "author":  [
+                                      {
+                                          "embeddable":  true,
+                                          "href":  "https://dev-new-marketsheadlines.pantheonsite.io/wp-json/wp/v2/users/9"
+                                      }
+                                  ],
+                       "replies":  [
+                                       {
+                                           "embeddable":  true,
+                                           "href":  "https://dev-new-marketsheadlines.pantheonsite.io/wp-json/wp/v2/comments?post=3504267"
+                                       }
+                                   ],
+                       "version-history":  [
+                                               {
+                                                   "count":  1,
+                                                   "href":  "https://dev-new-marketsheadlines.pantheonsite.io/wp-json/wp/v2/pages/3504267/revisions"
+                                               }
+                                           ],
+                       "predecessor-version":  [
+                                                   {
+                                                       "id":  3504268,
+                                                       "href":  "https://dev-new-marketsheadlines.pantheonsite.io/wp-json/wp/v2/pages/3504267/revisions/3504268"
+                                                   }
+                                               ],
+                       "wp:featuredmedia":  [
+                                                {
+                                                    "embeddable":  true,
+                                                    "href":  "https://dev-new-marketsheadlines.pantheonsite.io/wp-json/wp/v2/media/3502785"
+                                                }
+                                            ],
+                       "wp:attachment":  [
+                                             {
+                                                 "href":  "https://dev-new-marketsheadlines.pantheonsite.io/wp-json/wp/v2/media?parent=3504267"
+                                             }
+                                         ],
+                       "curies":  [
+                                      {
+                                          "name":  "wp",
+                                          "href":  "https://api.w.org/{rel}",
+                                          "templated":  true
+                                      }
+                                  ]
+                   }
+    },
+    {
+        "id":  3504265,
+        "date":  "2025-09-24T07:06:19",
+        "date_gmt":  "2025-09-24T11:06:19",
+        "guid":  {
+                     "rendered":  "https://dev-new-marketsheadlines.pantheonsite.io/?page_id=3504265"
+                 },
+        "modified":  "2025-09-24T07:06:20",
+        "modified_gmt":  "2025-09-24T11:06:20",
+        "slug":  "screwworm-case-detected-less-than-70-miles-from-u-s-mexico-border",
+        "status":  "publish",
+        "type":  "page",
+        "link":  "https://dev-new-marketsheadlines.pantheonsite.io/screwworm-case-detected-less-than-70-miles-from-u-s-mexico-border/",
+        "title":  {
+                      "rendered":  "Screwworm Case Detected Less Than 70 Miles from U.S.-Mexico Border"
+                  },
+        "content":  {
+                        "rendered":  "\u003cp\u003eThe flesh-eating parasite was detected in northern Mexico. It is the northernmost case of the livestock infection, which was eradicated from the United States in the 1960s.\u003c/p\u003e\n",
+                        "protected":  false
+                    },
+        "excerpt":  {
+                        "rendered":  "\u003cp\u003eThe flesh-eating parasite was detected in northern Mexico. It is the northernmost case of the livestock infection, which was eradicated from the United States in the 1960s.\u003c/p\u003e\n",
+                        "protected":  false
+                    },
+        "author":  9,
+        "featured_media":  3502785,
+        "parent":  0,
+        "menu_order":  0,
+        "comment_status":  "close",
+        "ping_status":  "closed",
+        "template":  "",
+        "meta":  {
+                     "footnotes":  ""
+                 },
+        "class_list":  [
+                           "post-3504265",
+                           "page",
+                           "type-page",
+                           "status-publish",
+                           "has-post-thumbnail",
+                           "hentry"
+                       ],
+        "_links":  {
+                       "self":  [
+                                    {
+                                        "href":  "https://dev-new-marketsheadlines.pantheonsite.io/wp-json/wp/v2/pages/3504265",
+                                        "targetHints":  {
+                                                            "allow":  [
+                                                                          "GET",
+                                                                          "POST",
+                                                                          "PUT",
+                                                                          "PATCH",
+                                                                          "DELETE"
+                                                                      ]
+                                                        }
+                                    }
+                                ],
+                       "collection":  [
+                                          {
+                                              "href":  "https://dev-new-marketsheadlines.pantheonsite.io/wp-json/wp/v2/pages"
+                                          }
+                                      ],
+                       "about":  [
+                                     {
+                                         "href":  "https://dev-new-marketsheadlines.pantheonsite.io/wp-json/wp/v2/types/page"
+                                     }
+                                 ],
+                       "author":  [
+                                      {
+                                          "embeddable":  true,
+                                          "href":  "https://dev-new-marketsheadlines.pantheonsite.io/wp-json/wp/v2/users/9"
+                                      }
+                                  ],
+                       "replies":  [
+                                       {
+                                           "embeddable":  true,
+                                           "href":  "https://dev-new-marketsheadlines.pantheonsite.io/wp-json/wp/v2/comments?post=3504265"
+                                       }
+                                   ],
+                       "version-history":  [
+                                               {
+                                                   "count":  1,
+                                                   "href":  "https://dev-new-marketsheadlines.pantheonsite.io/wp-json/wp/v2/pages/3504265/revisions"
+                                               }
+                                           ],
+                       "predecessor-version":  [
+                                                   {
+                                                       "id":  3504266,
+                                                       "href":  "https://dev-new-marketsheadlines.pantheonsite.io/wp-json/wp/v2/pages/3504265/revisions/3504266"
+                                                   }
+                                               ],
+                       "wp:featuredmedia":  [
+                                                {
+                                                    "embeddable":  true,
+                                                    "href":  "https://dev-new-marketsheadlines.pantheonsite.io/wp-json/wp/v2/media/3502785"
+                                                }
+                                            ],
+                       "wp:attachment":  [
+                                             {
+                                                 "href":  "https://dev-new-marketsheadlines.pantheonsite.io/wp-json/wp/v2/media?parent=3504265"
+                                             }
+                                         ],
+                       "curies":  [
+                                      {
+                                          "name":  "wp",
+                                          "href":  "https://api.w.org/{rel}",
+                                          "templated":  true
+                                      }
+                                  ]
+                   }
+    },
+    {
+        "id":  3504263,
+        "date":  "2025-09-24T07:06:18",
+        "date_gmt":  "2025-09-24T11:06:18",
+        "guid":  {
+                     "rendered":  "https://dev-new-marketsheadlines.pantheonsite.io/?page_id=3504263"
+                 },
+        "modified":  "2025-09-24T07:06:19",
+        "modified_gmt":  "2025-09-24T11:06:19",
+        "slug":  "philanthropies-strike-a-promising-deal-to-turn-back-h-i-v",
+        "status":  "publish",
+        "type":  "page",
+        "link":  "https://dev-new-marketsheadlines.pantheonsite.io/philanthropies-strike-a-promising-deal-to-turn-back-h-i-v/",
+        "title":  {
+                      "rendered":  "Philanthropies Strike a Promising Deal to Turn Back H.I.V."
+                  },
+        "content":  {
+                        "rendered":  "\u003cp\u003eLow- and middle-income countries will be able to purchase an effective preventative at a reduced price. The arrangements may help stem the epidemic 40 years after it began.\u003c/p\u003e\n",
+                        "protected":  false
+                    },
+        "excerpt":  {
+                        "rendered":  "\u003cp\u003eLow- and middle-income countries will be able to purchase an effective preventative at a reduced price. The arrangements may help stem the epidemic 40 years after it began.\u003c/p\u003e\n",
+                        "protected":  false
+                    },
+        "author":  9,
+        "featured_media":  3502785,
+        "parent":  0,
+        "menu_order":  0,
+        "comment_status":  "close",
+        "ping_status":  "closed",
+        "template":  "",
+        "meta":  {
+                     "footnotes":  ""
+                 },
+        "class_list":  [
+                           "post-3504263",
+                           "page",
+                           "type-page",
+                           "status-publish",
+                           "has-post-thumbnail",
+                           "hentry"
+                       ],
+        "_links":  {
+                       "self":  [
+                                    {
+                                        "href":  "https://dev-new-marketsheadlines.pantheonsite.io/wp-json/wp/v2/pages/3504263",
+                                        "targetHints":  {
+                                                            "allow":  [
+                                                                          "GET",
+                                                                          "POST",
+                                                                          "PUT",
+                                                                          "PATCH",
+                                                                          "DELETE"
+                                                                      ]
+                                                        }
+                                    }
+                                ],
+                       "collection":  [
+                                          {
+                                              "href":  "https://dev-new-marketsheadlines.pantheonsite.io/wp-json/wp/v2/pages"
+                                          }
+                                      ],
+                       "about":  [
+                                     {
+                                         "href":  "https://dev-new-marketsheadlines.pantheonsite.io/wp-json/wp/v2/types/page"
+                                     }
+                                 ],
+                       "author":  [
+                                      {
+                                          "embeddable":  true,
+                                          "href":  "https://dev-new-marketsheadlines.pantheonsite.io/wp-json/wp/v2/users/9"
+                                      }
+                                  ],
+                       "replies":  [
+                                       {
+                                           "embeddable":  true,
+                                           "href":  "https://dev-new-marketsheadlines.pantheonsite.io/wp-json/wp/v2/comments?post=3504263"
+                                       }
+                                   ],
+                       "version-history":  [
+                                               {
+                                                   "count":  1,
+                                                   "href":  "https://dev-new-marketsheadlines.pantheonsite.io/wp-json/wp/v2/pages/3504263/revisions"
+                                               }
+                                           ],
+                       "predecessor-version":  [
+                                                   {
+                                                       "id":  3504264,
+                                                       "href":  "https://dev-new-marketsheadlines.pantheonsite.io/wp-json/wp/v2/pages/3504263/revisions/3504264"
+                                                   }
+                                               ],
+                       "wp:featuredmedia":  [
+                                                {
+                                                    "embeddable":  true,
+                                                    "href":  "https://dev-new-marketsheadlines.pantheonsite.io/wp-json/wp/v2/media/3502785"
+                                                }
+                                            ],
+                       "wp:attachment":  [
+                                             {
+                                                 "href":  "https://dev-new-marketsheadlines.pantheonsite.io/wp-json/wp/v2/media?parent=3504263"
+                                             }
+                                         ],
+                       "curies":  [
+                                      {
+                                          "name":  "wp",
+                                          "href":  "https://api.w.org/{rel}",
+                                          "templated":  true
+                                      }
+                                  ]
+                   }
+    }
+]
