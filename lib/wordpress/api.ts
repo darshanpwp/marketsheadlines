@@ -5,20 +5,27 @@ const WP_USERNAME = process.env.WP_USERNAME;
 const WP_PASSWORD = process.env.WP_PASSWORD;
 
 // Create base64 encoded auth header
-function getAuthHeader(): string {
+function getAuthHeader(): string | null {
   if (!WP_USERNAME || !WP_PASSWORD) {
-    throw new Error('WordPress credentials not configured');
+    console.warn('WordPress credentials not configured. API requests may fail if authentication is required.');
+    return null;
   }
   return `Basic ${Buffer.from(`${WP_USERNAME}:${WP_PASSWORD}`).toString('base64')}`;
 }
 
 // Fetch with authentication
 async function fetchWithAuth(url: string, options: RequestInit = {}): Promise<Response> {
-  const headers = {
+  const authHeader = getAuthHeader();
+  
+  const headers: Record<string, string> = {
     'Content-Type': 'application/json',
-    Authorization: getAuthHeader(),
-    ...options.headers,
+    ...(options.headers as Record<string, string>),
   };
+
+  // Only add authorization if credentials are available
+  if (authHeader) {
+    headers['Authorization'] = authHeader;
+  }
 
   const response = await fetch(url, {
     ...options,
@@ -26,7 +33,14 @@ async function fetchWithAuth(url: string, options: RequestInit = {}): Promise<Re
   });
 
   if (!response.ok) {
-    throw new Error(`WordPress API error: ${response.status} ${response.statusText}`);
+    const errorMessage = `WordPress API error: ${response.status} ${response.statusText}`;
+    
+    // Provide helpful error message for authentication issues
+    if (response.status === 401 || response.status === 403) {
+      console.error(`${errorMessage}. Please check your WordPress credentials in environment variables.`);
+    }
+    
+    throw new Error(errorMessage);
   }
 
   return response;

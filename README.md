@@ -161,17 +161,26 @@ Update WordPress API settings in `lib/wordpress/api.ts`:
 
 ### Vercel (Recommended)
 
+See [VERCEL_DEPLOYMENT.md](./VERCEL_DEPLOYMENT.md) for detailed deployment instructions.
+
+**Quick Steps:**
+
 1. Push your code to GitHub
-2. Import project to Vercel
-3. Add environment variables in Vercel dashboard
+2. Import project to Vercel at [vercel.com/new](https://vercel.com/new)
+3. **IMPORTANT:** Add environment variables in Vercel dashboard:
+   - `NEXT_PUBLIC_WP_API_URL`
+   - `WP_USERNAME`
+   - `WP_PASSWORD`
 4. Deploy
+
+**⚠️ Important:** The build will fail if environment variables are not configured. Make sure to add them before deploying.
 
 ### Other Platforms
 
-Ensure environment variables are set:
-- `NEXT_PUBLIC_WP_API_URL`
-- `WP_USERNAME`
-- `WP_PASSWORD`
+For other hosting platforms, ensure these environment variables are set:
+- `NEXT_PUBLIC_WP_API_URL` - Your WordPress API URL
+- `WP_USERNAME` - WordPress username
+- `WP_PASSWORD` - WordPress application password
 
 ## Technologies
 
