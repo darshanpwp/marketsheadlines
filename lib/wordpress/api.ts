@@ -1,20 +1,31 @@
-import type { 
-  WordPressPage, 
+import type {
+  WordPressPage,
   WordPressPost,
   WordPressCPT,
-  WordPressMedia, 
-  WordPressUser, 
-  Page, 
+  WordPressMedia,
+  WordPressUser,
+  Page,
   PageWithDetails,
   Post,
   PostWithDetails,
   CPT,
-  CPTWithDetails
+  CPTWithDetails,
+  WordPressMenu
 } from '@/types/wordpress';
 
 const WP_API_URL = process.env.NEXT_PUBLIC_WP_API_URL || 'https://dev-new-marketsheadlines.pantheonsite.io/wp-json/wp/v2';
 const WP_USERNAME = process.env.WP_USERNAME;
 const WP_PASSWORD = process.env.WP_PASSWORD;
+
+/**
+ * Custom error class for WordPress API errors.
+ */
+export class WordPressError extends Error {
+  constructor(public message: string, public status: number) {
+    super(message);
+    this.name = 'WordPressError';
+  }
+}
 
 // Create base64 encoded auth header
 function getAuthHeader(): string | null {
@@ -28,7 +39,7 @@ function getAuthHeader(): string | null {
 // Fetch with authentication
 async function fetchWithAuth(url: string, options: RequestInit = {}): Promise<Response> {
   const authHeader = getAuthHeader();
-  
+
   const headers: Record<string, string> = {
     'Content-Type': 'application/json',
     ...(options.headers as Record<string, string>),
@@ -46,13 +57,13 @@ async function fetchWithAuth(url: string, options: RequestInit = {}): Promise<Re
 
   if (!response.ok) {
     const errorMessage = `WordPress API error: ${response.status} ${response.statusText}`;
-    
+
     // Provide helpful error message for authentication issues
     if (response.status === 401 || response.status === 403) {
       console.error(`${errorMessage}. Please check your WordPress credentials in environment variables.`);
     }
-    
-    throw new Error(errorMessage);
+
+    throw new WordPressError(errorMessage, response.status);
   }
 
   return response;
@@ -81,7 +92,7 @@ function transformPage(wpPage: WordPressPage): Page {
  */
 export async function getPages(perPage: number = 10, page: number = 1): Promise<Page[]> {
   const url = `${WP_API_URL}/pages?per_page=${perPage}&page=${page}&status=publish&_embed`;
-  
+
   try {
     const response = await fetchWithAuth(url, {
       next: { revalidate: 60 }, // ISR: Revalidate every 60 seconds
@@ -101,14 +112,14 @@ export async function getPages(perPage: number = 10, page: number = 1): Promise<
  */
 export async function getPagesWithDetails(): Promise<PageWithDetails[]> {
   const url = `${WP_API_URL}/pages?status=publish&_embed`;
-  
+
   try {
     const response = await fetchWithAuth(url, {
       next: { revalidate: 60 },
     });
 
     const pages: WordPressPage[] = await response.json();
-    
+
     return pages.map((wpPage) => {
       const page = transformPage(wpPage);
       const embedded = wpPage._embedded;
@@ -131,14 +142,14 @@ export async function getPagesWithDetails(): Promise<PageWithDetails[]> {
  */
 export async function getPageBySlug(slug: string): Promise<PageWithDetails | null> {
   const url = `${WP_API_URL}/pages?slug=${slug}&status=publish&_embed`;
-  
+
   try {
     const response = await fetchWithAuth(url, {
       next: { revalidate: 60 },
     });
 
     const pages: WordPressPage[] = await response.json();
-    
+
     if (pages.length === 0) {
       return null;
     }
@@ -153,6 +164,9 @@ export async function getPageBySlug(slug: string): Promise<PageWithDetails | nul
       featuredMediaDetails: embedded?.['wp:featuredmedia']?.[0] as WordPressMedia | undefined,
     } as PageWithDetails;
   } catch (error) {
+    if (error instanceof WordPressError && error.status === 404) {
+      return null;
+    }
     console.error(`Error fetching page with slug "${slug}":`, error);
     return null;
   }
@@ -163,7 +177,7 @@ export async function getPageBySlug(slug: string): Promise<PageWithDetails | nul
  */
 export async function getAllPageSlugs(): Promise<string[]> {
   const url = `${WP_API_URL}/pages?status=publish&per_page=100`;
-  
+
   try {
     const response = await fetchWithAuth(url, {
       next: { revalidate: 3600 }, // Cache for 1 hour
@@ -184,7 +198,7 @@ export async function getMediaById(id: number): Promise<WordPressMedia | null> {
   if (!id) return null;
 
   const url = `${WP_API_URL}/media/${id}`;
-  
+
   try {
     const response = await fetchWithAuth(url, {
       next: { revalidate: 3600 }, // Cache for 1 hour
@@ -204,7 +218,7 @@ export async function getUserById(id: number): Promise<WordPressUser | null> {
   if (!id) return null;
 
   const url = `${WP_API_URL}/users/${id}`;
-  
+
   try {
     const response = await fetchWithAuth(url, {
       next: { revalidate: 3600 }, // Cache for 1 hour
@@ -245,7 +259,7 @@ function transformPost(wpPost: WordPressPost): Post {
  */
 export async function getPosts(perPage: number = 10, page: number = 1): Promise<Post[]> {
   const url = `${WP_API_URL}/posts?per_page=${perPage}&page=${page}&status=publish&_embed`;
-  
+
   try {
     const response = await fetchWithAuth(url, {
       next: { revalidate: 60 }, // ISR: Revalidate every 60 seconds
@@ -265,14 +279,14 @@ export async function getPosts(perPage: number = 10, page: number = 1): Promise<
  */
 export async function getPostsWithDetails(): Promise<PostWithDetails[]> {
   const url = `${WP_API_URL}/posts?status=publish&_embed`;
-  
+
   try {
     const response = await fetchWithAuth(url, {
       next: { revalidate: 60 },
     });
 
     const posts: WordPressPost[] = await response.json();
-    
+
     return posts.map((wpPost) => {
       const post = transformPost(wpPost);
       const embedded = wpPost._embedded;
@@ -316,14 +330,14 @@ export async function getPostsWithDetails(): Promise<PostWithDetails[]> {
  */
 export async function getPostBySlug(slug: string): Promise<PostWithDetails | null> {
   const url = `${WP_API_URL}/posts?slug=${slug}&status=publish&_embed`;
-  
+
   try {
     const response = await fetchWithAuth(url, {
       next: { revalidate: 60 },
     });
 
     const posts: WordPressPost[] = await response.json();
-    
+
     if (posts.length === 0) {
       return null;
     }
@@ -359,6 +373,9 @@ export async function getPostBySlug(slug: string): Promise<PostWithDetails | nul
       tagDetails,
     } as PostWithDetails;
   } catch (error) {
+    if (error instanceof WordPressError && error.status === 404) {
+      return null;
+    }
     console.error(`Error fetching post with slug "${slug}":`, error);
     return null;
   }
@@ -369,7 +386,7 @@ export async function getPostBySlug(slug: string): Promise<PostWithDetails | nul
  */
 export async function getAllPostSlugs(): Promise<string[]> {
   const url = `${WP_API_URL}/posts?status=publish&per_page=100`;
-  
+
   try {
     const response = await fetchWithAuth(url, {
       next: { revalidate: 3600 }, // Cache for 1 hour
@@ -388,14 +405,14 @@ export async function getAllPostSlugs(): Promise<string[]> {
  */
 export async function getPostsByCategory(categoryId: number): Promise<PostWithDetails[]> {
   const url = `${WP_API_URL}/posts?categories=${categoryId}&status=publish&_embed`;
-  
+
   try {
     const response = await fetchWithAuth(url, {
       next: { revalidate: 60 },
     });
 
     const posts: WordPressPost[] = await response.json();
-    
+
     return posts.map((wpPost) => {
       const post = transformPost(wpPost);
       const embedded = wpPost._embedded;
@@ -438,14 +455,14 @@ export async function getPostsByCategory(categoryId: number): Promise<PostWithDe
  */
 export async function getPostsByTag(tagId: number): Promise<PostWithDetails[]> {
   const url = `${WP_API_URL}/posts?tags=${tagId}&status=publish&_embed`;
-  
+
   try {
     const response = await fetchWithAuth(url, {
       next: { revalidate: 60 },
     });
 
     const posts: WordPressPost[] = await response.json();
-    
+
     return posts.map((wpPost) => {
       const post = transformPost(wpPost);
       const embedded = wpPost._embedded;
@@ -488,14 +505,14 @@ export async function getPostsByTag(tagId: number): Promise<PostWithDetails[]> {
  */
 export async function getCategoryBySlug(slug: string): Promise<{ id: number; name: string; slug: string; description: string } | null> {
   const url = `${WP_API_URL}/categories?slug=${slug}`;
-  
+
   try {
     const response = await fetchWithAuth(url, {
       next: { revalidate: 3600 }, // Cache for 1 hour
     });
 
     const categories = await response.json();
-    
+
     if (categories.length === 0) {
       return null;
     }
@@ -517,14 +534,14 @@ export async function getCategoryBySlug(slug: string): Promise<{ id: number; nam
  */
 export async function getTagBySlug(slug: string): Promise<{ id: number; name: string; slug: string; description: string } | null> {
   const url = `${WP_API_URL}/tags?slug=${slug}`;
-  
+
   try {
     const response = await fetchWithAuth(url, {
       next: { revalidate: 3600 }, // Cache for 1 hour
     });
 
     const tags = await response.json();
-    
+
     if (tags.length === 0) {
       return null;
     }
@@ -546,7 +563,7 @@ export async function getTagBySlug(slug: string): Promise<{ id: number; name: st
  */
 export async function getPostsByCategorySlug(slug: string): Promise<PostWithDetails[]> {
   const category = await getCategoryBySlug(slug);
-  
+
   if (!category) {
     return [];
   }
@@ -559,7 +576,7 @@ export async function getPostsByCategorySlug(slug: string): Promise<PostWithDeta
  */
 export async function getPostsByTagSlug(slug: string): Promise<PostWithDetails[]> {
   const tag = await getTagBySlug(slug);
-  
+
   if (!tag) {
     return [];
   }
@@ -575,7 +592,7 @@ function transformCPT(wpCPT: WordPressCPT): CPT {
     'status', 'type', 'link', 'title', 'content', 'excerpt', 'author',
     'featured_media', 'template', 'class_list', '_links', '_embedded'
   ];
-  
+
   const customFields: Record<string, any> = {};
   Object.keys(wpCPT).forEach(key => {
     if (!standardFields.includes(key)) {
@@ -610,7 +627,7 @@ function transformCPT(wpCPT: WordPressCPT): CPT {
  */
 export async function getCPTItems(cptSlug: string, perPage: number = 10, page: number = 1): Promise<CPT[]> {
   const url = `${WP_API_URL}/${cptSlug}?per_page=${perPage}&page=${page}&status=publish&_embed`;
-  
+
   try {
     const response = await fetchWithAuth(url, {
       next: { revalidate: 60 }, // ISR: Revalidate every 60 seconds
@@ -630,14 +647,14 @@ export async function getCPTItems(cptSlug: string, perPage: number = 10, page: n
  */
 export async function getCPTItemsWithDetails(cptSlug: string): Promise<CPTWithDetails[]> {
   const url = `${WP_API_URL}/${cptSlug}?status=publish&_embed`;
-  
+
   try {
     const response = await fetchWithAuth(url, {
       next: { revalidate: 60 },
     });
 
     const items: WordPressCPT[] = await response.json();
-    
+
     return items.map((wpCPT) => {
       const cpt = transformCPT(wpCPT);
       const embedded = wpCPT._embedded;
@@ -681,14 +698,14 @@ export async function getCPTItemsWithDetails(cptSlug: string): Promise<CPTWithDe
  */
 export async function getCPTItemBySlug(cptSlug: string, slug: string): Promise<CPTWithDetails | null> {
   const url = `${WP_API_URL}/${cptSlug}?slug=${slug}&status=publish&_embed`;
-  
+
   try {
     const response = await fetchWithAuth(url, {
       next: { revalidate: 60 },
     });
 
     const items: WordPressCPT[] = await response.json();
-    
+
     if (items.length === 0) {
       return null;
     }
@@ -723,6 +740,9 @@ export async function getCPTItemBySlug(cptSlug: string, slug: string): Promise<C
       tagDetails: tagDetails.length > 0 ? tagDetails : undefined,
     } as CPTWithDetails;
   } catch (error) {
+    if (error instanceof WordPressError && error.status === 404) {
+      return null;
+    }
     console.error(`Error fetching ${cptSlug} item with slug "${slug}":`, error);
     return null;
   }
@@ -734,7 +754,7 @@ export async function getCPTItemBySlug(cptSlug: string, slug: string): Promise<C
  */
 export async function getAllCPTItemSlugs(cptSlug: string): Promise<string[]> {
   const url = `${WP_API_URL}/${cptSlug}?status=publish&per_page=100`;
-  
+
   try {
     const response = await fetchWithAuth(url, {
       next: { revalidate: 3600 }, // Cache for 1 hour
@@ -745,5 +765,29 @@ export async function getAllCPTItemSlugs(cptSlug: string): Promise<string[]> {
   } catch (error) {
     console.error(`Error fetching ${cptSlug} item slugs:`, error);
     return [];
+  }
+}
+
+/**
+ * Fetch a menu by its slug using the custom menus/v1 endpoint.
+ */
+export async function getMenu(slug: string): Promise<WordPressMenu | null> {
+  const baseUrl = WP_API_URL.replace('/wp/v2', '/menus/v1');
+  const url = `${baseUrl}/menus/${slug}`;
+
+  try {
+    const response = await fetchWithAuth(url, {
+      next: { revalidate: 60 },
+    });
+
+    return await response.json();
+  } catch (error) {
+    // Gracefully handle 404s for menus that might not exist yet
+    if (error instanceof WordPressError && error.status === 404) {
+      return null;
+    }
+
+    console.error(`Error fetching menu "${slug}":`, error);
+    return null;
   }
 }
