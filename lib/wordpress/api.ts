@@ -79,7 +79,8 @@ export async function getPages(perPage: number = 10, page: number = 1): Promise<
     return pages.map(transformPage);
   } catch (error) {
     console.error('Error fetching pages:', error);
-    throw error;
+    // Fail-safe: return an empty list so build/prerendering continues when the WP API is unreachable or unauthorized
+    return [];
   }
 }
 
@@ -108,7 +109,8 @@ export async function getPagesWithDetails(): Promise<PageWithDetails[]> {
     });
   } catch (error) {
     console.error('Error fetching pages with details:', error);
-    throw error;
+    // Fail-safe: return an empty list so build/prerendering continues when the WP API is unreachable or unauthorized
+    return [];
   }
 }
 
