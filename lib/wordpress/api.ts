@@ -10,7 +10,8 @@ import type {
   PostWithDetails,
   CPT,
   CPTWithDetails,
-  WordPressMenu
+  WordPressMenu,
+  PaginatedResponse
 } from '@/types/wordpress';
 
 const WP_API_URL = process.env.NEXT_PUBLIC_WP_API_URL || 'https://dev-new-marketsheadlines.pantheonsite.io/wp-json/wp/v2';
@@ -108,19 +109,21 @@ export async function getPages(perPage: number = 10, page: number = 1): Promise<
 }
 
 /**
- * Fetch all pages with embedded author and media details
+ * Fetch all pages with embedded author and media details with pagination
  */
-export async function getPagesWithDetails(): Promise<PageWithDetails[]> {
-  const url = `${WP_API_URL}/pages?status=publish&_embed`;
+export async function getPagesWithDetails(perPage: number = 10, page: number = 1): Promise<PaginatedResponse<PageWithDetails>> {
+  const url = `${WP_API_URL}/pages?status=publish&_embed&per_page=${perPage}&page=${page}`;
 
   try {
     const response = await fetchWithAuth(url, {
       next: { revalidate: 60 },
     });
 
+    const totalItems = parseInt(response.headers.get('X-WP-Total') || '0', 10);
+    const totalPages = parseInt(response.headers.get('X-WP-TotalPages') || '0', 10);
     const pages: WordPressPage[] = await response.json();
 
-    return pages.map((wpPage) => {
+    const items = pages.map((wpPage) => {
       const page = transformPage(wpPage);
       const embedded = wpPage._embedded;
 
@@ -130,10 +133,11 @@ export async function getPagesWithDetails(): Promise<PageWithDetails[]> {
         featuredMediaDetails: embedded?.['wp:featuredmedia']?.[0] as WordPressMedia | undefined,
       } as PageWithDetails;
     });
+
+    return { items, totalItems, totalPages };
   } catch (error) {
     console.error('Error fetching pages with details:', error);
-    // Fail-safe: return an empty list so build/prerendering continues when the WP API is unreachable or unauthorized
-    return [];
+    return { items: [], totalItems: 0, totalPages: 0 };
   }
 }
 
@@ -275,24 +279,25 @@ export async function getPosts(perPage: number = 10, page: number = 1): Promise<
 }
 
 /**
- * Fetch all posts with embedded author, media, and taxonomy details
+ * Fetch all posts with embedded author, media, and taxonomy details with pagination
  */
-export async function getPostsWithDetails(): Promise<PostWithDetails[]> {
-  const url = `${WP_API_URL}/posts?status=publish&_embed`;
+export async function getPostsWithDetails(perPage: number = 10, page: number = 1): Promise<PaginatedResponse<PostWithDetails>> {
+  const url = `${WP_API_URL}/posts?status=publish&_embed&per_page=${perPage}&page=${page}`;
 
   try {
     const response = await fetchWithAuth(url, {
       next: { revalidate: 60 },
     });
 
+    const totalItems = parseInt(response.headers.get('X-WP-Total') || '0', 10);
+    const totalPages = parseInt(response.headers.get('X-WP-TotalPages') || '0', 10);
     const posts: WordPressPost[] = await response.json();
 
-    return posts.map((wpPost) => {
+    const items = posts.map((wpPost) => {
       const post = transformPost(wpPost);
       const embedded = wpPost._embedded;
 
       // Extract category and tag details from embedded terms
-      // wp:term is an array of arrays: [categories[], tags[]]
       const allTerms = embedded?.['wp:term']?.flat() || [];
       const categoryDetails = allTerms
         .filter((term) => term.taxonomy === 'category')
@@ -318,10 +323,11 @@ export async function getPostsWithDetails(): Promise<PostWithDetails[]> {
         tagDetails,
       } as PostWithDetails;
     });
+
+    return { items, totalItems, totalPages };
   } catch (error) {
     console.error('Error fetching posts with details:', error);
-    // Fail-safe: return an empty list so build/prerendering continues when the WP API is unreachable or unauthorized
-    return [];
+    return { items: [], totalItems: 0, totalPages: 0 };
   }
 }
 
@@ -401,24 +407,25 @@ export async function getAllPostSlugs(): Promise<string[]> {
 }
 
 /**
- * Fetch posts by category ID
+ * Fetch posts by category ID with pagination
  */
-export async function getPostsByCategory(categoryId: number): Promise<PostWithDetails[]> {
-  const url = `${WP_API_URL}/posts?categories=${categoryId}&status=publish&_embed`;
+export async function getPostsByCategory(categoryId: number, perPage: number = 10, page: number = 1): Promise<PaginatedResponse<PostWithDetails>> {
+  const url = `${WP_API_URL}/posts?categories=${categoryId}&status=publish&_embed&per_page=${perPage}&page=${page}`;
 
   try {
     const response = await fetchWithAuth(url, {
       next: { revalidate: 60 },
     });
 
+    const totalItems = parseInt(response.headers.get('X-WP-Total') || '0', 10);
+    const totalPages = parseInt(response.headers.get('X-WP-TotalPages') || '0', 10);
     const posts: WordPressPost[] = await response.json();
 
-    return posts.map((wpPost) => {
+    const items = posts.map((wpPost) => {
       const post = transformPost(wpPost);
       const embedded = wpPost._embedded;
 
       // Extract category and tag details from embedded terms
-      // wp:term is an array of arrays: [categories[], tags[]]
       const allTerms = embedded?.['wp:term']?.flat() || [];
       const categoryDetails = allTerms
         .filter((term) => term.taxonomy === 'category')
@@ -444,31 +451,34 @@ export async function getPostsByCategory(categoryId: number): Promise<PostWithDe
         tagDetails,
       } as PostWithDetails;
     });
+
+    return { items, totalItems, totalPages };
   } catch (error) {
     console.error(`Error fetching posts by category ${categoryId}:`, error);
-    return [];
+    return { items: [], totalItems: 0, totalPages: 0 };
   }
 }
 
 /**
- * Fetch posts by tag ID
+ * Fetch posts by tag ID with pagination
  */
-export async function getPostsByTag(tagId: number): Promise<PostWithDetails[]> {
-  const url = `${WP_API_URL}/posts?tags=${tagId}&status=publish&_embed`;
+export async function getPostsByTag(tagId: number, perPage: number = 10, page: number = 1): Promise<PaginatedResponse<PostWithDetails>> {
+  const url = `${WP_API_URL}/posts?tags=${tagId}&status=publish&_embed&per_page=${perPage}&page=${page}`;
 
   try {
     const response = await fetchWithAuth(url, {
       next: { revalidate: 60 },
     });
 
+    const totalItems = parseInt(response.headers.get('X-WP-Total') || '0', 10);
+    const totalPages = parseInt(response.headers.get('X-WP-TotalPages') || '0', 10);
     const posts: WordPressPost[] = await response.json();
 
-    return posts.map((wpPost) => {
+    const items = posts.map((wpPost) => {
       const post = transformPost(wpPost);
       const embedded = wpPost._embedded;
 
       // Extract category and tag details from embedded terms
-      // wp:term is an array of arrays: [categories[], tags[]]
       const allTerms = embedded?.['wp:term']?.flat() || [];
       const categoryDetails = allTerms
         .filter((term) => term.taxonomy === 'category')
@@ -494,9 +504,11 @@ export async function getPostsByTag(tagId: number): Promise<PostWithDetails[]> {
         tagDetails,
       } as PostWithDetails;
     });
+
+    return { items, totalItems, totalPages };
   } catch (error) {
     console.error(`Error fetching posts by tag ${tagId}:`, error);
-    return [];
+    return { items: [], totalItems: 0, totalPages: 0 };
   }
 }
 
@@ -559,29 +571,29 @@ export async function getTagBySlug(slug: string): Promise<{ id: number; name: st
 }
 
 /**
- * Fetch posts by category slug
+ * Fetch posts by category slug with pagination
  */
-export async function getPostsByCategorySlug(slug: string): Promise<PostWithDetails[]> {
+export async function getPostsByCategorySlug(slug: string, perPage: number = 10, page: number = 1): Promise<PaginatedResponse<PostWithDetails>> {
   const category = await getCategoryBySlug(slug);
 
   if (!category) {
-    return [];
+    return { items: [], totalItems: 0, totalPages: 0 };
   }
 
-  return getPostsByCategory(category.id);
+  return getPostsByCategory(category.id, perPage, page);
 }
 
 /**
- * Fetch posts by tag slug
+ * Fetch posts by tag slug with pagination
  */
-export async function getPostsByTagSlug(slug: string): Promise<PostWithDetails[]> {
+export async function getPostsByTagSlug(slug: string, perPage: number = 10, page: number = 1): Promise<PaginatedResponse<PostWithDetails>> {
   const tag = await getTagBySlug(slug);
 
   if (!tag) {
-    return [];
+    return { items: [], totalItems: 0, totalPages: 0 };
   }
 
-  return getPostsByTag(tag.id);
+  return getPostsByTag(tag.id, perPage, page);
 }
 
 // Transform WordPress CPT to simplified format
@@ -620,7 +632,7 @@ function transformCPT(wpCPT: WordPressCPT): CPT {
 }
 
 /**
- * Fetch all items from a Custom Post Type
+ * Fetch all items from a Custom Post Type with pagination
  * @param cptSlug The REST base slug of the CPT (e.g., 'popupbuilder', 'news-release')
  * @param perPage Number of items per request (default: 10)
  * @param page Page number (default: 1)
@@ -642,20 +654,22 @@ export async function getCPTItems(cptSlug: string, perPage: number = 10, page: n
 }
 
 /**
- * Fetch all CPT items with embedded author, media, and taxonomy details
+ * Fetch all CPT items with embedded author, media, and taxonomy details with pagination
  * @param cptSlug The REST base slug of the CPT
  */
-export async function getCPTItemsWithDetails(cptSlug: string): Promise<CPTWithDetails[]> {
-  const url = `${WP_API_URL}/${cptSlug}?status=publish&_embed`;
+export async function getCPTItemsWithDetails(cptSlug: string, perPage: number = 10, page: number = 1): Promise<PaginatedResponse<CPTWithDetails>> {
+  const url = `${WP_API_URL}/${cptSlug}?status=publish&_embed&per_page=${perPage}&page=${page}`;
 
   try {
     const response = await fetchWithAuth(url, {
       next: { revalidate: 60 },
     });
 
+    const totalItems = parseInt(response.headers.get('X-WP-Total') || '0', 10);
+    const totalPages = parseInt(response.headers.get('X-WP-TotalPages') || '0', 10);
     const items: WordPressCPT[] = await response.json();
 
-    return items.map((wpCPT) => {
+    const result = items.map((wpCPT) => {
       const cpt = transformCPT(wpCPT);
       const embedded = wpCPT._embedded;
 
@@ -685,9 +699,11 @@ export async function getCPTItemsWithDetails(cptSlug: string): Promise<CPTWithDe
         tagDetails: tagDetails.length > 0 ? tagDetails : undefined,
       } as CPTWithDetails;
     });
+
+    return { items: result, totalItems, totalPages };
   } catch (error) {
     console.error(`Error fetching ${cptSlug} items with details:`, error);
-    return [];
+    return { items: [], totalItems: 0, totalPages: 0 };
   }
 }
 

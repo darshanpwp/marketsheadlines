@@ -1,8 +1,7 @@
 import { getPostsWithDetails } from '@/lib/wordpress/api';
-import Link from 'next/link';
-import Image from 'next/image';
 import { Metadata } from 'next';
 import PostCard from '@/components/PostCard';
+import Pagination from '@/components/Pagination';
 
 export const metadata: Metadata = {
   title: 'All Posts - Market Headlines',
@@ -11,80 +10,38 @@ export const metadata: Metadata = {
 
 export const revalidate = 60; // Revalidate every 60 seconds
 
-export default async function PostsPage() {
-  const posts = await getPostsWithDetails();
+interface PageProps {
+  searchParams: Promise<{ page?: string }>;
+}
 
-  // Extract unique categories and tags for filtering
-  const allCategories = Array.from(
-    new Map(
-      posts
-        .flatMap((post) => post.categoryDetails || [])
-        .map((cat) => [cat.id, cat])
-    ).values()
-  ).sort((a, b) => a.name.localeCompare(b.name));
+export default async function PostsPage({ searchParams }: PageProps) {
+  const resolvedParams = await searchParams;
+  const currentPage = parseInt(resolvedParams.page || '1', 10);
+  const perPage = 16;
 
-  const allTags = Array.from(
-    new Map(
-      posts
-        .flatMap((post) => post.tagDetails || [])
-        .map((tag) => [tag.id, tag])
-    ).values()
-  ).sort((a, b) => a.name.localeCompare(b.name));
+  const { items: posts, totalItems, totalPages } = await getPostsWithDetails(perPage, currentPage);
 
   return (
     <div className="min-vh-100 bg-white">
-      <div className="container py-5">
-        <div className="mb-5">
-          <h1 className="display-4 fw-bold mb-3">
-            All Posts
-          </h1>
-          <p className="lead text-secondary">
-            Browse all posts, articles, and news from Market Headlines
-          </p>
-        </div>
-
-        {/* Filter Section */}
-        {(allCategories.length > 0 || allTags.length > 0) && (
-          <div className="mb-5">
-            <div className="row g-3">
-              {allCategories.length > 0 && (
-                <div className="col-12 col-md-6">
-                  <h3 className="h6 fw-semibold mb-3">Categories</h3>
-                  <div className="d-flex flex-wrap gap-2">
-                    {allCategories.map((category) => (
-                      <Link
-                        key={category.id}
-                        href={`/category/${category.slug}`}
-                        className="badge bg-primary text-decoration-none px-3 py-2"
-                      >
-                        {category.name}
-                      </Link>
-                    ))}
-                  </div>
-                </div>
-              )}
-              {allTags.length > 0 && (
-                <div className="col-12 col-md-6">
-                  <h3 className="h6 fw-semibold mb-3">Tags</h3>
-                  <div className="d-flex flex-wrap gap-2">
-                    {allTags.map((tag) => (
-                      <Link
-                        key={tag.id}
-                        href={`/tag/${tag.slug}`}
-                        className="badge bg-secondary text-decoration-none px-3 py-2"
-                      >
-                        {tag.name}
-                      </Link>
-                    ))}
-                  </div>
-                </div>
-              )}
+      {/* Redesigned Header */}
+      <div className="archive-header mb-5">
+        <div className="container">
+          <div className="d-flex justify-content-between align-items-center">
+            <div>
+              <h1 className="archive-title mb-0 h2">
+                World News
+              </h1>
+            </div>
+            <div className="text-secondary fw-medium small">
+              {totalItems} {totalItems === 1 ? 'Article' : 'Articles'}
             </div>
           </div>
-        )}
+        </div>
+      </div>
 
-        {/* Posts Grid */}
-        <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+      <div className="container pb-5">
+        {/* Posts Grid - 4 columns on desktop */}
+        <div className="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
           {posts.map((post) => (
             <div key={post.id} className="col">
               <PostCard post={post} />
@@ -99,6 +56,12 @@ export default async function PostsPage() {
             </p>
           </div>
         )}
+
+        {/* Pagination UI */}
+        <Pagination
+          totalPages={totalPages}
+          currentPage={currentPage}
+        />
       </div>
     </div>
   );

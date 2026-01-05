@@ -12,28 +12,38 @@ export default function TrendingListItem({ post, index }: TrendingListItemProps)
   const category = post.categoryDetails?.[0];
 
   return (
-    <Link 
+    <Link
       href={`/posts/${post.slug}`}
       className="text-decoration-none text-dark"
     >
-      <div className="card border-0 shadow-sm mb-3 hover-lift">
-        <div className="card-body">
-          <div className="d-flex align-items-start gap-3">
-            <span className="badge bg-primary rounded-circle d-flex align-items-center justify-content-center" style={{ width: '32px', height: '32px', minWidth: '32px' }}>
+      <div className="card border-0 shadow-sm mb-3 hover-lift transition-all">
+        <div className="card-body p-4">
+          <div className="d-flex align-items-center">
+            {/* Prominent Number */}
+            <div className="trending-number">
               {index}
-            </span>
-            <div className="flex-grow-1">
-              {category && (
-                <span className="badge bg-light text-dark mb-2">{category.name}</span>
-              )}
-              <h4 className="h6 fw-semibold mb-2">{post.title}</h4>
-              <div className="d-flex align-items-center gap-2 text-secondary small">
-                <span>{readingTime} min read</span>
-              </div>
             </div>
-            <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="text-primary">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-            </svg>
+
+            <div className="flex-grow-1 ps-3 border-start">
+              <div className="d-flex justify-content-between align-items-start mb-2">
+                {category && (
+                  <span className="badge bg-light text-primary border rounded-pill px-3 py-2 small fw-bold">
+                    {category.name}
+                  </span>
+                )}
+                <small className="text-muted fw-bold">{readingTime} min read</small>
+              </div>
+
+              <h4
+                className="h6 fw-bold mb-0 text-dark hover-primary transition-all lh-base"
+                style={{ fontSize: '1.1rem' }}
+                dangerouslySetInnerHTML={{ __html: post.title }}
+              />
+            </div>
+
+            <div className="ms-3">
+              <i className="fa-solid fa-chevron-right text-muted opacity-50"></i>
+            </div>
           </div>
         </div>
       </div>

@@ -11,25 +11,26 @@ export default function NewsListItem({ post, index }: NewsListItemProps) {
   const readingTime = calculateReadingTime(post.content);
 
   return (
-    <Link 
+    <Link
       href={`/posts/${post.slug}`}
       className="text-decoration-none text-dark"
     >
       <div className="card border-0 shadow-sm mb-3 hover-lift">
         <div className="card-body">
           <div className="d-flex align-items-start gap-3">
-            <span className="badge bg-primary rounded-circle d-flex align-items-center justify-content-center" style={{ width: '32px', height: '32px', minWidth: '32px' }}>
+            <span className="badge rounded-circle d-flex align-items-center justify-content-center fw-bold trending-index-badge">
               {index}
             </span>
             <div className="flex-grow-1">
-              <h4 className="h6 fw-semibold mb-2">{post.title}</h4>
-              <div className="d-flex align-items-center gap-2 text-secondary small">
+              <h4
+                className="h6 fw-bold mb-2 trending-title"
+                dangerouslySetInnerHTML={{ __html: post.title }}
+              />
+              <div className="d-flex align-items-center gap-2 small trending-meta">
                 <span>{readingTime} min read</span>
               </div>
             </div>
-            <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" className="text-primary">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-            </svg>
+            <i className="fa-solid fa-chevron-right opacity-30 trending-chevron"></i>
           </div>
         </div>
       </div>

@@ -2,16 +2,17 @@ import { getPostsByTagSlug, getTagBySlug } from '@/lib/wordpress/api';
 import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
 import PostCard from '@/components/PostCard';
-import Link from 'next/link';
+import Pagination from '@/components/Pagination';
 
 type Props = {
   params: Promise<{ slug: string }>;
+  searchParams: Promise<{ page?: string }>;
 };
 
 export const revalidate = 60; // Revalidate every 60 seconds
 
 // Generate metadata for SEO
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
   const tag = await getTagBySlug(slug);
 
@@ -27,56 +28,41 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
-export default async function TagArchivePage({ params }: Props) {
+export default async function TagArchivePage({ params, searchParams }: Props) {
   const { slug } = await params;
+  const resolvedSearchParams = await searchParams;
+  const currentPage = parseInt(resolvedSearchParams.page || '1', 10);
+  const perPage = 16;
+
   const tag = await getTagBySlug(slug);
-  const posts = await getPostsByTagSlug(slug);
 
   if (!tag) {
     notFound();
   }
 
+  const { items: posts, totalItems, totalPages } = await getPostsByTagSlug(slug, perPage, currentPage);
+
   return (
     <div className="min-vh-100 bg-white">
-      <div className="container py-5">
-        {/* Header */}
-        <div className="mb-5">
-          <Link
-            href="/posts"
-            className="d-inline-flex align-items-center gap-2 text-secondary text-decoration-none mb-3 small fw-medium"
-          >
-            <svg
-              width="16"
-              height="16"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M15 19l-7-7 7-7"
-              />
-            </svg>
-            Back to All Posts
-          </Link>
-
-          <h1 className="display-4 fw-bold mb-3">
-            Tag: {tag.name}
-          </h1>
-          {tag.description && (
-            <p className="lead text-secondary">
-              {tag.description}
-            </p>
-          )}
-          <p className="text-secondary">
-            {posts.length} {posts.length === 1 ? 'post' : 'posts'} with this tag
-          </p>
+      {/* Redesigned Header */}
+      <div className="archive-header mb-5">
+        <div className="container">
+          <div className="d-flex justify-content-between align-items-center">
+            <div>
+              <h1 className="archive-title mb-0 h2">
+                Tag: {tag.name}
+              </h1>
+            </div>
+            <div className="text-secondary fw-medium small">
+              {totalItems} {totalItems === 1 ? 'Article' : 'Articles'}
+            </div>
+          </div>
         </div>
+      </div>
 
-        {/* Posts Grid */}
-        <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+      <div className="container pb-5">
+        {/* Posts Grid - 4 columns on desktop */}
+        <div className="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
           {posts.map((post) => (
             <div key={post.id} className="col">
               <PostCard post={post} />
@@ -91,6 +77,12 @@ export default async function TagArchivePage({ params }: Props) {
             </p>
           </div>
         )}
+
+        {/* Pagination UI */}
+        <Pagination
+          totalPages={totalPages}
+          currentPage={currentPage}
+        />
       </div>
     </div>
   );
