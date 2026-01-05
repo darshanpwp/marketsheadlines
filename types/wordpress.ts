@@ -43,6 +43,7 @@ export interface WordPressPage {
     author?: WordPressUser[];
     'wp:featuredmedia'?: WordPressMedia[];
   };
+  yoast_head_json?: any;
 }
 
 /**
@@ -218,6 +219,15 @@ export interface Page {
   author: number;
   featuredMedia: number;
   link: string;
+  seo?: {
+    title: string;
+    description: string;
+    og_title: string;
+    og_description: string;
+    og_image: Array<{ url: string }>;
+    twitter_image: string;
+    schema: any;
+  };
 }
 
 /**
@@ -285,6 +295,7 @@ export interface WordPressPost {
     replies?: any[];
   };
   class_list?: string[];
+  yoast_head_json?: any;
 }
 
 // Simplified types for frontend consumption
@@ -308,6 +319,15 @@ export interface Post {
   format: string;
   sticky: boolean;
   commentStatus: string;
+  seo?: {
+    title: string;
+    description: string;
+    og_title: string;
+    og_description: string;
+    og_image: Array<{ url: string }>;
+    twitter_image: string;
+    schema: any;
+  };
 }
 
 /**
@@ -471,4 +491,10 @@ export interface PaginatedResponse<T> {
   items: T[];
   totalItems: number;
   totalPages: number;
+}
+
+export interface SiteIdentity {
+  title: string;
+  description: string;
+  logoUrl: string | null;
 }
