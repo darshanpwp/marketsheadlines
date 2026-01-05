@@ -26,12 +26,12 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   }
 
   return {
-    title: `${post.title} - Market Headlines`,
-    description: post.excerpt?.replace(/<[^>]*>/g, '').slice(0, 160) || post.title,
+    title: post.seo?.title || `${post.title} - Market Headlines`,
+    description: post.seo?.description || post.excerpt?.replace(/<[^>]*>/g, '').slice(0, 160) || post.title,
     openGraph: {
-      title: post.title,
-      description: post.excerpt?.replace(/<[^>]*>/g, '').slice(0, 160) || post.title,
-      images: post.featuredMediaDetails?.source_url ? [post.featuredMediaDetails.source_url] : [],
+      title: post.seo?.og_title || post.title,
+      description: post.seo?.og_description || post.excerpt?.replace(/<[^>]*>/g, '').slice(0, 160) || post.title,
+      images: post.seo?.og_image ? post.seo.og_image.map(img => img.url) : (post.featuredMediaDetails?.source_url ? [post.featuredMediaDetails.source_url] : []),
     },
   };
 }

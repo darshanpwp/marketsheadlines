@@ -60,9 +60,7 @@ async function fetchWithAuth(url: string, options: RequestInit = {}): Promise<Re
     const errorMessage = `WordPress API error: ${response.status} ${response.statusText}`;
 
     // Provide helpful error message for authentication issues
-    if (response.status === 401 || response.status === 403) {
-      console.error(`${errorMessage}. Please check your WordPress credentials in environment variables.`);
-    }
+
 
     throw new WordPressError(errorMessage, response.status);
   }
@@ -83,6 +81,15 @@ function transformPage(wpPage: WordPressPage): Page {
     author: wpPage.author,
     featuredMedia: wpPage.featured_media,
     link: wpPage.link,
+    seo: wpPage.yoast_head_json ? {
+      title: wpPage.yoast_head_json.title,
+      description: wpPage.yoast_head_json.description,
+      og_title: wpPage.yoast_head_json.og_title,
+      og_description: wpPage.yoast_head_json.og_description,
+      og_image: wpPage.yoast_head_json.og_image,
+      twitter_image: wpPage.yoast_head_json.twitter_image,
+      schema: wpPage.yoast_head_json.schema,
+    } : undefined,
   };
 }
 
@@ -253,6 +260,15 @@ function transformPost(wpPost: WordPressPost): Post {
     format: wpPost.format || 'standard',
     sticky: wpPost.sticky || false,
     commentStatus: wpPost.comment_status,
+    seo: wpPost.yoast_head_json ? {
+      title: wpPost.yoast_head_json.title,
+      description: wpPost.yoast_head_json.description,
+      og_title: wpPost.yoast_head_json.og_title,
+      og_description: wpPost.yoast_head_json.og_description,
+      og_image: wpPost.yoast_head_json.og_image,
+      twitter_image: wpPost.yoast_head_json.twitter_image,
+      schema: wpPost.yoast_head_json.schema,
+    } : undefined,
   };
 }
 
@@ -790,7 +806,6 @@ export async function getAllCPTItemSlugs(cptSlug: string): Promise<string[]> {
 export async function getMenu(slug: string): Promise<WordPressMenu | null> {
   const baseUrl = WP_API_URL.replace('/wp/v2', '/menus/v1');
   const url = `${baseUrl}/menus/${slug}`;
-
   try {
     const response = await fetchWithAuth(url, {
       next: { revalidate: 60 },
@@ -806,4 +821,53 @@ export async function getMenu(slug: string): Promise<WordPressMenu | null> {
     console.error(`Error fetching menu "${slug}":`, error);
     return null;
   }
+}
+
+/**
+ * Fetch site settings
+ */
+export async function getSiteSettings(): Promise<any> {
+  const url = `${WP_API_URL}/settings`;
+  try {
+    const response = await fetchWithAuth(url, {
+      next: { revalidate: 3600 },
+    });
+    return await response.json();
+  } catch (error) {
+    if (error instanceof WordPressError && (error.status === 401 || error.status === 403)) {
+      // Silently fail for authentication errors on settings
+      return null;
+    }
+    console.error('Error fetching site settings:', error);
+    return null;
+  }
+}
+
+
+
+/**
+ * Get the full site identity (title, description, logo)
+ */
+export async function getSiteIdentity(): Promise<{ title: string; description: string; logoUrl: string | null }> {
+  const settings = await getSiteSettings();
+
+  const title = settings?.title || 'Market Headlines';
+  const description = settings?.description || '';
+
+  let logoUrl = null;
+  if (settings?.site_logo) {
+    const media = await getMediaById(settings.site_logo);
+    logoUrl = media?.source_url || null;
+  }
+
+  // Fallback to local logo if API fails (e.g. 401 Unauthorized)
+  if (!logoUrl) {
+    logoUrl = '/logo.svg';
+  }
+
+  return {
+    title,
+    description,
+    logoUrl
+  };
 }

@@ -68,48 +68,53 @@ export default async function Home() {
                   className={`carousel-item ${index === 0 ? 'active' : ''} position-relative hero-item`}
                 >
                   {/* Background Image */}
-                  <div
-                    className="hero-bg"
-                    style={{
-                      backgroundImage: post.featuredMediaDetails?.source_url
-                        ? `url(${post.featuredMediaDetails.source_url})`
-                        : undefined,
-                    }}
-                  >
-                    {/* Brand Navy Overlay */}
+                  {/* Background Image using Next.js Image for optimization */}
+                  <div className="hero-bg position-absolute w-100 h-100 top-0 start-0 overflow-hidden" style={{ zIndex: 0 }}>
+                    {post.featuredMediaDetails?.source_url ? (
+                      <Image
+                        src={post.featuredMediaDetails.source_url}
+                        alt={post.title}
+                        fill
+                        className="object-fit-cover transition-transform duration-700 hover-scale"
+                        priority={index === 0}
+                      />
+                    ) : (
+                      <div className="w-100 h-100 bg-secondary"></div> // Fallback if no image
+                    )}
+
                     {/* Brand Navy Overlay with Gradient */}
                     <div
-                      className="hero-overlay"
+                      className="hero-overlay position-absolute w-100 h-100 top-0 start-0"
                       style={{
-                        background: 'linear-gradient(to right, rgba(15, 23, 42, 0.95) 0%, rgba(15, 23, 42, 0.6) 100%)'
+                        background: 'linear-gradient(0deg, rgba(0, 0, 0, 0.72) 0%, rgba(0, 0, 0, 0.45) 50%, rgba(0, 0, 0, 0.27) 100%)',
+                        zIndex: 1
                       }}
                     ></div>
                   </div>
 
                   {/* Content Overlay */}
-                  <div className="container hero-content-container position-relative z-1">
+                  <div className="container hero-content-container position-relative z-3">
                     <div className="row align-items-center h-100">
                       <div className="col-lg-7 col-md-9 text-white py-5 hero-content">
                         {post.categoryDetails?.[0] && (
-                          <span className="badge bg-white text-primary rounded-pill px-3 py-2 mb-4 fw-bold shadow-sm">
+                          <span className="badge primary-bg-blue text-white rounded-pill px-3 py-2 mb-4 fw-bold shadow-sm">
                             {post.categoryDetails[0].name}
                           </span>
                         )}
-                        <h1
-                          className="display-4 fw-bold mb-4 hero-headline"
+                        <h2
+                          className="display-4 text-white fw-bold mb-4 hero-headline"
                           style={{ fontFamily: 'var(--bs-font-serif)', lineHeight: '1.1' }}
                           dangerouslySetInnerHTML={{ __html: post.title }}
                         />
                         <div
-                          className="lead mb-5 hero-excerpt opacity-90 fw-light"
+                          className="lead hero-excerpt opacity-90 fw-light text-truncate"
+                          style={{ maxWidth: '100%' }}
                           dangerouslySetInnerHTML={{
-                            __html: post.excerpt?.length > 180
-                              ? post.excerpt.substring(0, 180) + '...'
-                              : post.excerpt || 'Stay informed with the latest market insights and financial news.'
+                            __html: post.excerpt || 'Stay informed with the latest market insights and financial news.'
                           }}
                         />
                         {post.authorDetails && (
-                          <div className="d-flex align-items-center gap-3 mb-5 border-top border-white border-opacity-25 pt-4" style={{ maxWidth: 'fit-content' }}>
+                          <div className="d-flex align-items-center gap-3 mb-4 pt-4" style={{ maxWidth: 'fit-content' }}>
                             <span className="fw-bold text-uppercase small tracking-wider">By {post.authorDetails.name}</span>
                             <span className="text-white opacity-50">•</span>
                             <span className="small opacity-75">{calculateReadingTime(post.content)} min read</span>
@@ -117,10 +122,11 @@ export default async function Home() {
                         )}
                         <Link
                           href={`/posts/${post.slug}`}
-                          className="btn btn-primary btn-lg px-5 py-3 rounded-pill fw-bold shadow-lg hover-lift"
+                          className="btn btn-white-primary rounded-2"
                         >
                           Read Full Story
-                          <i className="fa-solid fa-arrow-right ms-2 small"></i>
+                          <i className="fa-solid fa-chevron-right ms-2"></i>
+
                         </Link>
                       </div>
                     </div>
@@ -137,7 +143,7 @@ export default async function Home() {
               data-bs-slide="prev"
             >
               <div className="bg-white text-dark rounded-circle d-flex align-items-center justify-content-center shadow-lg" style={{ width: '50px', height: '50px' }}>
-                <i className="fa-solid fa-arrow-left" aria-hidden="true"></i>
+                <i className="fa-solid fa-chevron-left" aria-hidden="true"></i>
               </div>
               <span className="visually-hidden">Previous</span>
             </button>
@@ -150,7 +156,7 @@ export default async function Home() {
               data-bs-slide="next"
             >
               <div className="bg-white text-dark rounded-circle d-flex align-items-center justify-content-center shadow-lg" style={{ width: '50px', height: '50px' }}>
-                <i className="fa-solid fa-arrow-right" aria-hidden="true"></i>
+                <i className="fa-solid fa-chevron-right" aria-hidden="true"></i>
               </div>
               <span className="visually-hidden">Next</span>
             </button>
@@ -171,7 +177,7 @@ export default async function Home() {
                   <p className="lead mb-4">
                     Asian and European indices surge on news of multilateral trade negotiations
                   </p>
-                  <Link href="/posts" className="btn btn-light btn-lg px-4">
+                  <Link href="/posts" className="btn btn-white-primary btn-lg px-4">
                     Read Full Story
                     <i className="fa-solid fa-chevron-right ms-2 small"></i>
                   </Link>

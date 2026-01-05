@@ -2,15 +2,21 @@
 
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { WordPressMenuItem } from '@/types/wordpress';
+import Image from 'next/image';
+import { WordPressMenuItem, SiteIdentity } from '@/types/wordpress';
 
 interface NavbarContentProps {
     menuItems: WordPressMenuItem[];
+    siteIdentity?: SiteIdentity;
 }
 
-export default function NavbarContent({ menuItems }: NavbarContentProps) {
+export default function NavbarContent({ menuItems, siteIdentity }: NavbarContentProps) {
     const [isOpen, setIsOpen] = useState(false);
     const [activeDropdown, setActiveDropdown] = useState<number | null>(null);
+
+    // Default values if API fails
+    const siteTitle = siteIdentity?.title || 'Market Headlines';
+    const logoUrl = siteIdentity?.logoUrl;
 
     const toggleMenu = () => setIsOpen(!isOpen);
     const toggleDropdown = (id: number) => {
@@ -38,8 +44,22 @@ export default function NavbarContent({ menuItems }: NavbarContentProps) {
                     href="/"
                     className="navbar-brand d-flex align-items-center logo-link"
                     onClick={closeMenu}
+                    aria-label={siteTitle}
                 >
-                    <span className="fs-3 fw-bold navbar-brand-text">Market Headlines</span>
+                    {logoUrl ? (
+                        <div className="position-relative" style={{ width: '154px', height: '33px' }}>
+                            <Image
+                                src={logoUrl}
+                                alt={siteTitle}
+                                fill
+                                className="object-fit-contain"
+                                sizes="180px"
+                                priority
+                            />
+                        </div>
+                    ) : (
+                        <span className="fs-3 fw-bold navbar-brand-text">{siteTitle}</span>
+                    )}
                 </Link>
 
                 {/* Mobile Toggle (Hamburger) */}
@@ -110,18 +130,11 @@ export default function NavbarContent({ menuItems }: NavbarContentProps) {
                     {/* Auth Buttons */}
                     <div className="d-flex align-items-center gap-3 auth-buttons-mobile">
                         <Link
-                            href="/login"
-                            className="btn btn-premium-link"
-                            onClick={closeMenu}
-                        >
-                            Sign in
-                        </Link>
-                        <Link
                             href="/register"
                             className="btn btn-premium-primary"
                             onClick={closeMenu}
                         >
-                            Get Started
+                            Get Market Intelligence
                         </Link>
                     </div>
                 </div>
