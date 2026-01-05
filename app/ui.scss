@@ -1,0 +1,389 @@
+// 1. Hero Carousel Styles
+.hero-item {
+    min-height: 600px;
+
+    @media (max-width: 768px) {
+        min-height: 500px;
+    }
+}
+
+.hero-bg {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-size: cover;
+    background-position: center;
+    z-index: 0;
+}
+
+.hero-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(180deg, rgba(15, 23, 42, 0) 0%, rgba(15, 23, 42, 0.8) 100%),
+        linear-gradient(90deg, rgba(15, 23, 42, 0.9) 0%, rgba(15, 23, 42, 0) 100%);
+}
+
+.hero-content-container {
+    position: relative;
+    height: 100%;
+    z-index: 1;
+}
+
+.hero-badge {
+    background-color: var(--primary-navy);
+    color: var(--white);
+    padding: 0.5rem 1rem !important;
+    border-radius: 50px !important;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.hero-title {
+    color: var(--white);
+    letter-spacing: -0.02em;
+    line-height: 1.1;
+}
+
+.hero-excerpt-text {
+    color: var(--white);
+    font-size: 1.15rem;
+    line-height: 1.6;
+    max-width: 600px;
+}
+
+.hero-cta {
+    background-color: var(--white) !important;
+    color: var(--primary-navy) !important;
+    border-radius: 8px !important;
+    font-weight: 700 !important;
+    padding: 1rem 2rem !important;
+    border: none !important;
+    transition: all 0.3s ease !important;
+
+    &:hover {
+        background-color: var(--accent-blue) !important;
+        transform: translateY(-2px);
+    }
+}
+
+// Hero Controls Repositioning
+#heroCarousel {
+    .carousel-indicators {
+        bottom: 3rem;
+        left: 0;
+        margin-left: 0;
+        justify-content: flex-start;
+        padding-left: calc((100% - 1320px) / 2 + 0.75rem);
+
+        @media (max-width: 1400px) {
+            padding-left: calc((100% - 1140px) / 2 + 0.75rem);
+        }
+
+        @media (max-width: 1200px) {
+            padding-left: calc((100% - 960px) / 2 + 0.75rem);
+        }
+
+        @media (max-width: 992px) {
+            padding-left: 1.5rem;
+        }
+
+        button {
+            width: 30px;
+            height: 4px;
+            border-radius: 2px;
+            background-color: rgba(255, 255, 255, 0.5);
+            border: none;
+            margin: 0 4px;
+            transition: all 0.3s ease;
+
+            &.active {
+                width: 60px;
+                background-color: var(--white);
+            }
+        }
+    }
+
+    .carousel-control-prev,
+    .carousel-control-next {
+        top: auto;
+        bottom: 3rem;
+        width: 48px;
+        height: 48px;
+        background-color: rgba(15, 23, 42, 0.5);
+        border-radius: 50%;
+        opacity: 0.8;
+        z-index: 10;
+        transition: all 0.3s ease;
+
+        &:hover {
+            opacity: 1;
+            background-color: var(--primary-navy);
+        }
+
+        .carousel-control-prev-icon,
+        .carousel-control-next-icon {
+            width: 20px;
+            height: 20px;
+        }
+    }
+
+    .carousel-control-prev {
+        left: auto;
+        right: 5rem;
+    }
+
+    .carousel-control-next {
+        right: 1.5rem;
+    }
+}
+
+// 2. Market Overview Styles
+.market-widget {
+    background-color: var(--white);
+    border-radius: var(--bs-border-radius-xl);
+    border: 1px solid var(--border-light);
+    padding: 1.5rem;
+    box-shadow: var(--premium-shadow);
+}
+
+.market-title {
+    font-family: var(--bs-font-serif);
+    color: var(--text-dark);
+}
+
+.market-item-name {
+    color: var(--text-dark);
+}
+
+.market-trend {
+    font-size: 0.9rem;
+}
+
+.market-trend-up {
+    color: var(--success-green);
+}
+
+.market-trend-down {
+    color: var(--danger-red);
+}
+
+.market-footer-note {
+    font-size: 0.75rem;
+}
+
+// 3. Newsletter & Promo Styles
+.newsletter-section-main {
+    background: linear-gradient(135deg, #1E3A8A 0%, #0F172A 100%);
+}
+
+.newsletter-input {
+    padding: 1rem 1.5rem;
+}
+
+.newsletter-label {
+    cursor: pointer;
+}
+
+.promo-section {
+    background-color: var(--accent-blue);
+}
+
+.promo-tag {
+    color: var(--primary-navy);
+    letter-spacing: 0.05em;
+}
+
+.promo-title {
+    color: var(--text-dark);
+}
+
+.promo-description {
+    color: var(--text-muted);
+}
+
+.promo-list-item {
+    color: var(--text-dark);
+}
+
+.promo-check {
+    color: var(--success-green);
+}
+
+.newsletter-cta-card {
+    background-color: var(--accent-blue);
+    border-color: var(--border-light);
+    box-shadow: var(--premium-shadow);
+    border-radius: var(--bs-border-radius-xl);
+}
+
+.newsletter-cta-title {
+    font-size: 2.5rem;
+    color: var(--text-dark);
+    letter-spacing: -0.01em;
+}
+
+.newsletter-cta-body {
+    font-size: 1.2rem;
+    line-height: 1.6;
+    color: var(--text-muted);
+}
+
+.newsletter-cta-content-wrapper {
+    max-width: 800px;
+}
+
+// 4. Trust Section Styles
+.trust-icon-container {
+    width: 80px;
+    height: 80px;
+    background-color: var(--bg-light);
+    color: var(--primary-navy);
+}
+
+.trust-card-title {
+    color: var(--text-dark);
+}
+
+.trust-card-text {
+    color: var(--text-muted);
+}
+
+.trust-description {
+    max-width: 700px;
+}
+
+// 5. Footer Styles
+.site-footer {
+    background-color: #0F172A;
+    color: var(--white);
+}
+
+// 6. Newsletter Form Styles
+.newsletter-form {
+    max-width: 600px;
+}
+
+.footer-link {
+    transition: color 0.2s;
+}
+
+// 6. Single Post Styles
+.breadcrumb-link-home {
+    font-size: 0.65rem;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+}
+
+.breadcrumb-text-active {
+    font-size: 0.65rem;
+    letter-spacing: 0.05em;
+    color: var(--primary-navy);
+}
+
+.post-title-main {
+    font-size: clamp(2.5rem, 6vw, 4rem);
+    color: var(--text-dark);
+}
+
+.post-excerpt-main {
+    font-size: 1.25rem;
+    color: var(--text-muted);
+    font-weight: 400;
+    line-height: 1.6;
+}
+
+.post-meta-author {
+    color: var(--text-dark);
+}
+
+.post-meta-dot-styled {
+    color: var(--text-grey);
+}
+
+.post-meta-time {
+    color: var(--text-muted);
+}
+
+.share-tag {
+    font-size: 0.65rem;
+}
+
+// 7. Navbar Styles
+.logo-link {
+    z-index: 1100;
+}
+
+.navbar-brand-text {
+    letter-spacing: -0.02em;
+    color: var(--primary-navy);
+}
+
+.mobile-toggle {
+    z-index: 1100;
+}
+
+.nav-link-central {
+    color: var(--text-dark) !important;
+}
+
+.chevron-icon-nav {
+    font-size: 0.7rem;
+}
+
+.premium-dropdown {
+    border-radius: 1rem !important;
+
+    &.show {
+        display: block !important;
+    }
+}
+
+// 8. Card Utility Styles
+.card-title-link {
+    line-height: 1.4;
+    color: var(--text-dark);
+}
+
+.card-meta-row {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+.card-featured-tag {
+    color: var(--success-green);
+}
+
+// 9. Trending List Utility Styles
+.trending-index-badge {
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
+    background-color: var(--primary-navy);
+    color: var(--white);
+}
+
+.trending-category-badge {
+    background-color: var(--accent-blue);
+    color: var(--primary-navy);
+    font-size: 0.65rem;
+}
+
+.trending-title {
+    color: var(--text-dark);
+    line-height: 1.4;
+}
+
+.trending-meta {
+    color: var(--text-muted);
+}
+
+.trending-chevron {
+    color: var(--primary-navy);
+}

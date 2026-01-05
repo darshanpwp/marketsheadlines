@@ -56,20 +56,7 @@ export default async function NewsArticlePage({ params }: Props) {
           href="/news"
           className="d-inline-flex align-items-center gap-2 text-secondary text-decoration-none mb-4 small fw-medium"
         >
-          <svg
-            width="16"
-            height="16"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M15 19l-7-7 7-7"
-            />
-          </svg>
+          <i className="fa-solid fa-chevron-left me-2"></i>
           Back to News
         </Link>
 

@@ -464,3 +464,11 @@ export interface WordPressMenu {
   /** Array of menu items. */
   items: WordPressMenuItem[];
 }
+/**
+ * Paginated response wrapper for WordPress API
+ */
+export interface PaginatedResponse<T> {
+  items: T[];
+  totalItems: number;
+  totalPages: number;
+}
