@@ -43,6 +43,7 @@ export interface WordPressPage {
     author?: WordPressUser[];
     'wp:featuredmedia'?: WordPressMedia[];
   };
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   yoast_head_json?: any;
 }
 
@@ -295,6 +296,7 @@ export interface WordPressPost {
     replies?: any[];
   };
   class_list?: string[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   yoast_head_json?: any;
 }
 
@@ -391,10 +393,13 @@ export interface WordPressCPT {
       name: string;
       slug: string;
       taxonomy: string;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       _links?: any;
     }>>;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     [key: string]: any; // Allow for custom embedded data
   };
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   [key: string]: any; // Allow for custom fields
 }
 
@@ -418,6 +423,7 @@ export interface CPT {
   status: string;
   template?: string;
   classList?: string[];
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   customFields?: Record<string, any>;
 }
 
@@ -497,4 +503,31 @@ export interface SiteIdentity {
   title: string;
   description: string;
   logoUrl: string | null;
+}
+
+/**
+ * Represents custom site settings for MarketHeadlines.
+ */
+export interface MarketHeadlinesSettings {
+  name: string;
+  description: string;
+  url: string;
+  logo?: string;
+  footer_logo?: string;
+  footer_title: string;
+  footer_sub_title: string;
+  footer_copyright: string;
+  social: string[];
+}
+
+export interface HomePageData {
+  market_intelligence_heading: string;
+  market_intelligence_main_heading: string;
+  market_intelligence_description: string;
+  market_intelligence_features_text: string[];
+  get_market_intelligence_button_text: string;
+  get_market_intelligence_button_url: string;
+  explore_coverage_button_text: string;
+  explore_coverage_button_url: string;
+  market_intelligence_image: string;
 }
