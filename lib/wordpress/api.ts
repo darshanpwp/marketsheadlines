@@ -396,7 +396,7 @@ export async function getPostBySlug(slug: string): Promise<PostWithDetails | nul
       categoryDetails,
       tagDetails,
     } as PostWithDetails;
-  } catch (error) {
+  } catch (error: unknown) {
     if (error instanceof WordPressError && error.status === 404) {
       return null;
     }
@@ -416,9 +416,12 @@ export async function getAllPostSlugs(): Promise<string[]> {
       next: { revalidate: 3600 }, // Cache for 1 hour
     });
 
-    const posts: WordPressPost[] = await response.json();
+    const posts = await response.json() as WordPressPost[];
+    if (!Array.isArray(posts)) {
+      return [];
+    }
     return posts.map((post) => post.slug);
-  } catch (error) {
+  } catch (error: unknown) {
     console.error('Error fetching post slugs:', error);
     return [];
   }
@@ -437,7 +440,7 @@ export async function getPostsByCategory(categoryId: number, perPage: number = 1
 
     const totalItems = parseInt(response.headers.get('X-WP-Total') || '0', 10);
     const totalPages = parseInt(response.headers.get('X-WP-TotalPages') || '0', 10);
-    const posts: WordPressPost[] = await response.json();
+    const posts = await response.json() as WordPressPost[];
 
     const items = posts.map((wpPost) => {
       const post = transformPost(wpPost);
@@ -471,7 +474,7 @@ export async function getPostsByCategory(categoryId: number, perPage: number = 1
     });
 
     return { items, totalItems, totalPages };
-  } catch (error) {
+  } catch (error: unknown) {
     console.error(`Error fetching posts by category ${categoryId}:`, error);
     return { items: [], totalItems: 0, totalPages: 0 };
   }
@@ -899,6 +902,7 @@ export async function getMarketHeadlinesSettings(): Promise<MarketHeadlinesSetti
     const settings: MarketHeadlinesSettings = {
       name: 'Market Headlines', // Default
       description: '', // Default
+      url: WP_API_URL, // Default to API URL if general settings aren't fetched
       logo: undefined,
       footer_title: rawData.footer_title,
       footer_sub_title: rawData.footer_sub_title,
@@ -973,7 +977,7 @@ export async function getHomePageData(): Promise<HomePageData | null> {
 
   try {
     const response = await fetchWithAuth(url, {
-      next: { revalidate: 0 }, // Disable cache for debugging
+      next: { revalidate: 3600 },
     });
 
     if (!response.ok) {
@@ -987,7 +991,7 @@ export async function getHomePageData(): Promise<HomePageData | null> {
     const rawFeatures = data.market_intelligence_features_text;
 
     if (Array.isArray(rawFeatures)) {
-      features = rawFeatures.map((f: any) => String(f)).filter(Boolean);
+      features = rawFeatures.map((f: unknown) => String(f)).filter(Boolean);
     } else if (typeof rawFeatures === 'string') {
       // 1. Try split by newline first (preferred)
       const newlineSplit = rawFeatures.split(/\r?\n/).filter(Boolean);
