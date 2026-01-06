@@ -1,17 +1,19 @@
 import Link from 'next/link';
-import { getMenu } from '@/lib/wordpress/api';
+import Image from 'next/image';
+import { getMenu, getMarketHeadlinesSettings } from '@/lib/wordpress/api';
 import { WordPressMenu, WordPressMenuItem } from '@/types/wordpress';
 
 /**
- * Footer component that dynamically fetches menus from WordPress with static fallbacks.
+ * Footer component that dynamically fetches menus and settings from WordPress.
  */
 export default async function Footer() {
-  // Fetch menus in parallel
-  const [companyMenu, productsMenu, resourcesMenu, legalMenu] = await Promise.all([
+  // Fetch menus and settings in parallel
+  const [companyMenu, productsMenu, resourcesMenu, legalMenu, settings] = await Promise.all([
     getMenu('company'),
     getMenu('products'),
     getMenu('resources'),
-    getMenu('legal')
+    getMenu('legal'),
+    getMarketHeadlinesSettings()
   ]);
 
   const footerSections = [
@@ -57,15 +59,43 @@ export default async function Footer() {
     }
   ];
 
+  // Helper to get icon class based on URL
+  const getSocialIcon = (url: string) => {
+    if (url.includes('twitter.com') || url.includes('x.com')) return 'fa-brands fa-x-twitter';
+    if (url.includes('linkedin.com')) return 'fa-brands fa-linkedin-in';
+    if (url.includes('facebook.com')) return 'fa-brands fa-facebook-f';
+    if (url.includes('instagram.com')) return 'fa-brands fa-instagram';
+    if (url.includes('youtube.com')) return 'fa-brands fa-youtube';
+    return 'fa-solid fa-link';
+  };
+
   return (
     <footer className="p-60 mt-auto site-footer">
       <div className="container">
         <div className="row g-4">
           {/* Logo & Tagline */}
           <div className="col-lg-4 mb-4 mb-lg-0">
-            <h3 className="h4 fw-bold mb-3 text-white">M|H MARKETS & HEADLINES</h3>
+            {settings?.footer_logo || settings?.logo ? (
+              <div className="mb-3 position-relative" style={{ width: '180px', height: '60px' }}>
+                <Link href="/" className="d-block w-100 h-100 position-relative">
+                  <Image
+                    src={settings?.footer_logo || settings?.logo || ''}
+                    alt={settings?.name || 'Market Headlines'}
+                    fill
+                    className="object-fit-contain object-position-left"
+                    sizes="(max-width: 768px) 150px, 180px"
+                  />
+                </Link>
+              </div>
+            ) : (
+              <h3 className="h4 fw-bold mb-3 text-white">
+                <Link href="/" className="text-white text-decoration-none">
+                  {settings?.footer_title || 'M|H MARKETS & HEADLINES'}
+                </Link>
+              </h3>
+            )}
             <p className="color-menu-f opacity-75">
-              Your trusted source for global financial news and market intelligence.
+              {settings?.footer_sub_title || 'Your trusted source for global financial news and market intelligence.'}
             </p>
           </div>
 
@@ -97,18 +127,29 @@ export default async function Footer() {
 
         <div className="d-flex flex-column flex-md-row justify-content-between align-items-center">
           <p className="color-menu-f mb-2 mb-md-0 small">
-            © {new Date().getFullYear()} Markets Headlines, Inc. All rights reserved.
+            {settings?.footer_copyright || `© ${new Date().getFullYear()} Markets Headlines, Inc. All rights reserved.`}
           </p>
           <div className="d-flex gap-4">
-            <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="color-menu-f text-decoration-none hover-white fs-5">
-              <i className="fa-brands fa-x-twitter"></i>
-            </a>
-            <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="color-menu-f text-decoration-none hover-white fs-5">
-              <i className="fa-brands fa-linkedin-in"></i>
-            </a>
-            <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="color-menu-f text-decoration-none hover-white fs-5">
-              <i className="fa-brands fa-facebook-f"></i>
-            </a>
+            {settings?.social && settings.social.length > 0 ? (
+              settings.social.map((url, index) => (
+                <a key={index} href={url} target="_blank" rel="noopener noreferrer" className="color-menu-f text-decoration-none hover-white fs-5">
+                  <i className={getSocialIcon(url)}></i>
+                </a>
+              ))
+            ) : (
+              // Fallback social links
+              <>
+                <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="color-menu-f text-decoration-none hover-white fs-5">
+                  <i className="fa-brands fa-x-twitter"></i>
+                </a>
+                <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" className="color-menu-f text-decoration-none hover-white fs-5">
+                  <i className="fa-brands fa-linkedin-in"></i>
+                </a>
+                <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="color-menu-f text-decoration-none hover-white fs-5">
+                  <i className="fa-brands fa-facebook-f"></i>
+                </a>
+              </>
+            )}
           </div>
         </div>
       </div>

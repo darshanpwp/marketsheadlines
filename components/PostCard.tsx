@@ -52,7 +52,7 @@ export default function PostCard({ post, showExcerpt = false, filterCategory }: 
         )}
       </div>
 
-      <div className="card-body p-3">
+      <div className="card-body p-3 bg-white">
         {/* Title Link */}
         <Link href={`/posts/${post.slug}`} className="text-decoration-none">
           <h2

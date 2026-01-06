@@ -498,3 +498,30 @@ export interface SiteIdentity {
   description: string;
   logoUrl: string | null;
 }
+
+/**
+ * Represents custom site settings for MarketHeadlines.
+ */
+export interface MarketHeadlinesSettings {
+  name: string;
+  description: string;
+  url: string;
+  logo: string;
+  footer_logo?: string;
+  footer_title: string;
+  footer_sub_title: string;
+  footer_copyright: string;
+  social: string[];
+}
+
+export interface HomePageData {
+  market_intelligence_heading: string;
+  market_intelligence_main_heading: string;
+  market_intelligence_description: string;
+  market_intelligence_features_text: string[];
+  get_market_intelligence_button_text: string;
+  get_market_intelligence_button_url: string;
+  explore_coverage_button_text: string;
+  explore_coverage_button_url: string;
+  market_intelligence_image: string;
+}

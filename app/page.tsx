@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import { getPostsWithDetails, getPagesWithDetails } from '@/lib/wordpress/api';
+import { getPostsWithDetails, getPagesWithDetails, getHomePageData } from '@/lib/wordpress/api';
 import MarketOverview from '@/components/MarketOverview';
 import TrendingListItem from '@/components/TrendingListItem';
 import NewsListItem from '@/components/NewsListItem';
@@ -14,6 +14,7 @@ export const revalidate = 60; // Revalidate every 60 seconds
 export default async function Home() {
   const { items: posts } = await getPostsWithDetails();
   const { items: pages } = await getPagesWithDetails();
+  const homePageData = await getHomePageData();
 
   // Get featured/sticky posts for hero carousel (at least 3)
   const stickyPosts = posts.filter(post => post.sticky);
@@ -76,49 +77,72 @@ export default async function Home() {
         <div className="container">
           <div className="row align-items-center g-5">
             <div className="col-lg-6">
-              <p className="text-uppercase primary-text-blue small mb-3 promo-tag fw-bold">MARKET INTELLIGENCE</p>
-              <h2 className="h1 mb-3 ">Turn Headlines Into Market Intelligence</h2>
-              <p className="mb-4 promo-description">
-                Markets move fast. We help you stay ahead with curated global news, regulatory disclosures, and market-moving insights — all in one place.
+              <p className="text-uppercase primary-text-blue small mb-3 promo-tag fw-bold">
+                {homePageData?.market_intelligence_heading || 'MARKET INTELLIGENCE'}
               </p>
+              <h2 className="h1 mb-3 ">
+                {homePageData?.market_intelligence_main_heading || 'Turn Headlines Into Market Intelligence'}
+              </h2>
+              <div
+                className="mb-4 promo-description"
+                dangerouslySetInnerHTML={{ __html: homePageData?.market_intelligence_description || '' }}
+              />
 
               <ul className="list-unstyled mb-5">
-                <li className="d-flex align-items-start gap-3 mb-3">
-                  <i className="fa-solid fa-check mt-1 promo-check"></i>
-                  <div className="promo-list-item">
-                    <strong>Real-time global market coverage</strong>
-                  </div>
-                </li>
-                <li className="d-flex align-items-start gap-3 mb-3">
-                  <i className="fa-solid fa-check mt-1 promo-check"></i>
-                  <div className="promo-list-item">
-                    <strong>Regulatory filings from major authorities</strong>
-                  </div>
-                </li>
-                <li className="d-flex align-items-start gap-3 mb-4">
-                  <i className="fa-solid fa-check mt-1 promo-check"></i>
-                  <div className="promo-list-item">
-                    <strong>Sector-specific intelligence (Energy, Pharma, ETFs & more)</strong>
-                  </div>
-                </li>
+                {(homePageData?.market_intelligence_features_text || []).map((feature: string, idx: number) => (
+                  feature && (
+                    <li key={idx} className="d-flex align-items-center gap-3 mb-3">
+                      <i className="fa-solid fa-check promo-check d-flex align-items-center justify-content-center primary-bg-blue"></i>
+                      <div className="promo-list-item">
+                        <strong>{feature}</strong>
+                      </div>
+                    </li>
+                  )
+                ))}
+                {/* Fallback if no data */}
+                {!homePageData?.market_intelligence_features_text && (
+                  <>
+                    <li className="d-flex align-items-start gap-3 mb-3">
+                      <i className="fa-solid fa-check mt-1 promo-check d-flex align-items-center justify-content-center  primary-bg-blue"></i>
+                      <div className="promo-list-item"><strong>Real-time global market coverage</strong></div>
+                    </li>
+                    <li className="d-flex align-items-start gap-3 mb-3">
+                      <i className="fa-solid fa-check mt-1 promo-check d-flex align-items-center justify-content-center primary-bg-blue"></i>
+                      <div className="promo-list-item"><strong>Regulatory filings from major authorities</strong></div>
+                    </li>
+                    <li className="d-flex align-items-start gap-3 mb-4">
+                      <i className="fa-solid fa-check mt-1 promo-check d-flex align-items-center justify-content-center primary-bg-blue"></i>
+                      <div className="promo-list-item"><strong>Sector-specific intelligence</strong></div>
+                    </li>
+                  </>
+                )}
               </ul>
 
               <div className="d-flex flex-wrap gap-3">
-                <Link href="/get-market-intelligence" className="btn btn-premium-primary">
-                  Get Market Intelligence
+                <Link href={homePageData?.get_market_intelligence_button_url || '/get-market-intelligence'} className="btn btn-premium-primary">
+                  {homePageData?.get_market_intelligence_button_text || 'Get Market Intelligence'}
                   <i className="fa-solid fa-chevron-right ms-2 small"></i>
                 </Link>
-                <Link href="/coverage" className="btn btn-premium-link">
-                  Explore Coverage
+                <Link href={homePageData?.explore_coverage_button_url || '/coverage'} className="btn btn-premium-link">
+                  {homePageData?.explore_coverage_button_text || 'Explore Coverage'}
                 </Link>
               </div>
             </div>
 
             <div className="col-lg-6">
               <div className="position-relative aspect-video rounded overflow-hidden">
-                <div className="w-100 h-100 bg-light-c d-flex align-items-center justify-content-center">
-                  <i className="fa-solid fa-chart-column fa-5x text-primary opacity-25"></i>
-                </div>
+                {homePageData?.market_intelligence_image ? (
+                  <Image
+                    src={homePageData.market_intelligence_image}
+                    alt="Market Intelligence"
+                    fill
+                    className="object-fit-cover"
+                  />
+                ) : (
+                  <div className="w-100 h-100 bg-light-c d-flex align-items-center justify-content-center">
+                    <i className="fa-solid fa-chart-column fa-5x text-primary opacity-25"></i>
+                  </div>
+                )}
               </div>
             </div>
           </div>

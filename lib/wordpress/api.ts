@@ -11,7 +11,9 @@ import type {
   CPT,
   CPTWithDetails,
   WordPressMenu,
-  PaginatedResponse
+  PaginatedResponse,
+  MarketHeadlinesSettings,
+  HomePageData
 } from '@/types/wordpress';
 
 const WP_API_URL = process.env.NEXT_PUBLIC_WP_API_URL || 'https://dev-new-marketsheadlines.pantheonsite.io/wp-json/wp/v2';
@@ -846,8 +848,6 @@ export async function getSiteSettings(): Promise<any> {
   }
 }
 
-
-
 /**
  * Get the full site identity (title, description, logo)
  */
@@ -873,4 +873,148 @@ export async function getSiteIdentity(): Promise<{ title: string; description: s
     description,
     logoUrl
   };
+}
+
+/**
+ * Fetch MarketHeadlines settings from the custom endpoint
+ */
+export async function getMarketHeadlinesSettings(): Promise<MarketHeadlinesSettings | null> {
+  // Use the new custom endpoint provided by the user
+  const baseUrl = WP_API_URL.replace('/wp/v2', '/custom/v1');
+  const url = `${baseUrl}/theme-settings`;
+
+  try {
+    const response = await fetchWithAuth(url, {
+      next: { revalidate: 3600 }, // Cache for 1 hour
+    });
+
+    if (!response.ok) {
+      console.warn('Failed to fetch MarketHeadlines settings:', response.status, response.statusText);
+      return null;
+    }
+
+    const rawData = await response.json();
+
+    // Map the raw response to our interface
+    const settings: MarketHeadlinesSettings = {
+      name: 'Market Headlines', // Default
+      description: '', // Default
+      logo: undefined,
+      footer_title: rawData.footer_title,
+      footer_sub_title: rawData.footer_sub_title,
+      footer_copyright: rawData.footer_copyright,
+      social: rawData.social_media_urls,
+      // Handle footer_logo object or string
+      footer_logo: typeof rawData.footer_logo === 'object' && rawData.footer_logo?.guid
+        ? rawData.footer_logo.guid
+        : (typeof rawData.footer_logo === 'string' ? rawData.footer_logo : undefined)
+    };
+
+    return settings;
+  } catch (error) {
+    console.error('Error fetching MarketHeadlines settings:', error);
+    return null;
+  }
+}
+
+/**
+ * Helper to extract URL from HTML anchor tag string
+ */
+function extractUrlFromAnchor(html: string): string {
+  if (!html) return '';
+  const match = html.match(/href="([^"]*)"/);
+  return match ? match[1] : html;
+}
+
+
+/**
+ * Smart split function to handle comma-separated lists while respecting parentheses
+ */
+function smartSplit(text: string): string[] {
+  const results: string[] = [];
+  let current = '';
+  let parenDepth = 0;
+
+  for (let i = 0; i < text.length; i++) {
+    const char = text[i];
+
+    if (char === '(') {
+      parenDepth++;
+      current += char;
+    } else if (char === ')') {
+      if (parenDepth > 0) parenDepth--;
+      current += char;
+    } else if (char === ',' && parenDepth === 0) {
+      results.push(current.trim());
+      current = '';
+    } else {
+      current += char;
+    }
+  }
+  if (current.trim()) {
+    results.push(current.trim());
+  }
+
+  return results.map(item => {
+    // Strip "and " prefix if it looks like a list conjunction
+    if (/^and\s+/i.test(item)) {
+      return item.replace(/^and\s+/i, '');
+    }
+    return item;
+  });
+}
+
+/**
+ * Fetch Home Page Data (ID: 3504679)
+ */
+export async function getHomePageData(): Promise<HomePageData | null> {
+  const homePageId = 3504679;
+  const url = `${WP_API_URL}/pages/${homePageId}`;
+
+  try {
+    const response = await fetchWithAuth(url, {
+      next: { revalidate: 0 }, // Disable cache for debugging
+    });
+
+    if (!response.ok) {
+      return null;
+    }
+
+    const data = await response.json();
+
+    // Handle market_intelligence_features_text which might be a string (newline/comma separated) or an array
+    let features: string[] = [];
+    const rawFeatures = data.market_intelligence_features_text;
+
+    if (Array.isArray(rawFeatures)) {
+      features = rawFeatures.map((f: any) => String(f)).filter(Boolean);
+    } else if (typeof rawFeatures === 'string') {
+      // 1. Try split by newline first (preferred)
+      const newlineSplit = rawFeatures.split(/\r?\n/).filter(Boolean);
+
+      // 2. If newline split failed (Still 1 item? might correspond to a single string)
+      if (newlineSplit.length > 1) {
+        features = newlineSplit;
+      } else {
+        // 3. Fallback: Smart Split by comma (respecting parens)
+        // This handles cases like: "Real-time..., Regulatory..., Sector (Energy, Pharma), and Test"
+        features = smartSplit(rawFeatures);
+      }
+    }
+
+    return {
+      market_intelligence_heading: data.market_intelligence_heading || '',
+      market_intelligence_main_heading: data.market_intelligence_main_heading || '',
+      market_intelligence_description: data.market_intelligence_description || '',
+      market_intelligence_features_text: features,
+      get_market_intelligence_button_text: data.get_market_intelligence_button_text || '',
+      get_market_intelligence_button_url: extractUrlFromAnchor(data.get_market_intelligence_button_url || ''),
+      explore_coverage_button_text: data.explore_coverage_button_text || '',
+      explore_coverage_button_url: extractUrlFromAnchor(data.explore_coverage_button_url || ''),
+      market_intelligence_image: data.market_intelligence_image || '',
+    };
+  } catch (error) {
+    console.error('Error fetching Home Page Data:', error);
+    return null;
+  }
 }
