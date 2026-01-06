@@ -180,19 +180,84 @@
 
 // 3. Newsletter & Promo Styles
 .newsletter-section-main {
-    background: linear-gradient(135deg, #1E3A8A 0%, #0F172A 100%);
+    background: linear-gradient(180deg, #0F172A 0%, #1E3A8A 50%, #0F172A 100%);
 }
 
 .newsletter-input {
     padding: 1rem 1.5rem;
+    background-color: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: var(--white);
+
+    &::placeholder {
+        color: rgba(255, 255, 255, 0.6);
+    }
+
+    &:focus {
+        background-color: rgba(255, 255, 255, 0.15);
+        border-color: rgba(255, 255, 255, 0.4);
+        box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.1);
+        color: var(--white);
+    }
+}
+
+.newsletter-checkbox-wrapper {
+    display: flex;
+    align-items: center;
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    padding: 1rem 1.5rem;
+    margin-bottom: 1rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+
+    &:hover {
+        background-color: rgba(255, 255, 255, 0.15);
+        border-color: rgba(255, 255, 255, 0.3);
+    }
+
+    // Hide default checkbox
+    input[type="checkbox"] {
+        display: none;
+    }
+
+    // Custom Checkbox Indicator
+    .custom-checkbox {
+        width: 24px;
+        height: 24px;
+        border: 2px solid rgba(255, 255, 255, 0.4);
+        border-radius: 4px;
+        margin-right: 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s ease;
+        flex-shrink: 0;
+
+        i {
+            display: none;
+            color: var(--primary-navy);
+            font-size: 0.8rem;
+        }
+    }
+
+    // Checked State
+    input[type="checkbox"]:checked+.custom-checkbox {
+        background-color: var(--white);
+        border-color: var(--white);
+
+        i {
+            display: block;
+        }
+    }
 }
 
 .newsletter-label {
     cursor: pointer;
-}
-
-.promo-section {
-    background-color: var(--accent-blue);
+    margin-bottom: 0;
+    font-weight: 500;
 }
 
 .promo-tag {
@@ -241,8 +306,8 @@
 
 // 4. Trust Section Styles
 .trust-icon-container {
-    width: 80px;
-    height: 80px;
+    width: 56px;
+    height: 56px;
     background-color: var(--bg-light);
     color: var(--primary-navy);
 }

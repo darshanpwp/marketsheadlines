@@ -7,10 +7,23 @@ import { formatDate, calculateReadingTime } from '@/lib/utils';
 
 interface PostCardProps {
   post: PostWithDetails;
+  showExcerpt?: boolean;
+  filterCategory?: string;
 }
 
-export default function PostCard({ post }: PostCardProps) {
+export default function PostCard({ post, showExcerpt = false, filterCategory }: PostCardProps) {
   const readingTime = calculateReadingTime(post.content);
+
+  // Determine which category to display
+  let displayCategory = post.categoryDetails?.[0];
+  if (filterCategory && post.categoryDetails) {
+    const filtered = post.categoryDetails.find(cat =>
+      cat.name.toLowerCase().includes(filterCategory.toLowerCase())
+    );
+    if (filtered) {
+      displayCategory = filtered;
+    }
+  }
 
   return (
     <article className="card h-100 shadow-sm border-0 hover-lift overflow-hidden">
@@ -29,12 +42,12 @@ export default function PostCard({ post }: PostCardProps) {
         </Link>
 
         {/* Floating Category Badge */}
-        {post.categoryDetails?.[0] && (
+        {displayCategory && (
           <Link
-            href={`/category/${post.categoryDetails[0].slug}`}
-            className="badge badge-floating text-white text-decoration-none shadow-sm"
+            href={`/category/${displayCategory.slug}`}
+            className="badge rounded-pill px-3 py-2 small badge-floating primary-text-blue bg-white text-decoration-none shadow-sm"
           >
-            {post.categoryDetails[0].name}
+            {displayCategory.name}
           </Link>
         )}
       </div>
@@ -43,10 +56,18 @@ export default function PostCard({ post }: PostCardProps) {
         {/* Title Link */}
         <Link href={`/posts/${post.slug}`} className="text-decoration-none">
           <h2
-            className="h6 fw-bold mb-2 transition-all line-clamp-2 card-title-link"
+            className="h6 text-font-family mb-2 transition-all line-clamp-2 card-title-link"
             dangerouslySetInnerHTML={{ __html: post.title }}
           />
         </Link>
+
+        {/* Optional Excerpt */}
+        {showExcerpt && (
+          <div
+            className="small text-secondary mb-3 line-clamp-3"
+            dangerouslySetInnerHTML={{ __html: post.excerpt || '' }}
+          />
+        )}
 
         {/* Meta Info */}
         <div className="d-flex align-items-center gap-2 small card-meta-row">

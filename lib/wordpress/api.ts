@@ -813,8 +813,11 @@ export async function getMenu(slug: string): Promise<WordPressMenu | null> {
 
     return await response.json();
   } catch (error) {
-    // Gracefully handle 404s for menus that might not exist yet
-    if (error instanceof WordPressError && error.status === 404) {
+    // Gracefully handle 404s (Not Found) and 401s (Unauthorized)
+    if (error instanceof WordPressError && (error.status === 404 || error.status === 401)) {
+      if (error.status === 401) {
+        console.warn(`Warning: Unauthorized (401) when fetching menu "${slug}". Using fallback.`);
+      }
       return null;
     }
 

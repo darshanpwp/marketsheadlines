@@ -9,28 +9,41 @@ interface NewsListItemProps {
 
 export default function NewsListItem({ post, index }: NewsListItemProps) {
   const readingTime = calculateReadingTime(post.content);
+  const category = post.categoryDetails?.[0];
 
   return (
     <Link
       href={`/posts/${post.slug}`}
       className="text-decoration-none text-dark"
     >
-      <div className="card border-0 shadow-sm mb-3 hover-lift">
-        <div className="card-body">
-          <div className="d-flex align-items-start gap-3">
-            <span className="badge rounded-circle d-flex align-items-center justify-content-center fw-bold trending-index-badge">
+      <div className="card border-1 border-lighter border-radius-2 p-4 mb-3 hover-lift">
+        <div className="card-body p-0">
+          <div className="d-flex align-top gap-4">
+            {/* Index Badge */}
+            <div className="news-index-badge d-flex align-items-center justify-content-center rounded-3 flex-shrink-0">
               {index}
-            </span>
-            <div className="flex-grow-1">
+            </div>
+
+            {/* Content */}
+            <div className="flex-grow-1 min-w-0">
+              <div className="d-flex align-items-center gap-2 mb-2">
+                {category && (
+                  <span className="badge news-category-pill">
+                    {category.name}
+                  </span>
+                )}
+                <span className="text-muted small">{readingTime} min read</span>
+              </div>
               <h4
-                className="h6 fw-bold mb-2 trending-title"
+                className="h6 mb-0 text-font-family text-dark text-short-truncate fs-6 lh-base"
                 dangerouslySetInnerHTML={{ __html: post.title }}
               />
-              <div className="d-flex align-items-center gap-2 small trending-meta">
-                <span>{readingTime} min read</span>
-              </div>
             </div>
-            <i className="fa-solid fa-chevron-right opacity-30 trending-chevron"></i>
+
+            {/* Chevron */}
+            <div className="flex-shrink-0 ms-3 d-flex align-items-center">
+              <i className="fa-solid fa-chevron-right text-muted"></i>
+            </div>
           </div>
         </div>
       </div>

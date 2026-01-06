@@ -7,6 +7,8 @@ import NewsListItem from '@/components/NewsListItem';
 import PostCard from '@/components/PostCard';
 import { calculateReadingTime } from '@/lib/utils';
 
+import HeroCarousel from '@/components/HeroCarousel';
+
 export const revalidate = 60; // Revalidate every 60 seconds
 
 export default async function Home() {
@@ -36,167 +38,17 @@ export default async function Home() {
   return (
     <main className="bg-white">
       {/* 1️⃣ Hero / Featured News Carousel Section */}
-      <section className="container-fluid px-0">
-        {featuredPosts.length > 0 ? (
-          <div
-            id="heroCarousel"
-            className="carousel slide carousel-fade"
-            data-bs-ride="carousel"
-            data-bs-interval="5000"
-            data-bs-pause="hover"
-          >
-            {/* Carousel Indicators */}
-            <div className="carousel-indicators">
-              {featuredPosts.map((_, index) => (
-                <button
-                  key={index}
-                  type="button"
-                  data-bs-target="#heroCarousel"
-                  data-bs-slide-to={index}
-                  className={index === 0 ? 'active' : ''}
-                  aria-current={index === 0 ? 'true' : undefined}
-                  aria-label={`Slide ${index + 1}`}
-                ></button>
-              ))}
-            </div>
-
-            {/* Carousel Inner */}
-            <div className="carousel-inner">
-              {featuredPosts.map((post, index) => (
-                <div
-                  key={post.id}
-                  className={`carousel-item ${index === 0 ? 'active' : ''} position-relative hero-item`}
-                >
-                  {/* Background Image */}
-                  {/* Background Image using Next.js Image for optimization */}
-                  <div className="hero-bg position-absolute w-100 h-100 top-0 start-0 overflow-hidden" style={{ zIndex: 0 }}>
-                    {post.featuredMediaDetails?.source_url ? (
-                      <Image
-                        src={post.featuredMediaDetails.source_url}
-                        alt={post.title}
-                        fill
-                        className="object-fit-cover transition-transform duration-700 hover-scale"
-                        priority={index === 0}
-                      />
-                    ) : (
-                      <div className="w-100 h-100 bg-secondary"></div> // Fallback if no image
-                    )}
-
-                    {/* Brand Navy Overlay with Gradient */}
-                    <div
-                      className="hero-overlay position-absolute w-100 h-100 top-0 start-0"
-                      style={{
-                        background: 'linear-gradient(0deg, rgba(0, 0, 0, 0.72) 0%, rgba(0, 0, 0, 0.45) 50%, rgba(0, 0, 0, 0.27) 100%)',
-                        zIndex: 1
-                      }}
-                    ></div>
-                  </div>
-
-                  {/* Content Overlay */}
-                  <div className="container hero-content-container position-relative z-3">
-                    <div className="row align-items-center h-100">
-                      <div className="col-lg-7 col-md-9 text-white py-5 hero-content">
-                        {post.categoryDetails?.[0] && (
-                          <span className="badge primary-bg-blue text-white rounded-pill px-3 py-2 mb-4 fw-bold shadow-sm">
-                            {post.categoryDetails[0].name}
-                          </span>
-                        )}
-                        <h2
-                          className="display-4 text-white fw-bold mb-4 hero-headline"
-                          style={{ fontFamily: 'var(--bs-font-serif)', lineHeight: '1.1' }}
-                          dangerouslySetInnerHTML={{ __html: post.title }}
-                        />
-                        <div
-                          className="lead hero-excerpt opacity-90 fw-light text-truncate"
-                          style={{ maxWidth: '100%' }}
-                          dangerouslySetInnerHTML={{
-                            __html: post.excerpt || 'Stay informed with the latest market insights and financial news.'
-                          }}
-                        />
-                        {post.authorDetails && (
-                          <div className="d-flex align-items-center gap-3 mb-4 pt-4" style={{ maxWidth: 'fit-content' }}>
-                            <span className="fw-bold text-uppercase small tracking-wider">By {post.authorDetails.name}</span>
-                            <span className="text-white opacity-50">•</span>
-                            <span className="small opacity-75">{calculateReadingTime(post.content)} min read</span>
-                          </div>
-                        )}
-                        <Link
-                          href={`/posts/${post.slug}`}
-                          className="btn btn-white-primary rounded-2"
-                        >
-                          Read Full Story
-                          <i className="fa-solid fa-chevron-right ms-2"></i>
-
-                        </Link>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            {/* Carousel Controls - Previous */}
-            <button
-              className="carousel-control-prev"
-              type="button"
-              data-bs-target="#heroCarousel"
-              data-bs-slide="prev"
-            >
-              <div className="bg-white text-dark rounded-circle d-flex align-items-center justify-content-center shadow-lg" style={{ width: '50px', height: '50px' }}>
-                <i className="fa-solid fa-chevron-left" aria-hidden="true"></i>
-              </div>
-              <span className="visually-hidden">Previous</span>
-            </button>
-
-            {/* Carousel Controls - Next */}
-            <button
-              className="carousel-control-next"
-              type="button"
-              data-bs-target="#heroCarousel"
-              data-bs-slide="next"
-            >
-              <div className="bg-white text-dark rounded-circle d-flex align-items-center justify-content-center shadow-lg" style={{ width: '50px', height: '50px' }}>
-                <i className="fa-solid fa-chevron-right" aria-hidden="true"></i>
-              </div>
-              <span className="visually-hidden">Next</span>
-            </button>
-          </div>
-        ) : (
-          // Fallback if no posts available
-          <div
-            className="position-relative hero-item newsletter-section-main"
-          >
-            <div className="position-absolute top-0 start-0 w-100 h-100 bg-dark" style={{ opacity: 0.8 }}></div>
-            <div className="container position-relative h-100">
-              <div className="row align-items-center h-100">
-                <div className="col-lg-6 col-md-8 text-white py-5 text-center text-md-start">
-                  <span className="badge bg-primary mb-3 px-3 py-2">World News</span>
-                  <h1 className="display-4 fw-bold mb-4">
-                    Global Markets React to Emerging Trade Agreement Framework
-                  </h1>
-                  <p className="lead mb-4">
-                    Asian and European indices surge on news of multilateral trade negotiations
-                  </p>
-                  <Link href="/posts" className="btn btn-white-primary btn-lg px-4">
-                    Read Full Story
-                    <i className="fa-solid fa-chevron-right ms-2 small"></i>
-                  </Link>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-      </section>
+      <HeroCarousel posts={featuredPosts} />
 
       {/* 2️⃣ Trending Now + Market Overview */}
-      <section className="py-5 bg-white border-bottom">
+      <section className="p-60 bg-light-c">
         <div className="container py-4">
           <div className="row g-5">
             {/* Left: Trending Now */}
             <div className="col-lg-8">
               <div className="d-flex align-items-center justify-content-between mb-4">
-                <h2 className="display-6 fw-bold text-dark mb-0 font-serif">Trending Now</h2>
-                <span className="badge bg-light text-secondary border px-3 py-2 rounded-pill">Top 5 Stories</span>
+                <h2 className="primary-text-blue mb-0 font-serif">Trending Now</h2>
+                <span className="badge bg-light-c text-secondary border px-3 py-2 rounded-pill">Top 5 Stories</span>
               </div>
 
               <div className="mb-5">
@@ -205,7 +57,7 @@ export default async function Home() {
                 ))}
               </div>
 
-              <Link href="/posts" className="btn btn-outline-primary rounded-pill px-4 fw-bold">
+              <Link href="/posts" className="btn primary-text-blue px-4 fw-bold">
                 View All Trending Stories
                 <i className="fa-solid fa-arrow-right ms-2 small"></i>
               </Link>
@@ -220,13 +72,13 @@ export default async function Home() {
       </section>
 
       {/* 3️⃣ Market Intelligence Promo Section */}
-      <section className="py-5 promo-section">
+      <section className="p-60 promo-section bg-gradient-c">
         <div className="container">
           <div className="row align-items-center g-5">
             <div className="col-lg-6">
-              <p className="text-uppercase fw-bold small mb-2 promo-tag">MARKET INTELLIGENCE</p>
-              <h2 className="display-5 fw-bold mb-4 promo-title">Turn Headlines Into Market Intelligence</h2>
-              <p className="lead mb-4 promo-description">
+              <p className="text-uppercase primary-text-blue small mb-3 promo-tag fw-bold">MARKET INTELLIGENCE</p>
+              <h2 className="h1 mb-3 ">Turn Headlines Into Market Intelligence</h2>
+              <p className="mb-4 promo-description">
                 Markets move fast. We help you stay ahead with curated global news, regulatory disclosures, and market-moving insights — all in one place.
               </p>
 
@@ -264,7 +116,7 @@ export default async function Home() {
 
             <div className="col-lg-6">
               <div className="position-relative aspect-video rounded overflow-hidden">
-                <div className="w-100 h-100 bg-light d-flex align-items-center justify-content-center">
+                <div className="w-100 h-100 bg-light-c d-flex align-items-center justify-content-center">
                   <i className="fa-solid fa-chart-column fa-5x text-primary opacity-25"></i>
                 </div>
               </div>
@@ -274,10 +126,10 @@ export default async function Home() {
       </section>
 
       {/* 4️⃣ World News – List View */}
-      <section className="container py-5">
-        <div className="d-flex justify-content-between align-items-center mb-4">
-          <h2 className="display-5 fw-bold mb-0">World News</h2>
-          <Link href="/posts" className="text-primary text-decoration-none fw-semibold">
+      <section className="container p-60">
+        <div className="d-flex justify-content-between align-items-center mb-5">
+          <h2 className="primary-text-blue mb-0">World News</h2>
+          <Link href="/posts" className="primary-text-blue text-decoration-none fw-semibold">
             View All
             <i className="fa-solid fa-chevron-right ms-2 small"></i>
           </Link>
@@ -305,21 +157,30 @@ export default async function Home() {
       </section>
 
       {/* 5️⃣ World News – Card Grid */}
-      <section className="container py-5">
-        <div className="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
-          {worldNewsCards.map((post) => (
-            <div key={post.id} className="col">
-              <PostCard post={post} />
-            </div>
-          ))}
+      <section className="world-news-card-grid p-60 bg-light-c">
+        <div className="container">
+          <div className="d-flex justify-content-between align-items-center mb-5">
+            <h2 className="primary-text-blue mb-0">World News</h2>
+            <Link href="/posts" className="primary-text-blue text-decoration-none fw-semibold">
+              View All
+              <i className="fa-solid fa-chevron-right ms-2 small"></i>
+            </Link>
+          </div>
+          <div className="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
+            {worldNewsCards.map((post) => (
+              <div key={post.id} className="col">
+                <PostCard post={post} />
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
       {/* 6️⃣ Business Section */}
-      <section className="container py-5">
-        <div className="d-flex justify-content-between align-items-center mb-4">
-          <h2 className="display-5 fw-bold mb-0">Business</h2>
-          <Link href="/posts" className="text-primary text-decoration-none fw-semibold">
+      <section className="container p-60">
+        <div className="d-flex justify-content-between align-items-center mb-5">
+          <h2 className="primary-text-blue mb-0">Business</h2>
+          <Link href="/posts" className="primary-text-blue text-decoration-none fw-semibold">
             View All
             <i className="fa-solid fa-chevron-right ms-2 small"></i>
           </Link>
@@ -328,75 +189,77 @@ export default async function Home() {
         <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
           {(businessPosts.length > 0 ? businessPosts : posts.slice(0, 3)).map((post) => (
             <div key={post.id} className="col">
-              <PostCard post={post} />
+              <PostCard post={post} showExcerpt={true} filterCategory="business" />
             </div>
           ))}
         </div>
       </section>
 
       {/* 7️⃣ Trust / Value Proposition Section */}
-      <section className="container py-5">
-        <div className="text-center mb-5">
-          <p className="text-uppercase text-primary fw-bold small mb-2">FOR INVESTORS & ORGANIZATIONS</p>
-          <h2 className="display-5 fw-bold mb-4">Trusted by Professionals Tracking Global Markets</h2>
-          <p className="lead text-secondary mx-auto trust-description">
-            Whether you're an investor, analyst, or organization, Markets Headlines delivers accurate, timely, and actionable market information.
-          </p>
-        </div>
+      <section className="hm-trust p-60">
+        <div className="container">
+          <div className="text-center col-10 m-auto mb-5">
+            <p className="text-uppercase primary-text-blue fw-bold small mb-3">FOR INVESTORS & ORGANIZATIONS</p>
+            <h2 className="display-5 fw-bold mb-4">Trusted by Professionals Tracking Global Markets</h2>
+            <p className="text-secondary mx-auto col-12 col-sm-7" >
+              Whether you're an investor, analyst, or organization, Markets Headlines delivers accurate, timely, and actionable market information.
+            </p>
+          </div>
 
-        <div className="row row-cols-1 row-cols-md-3 g-4 mb-5">
-          <div className="col">
-            <div className="card h-100 text-center p-4 hover-lift border-0 shadow-sm">
-              <div className="mb-4">
-                <div className="d-inline-flex align-items-center justify-content-center rounded-circle trust-icon-container">
-                  <i className="fa-solid fa-chart-line fa-2x"></i>
+          <div className="row row-cols-1 row-cols-md-3 g-4 mb-5">
+            <div className="col">
+              <div className="card h-100 text-center p-sm-5 p-3 hover-lift border-1 border-lighter">
+                <div className="mb-4">
+                  <div className="d-inline-flex align-items-center bg-light-blue justify-content-center rounded-circle trust-icon-container">
+                    <i className="fa-solid fa-chart-line fs-5 primary-text-blue"></i>
+                  </div>
                 </div>
+                <h3 className="h5 fw-bold mb-2 trust-card-title text-font-family ">Market-Moving News</h3>
+                <p className="trust-card-text">Global coverage of equities, commodities, ETFs, and sectors.</p>
               </div>
-              <h3 className="h5 fw-bold mb-3 trust-card-title">Market-Moving News</h3>
-              <p className="trust-card-text">Global coverage of equities, commodities, ETFs, and sectors.</p>
+            </div>
+            <div className="col">
+              <div className="card h-100 text-center p-sm-5 p-3 hover-lift border-1 border-lighter">
+                <div className="mb-4">
+                  <div className="d-inline-flex align-items-center bg-light-blue  justify-content-center rounded-circle trust-icon-container">
+                    <i className="fa-solid fa-file-invoice fs-5 primary-text-blue"></i>
+                  </div>
+                </div>
+                <h3 className="h5 fw-bold mb-2 text-font-family  trust-card-title">Regulatory & Exchange Data</h3>
+                <p className="trust-card-text">Access filings from SEC, FDA, SEDAR, and major exchanges.</p>
+              </div>
+            </div>
+            <div className="col">
+              <div className="card h-100 text-center p-sm-5 p-3 hover-lift border-1 border-lighter">
+                <div className="mb-4">
+                  <div className="d-inline-flex bg-light-blue align-items-center justify-content-center rounded-circle trust-icon-container">
+                    <i className="fa-solid fa-earth-americas fs-5 primary-text-blue"></i>
+                  </div>
+                </div>
+                <h3 className="h5 fw-bold mb-2 trust-card-title text-font-family ">Global Perspective</h3>
+                <p className="trust-card-text">Insights across regions, industries, and asset classes.</p>
+              </div>
             </div>
           </div>
-          <div className="col">
-            <div className="card h-100 text-center p-4 hover-lift border-0 shadow-sm">
-              <div className="mb-4">
-                <div className="d-inline-flex align-items-center justify-content-center rounded-circle trust-icon-container">
-                  <i className="fa-solid fa-file-invoice fa-2x"></i>
-                </div>
-              </div>
-              <h3 className="h5 fw-bold mb-3 trust-card-title">Regulatory & Exchange Data</h3>
-              <p className="trust-card-text">Access filings from SEC, FDA, SEDAR, and major exchanges.</p>
-            </div>
-          </div>
-          <div className="col">
-            <div className="card h-100 text-center p-4 hover-lift border-0 shadow-sm">
-              <div className="mb-4">
-                <div className="d-inline-flex align-items-center justify-content-center rounded-circle trust-icon-container">
-                  <i className="fa-solid fa-earth-americas fa-2x"></i>
-                </div>
-              </div>
-              <h3 className="h5 fw-bold mb-3 trust-card-title">Global Perspective</h3>
-              <p className="trust-card-text">Insights across regions, industries, and asset classes.</p>
-            </div>
-          </div>
-        </div>
 
-        <div className="text-center">
-          <Link href="/request-demo" className="btn btn-premium-primary btn-lg px-5 me-3">
-            Request a Quote
-          </Link>
-          <Link href="/registration" className="btn btn-premium-link btn-lg px-4">
-            Register for Access
-          </Link>
+          <div className="text-center">
+            <Link href="/request-demo" className="btn btn-premium-primary btn-lg px-5 me-3">
+              Request a Quote
+            </Link>
+            <Link href="/registration" className="btn btn-premium-link btn-lg px-4">
+              Register for Access
+            </Link>
+          </div>
         </div>
       </section>
 
       {/* 8️⃣ Newsletter Subscription Section */}
-      <section className="container-fluid py-5 newsletter-section-main">
+      <section className="container-fluid p-80 newsletter-section-main">
         <div className="container">
           <div className="row justify-content-center">
             <div className="col-lg-8 text-center text-white">
-              <h2 className="display-5 fw-bold mb-3 newsletter-title">Stay Ahead of the Markets</h2>
-              <p className="lead mb-4 opacity-80">
+              <h2 className="display-5 fw-semibold text-white mb-3 newsletter-title">Stay Ahead of the Markets</h2>
+              <p className="fs-18 mb-4 col-9 m-auto opacity-90">
                 Get expert insights, breaking news, and market analysis delivered directly to your inbox
               </p>
 
@@ -404,36 +267,41 @@ export default async function Home() {
                 <div className="mb-4">
                   <input
                     type="email"
-                    className="form-control form-control-lg rounded-3 border-0 shadow-sm newsletter-input"
+                    className="form-control rounded-3 shadow-sm newsletter-input"
                     placeholder="Enter your email address"
                     required
                   />
                 </div>
 
-                <div className="d-flex flex-wrap justify-content-center gap-4 mb-4">
-                  <div className="form-check text-white">
-                    <input className="form-check-input" type="checkbox" id="daily" defaultChecked />
-                    <label className="form-check-label newsletter-label" htmlFor="daily">
-                      Daily Market Brief
-                    </label>
-                  </div>
-                  <div className="form-check text-white">
-                    <input className="form-check-input" type="checkbox" id="weekly" />
-                    <label className="form-check-label newsletter-label" htmlFor="weekly">
-                      Weekly Deep Dive
-                    </label>
-                  </div>
-                  <div className="form-check text-white">
-                    <input className="form-check-input" type="checkbox" id="breaking" defaultChecked />
-                    <label className="form-check-label newsletter-label" htmlFor="breaking">
-                      Breaking News Alerts
-                    </label>
-                  </div>
+                <div className="mb-4">
+                  <label className="newsletter-checkbox-wrapper">
+                    <input type="checkbox" defaultChecked />
+                    <span className="custom-checkbox">
+                      <i className="fa-solid fa-check"></i>
+                    </span>
+                    <span className="newsletter-label text-white">Daily Market Brief</span>
+                  </label>
+
+                  <label className="newsletter-checkbox-wrapper">
+                    <input type="checkbox" />
+                    <span className="custom-checkbox">
+                      <i className="fa-solid fa-check"></i>
+                    </span>
+                    <span className="newsletter-label text-white">Weekly Deep Dive</span>
+                  </label>
+
+                  <label className="newsletter-checkbox-wrapper">
+                    <input type="checkbox" defaultChecked />
+                    <span className="custom-checkbox">
+                      <i className="fa-solid fa-check"></i>
+                    </span>
+                    <span className="newsletter-label text-white">Breaking News Alerts</span>
+                  </label>
                 </div>
 
-                <button type="submit" className="btn btn-light btn-lg px-5 rounded-3 fw-bold shadow-sm transition-all">
+                <button type="submit" className="btn btn-white-primary fw-bold rounded-2 w-100 btn-lg rounded-3 justify-content-center shadow-sm transition-all">
                   Subscribe to Newsletter
-                  <i className="fa-solid fa-paper-plane ms-2 small"></i>
+                  <i className="fa-solid fa-arrow-right ms-2 small"></i>
                 </button>
               </form>
             </div>
