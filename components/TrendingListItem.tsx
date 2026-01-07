@@ -16,7 +16,7 @@ export default function TrendingListItem({ post, index }: TrendingListItemProps)
       href={`/posts/${post.slug}`}
       className="text-decoration-none text-dark"
     >
-      <div className="card border-0 shadow-sm mb-4 hover-lift transition-all">
+      <div className="card bg-white border-0 shadow-sm mb-4 hover-lift transition-all">
         <div className="card-body p-4">
           <div className="d-flex align-items-center">
             {/* Prominent Number */}

@@ -16,7 +16,7 @@ export default function NewsListItem({ post, index }: NewsListItemProps) {
       href={`/posts/${post.slug}`}
       className="text-decoration-none text-dark"
     >
-      <div className="card border-1 border-lighter border-radius-2 p-4 mb-3 hover-lift">
+      <div className="card bg-white border-1 border-lighter border-radius-2 p-4 mb-3 hover-lift">
         <div className="card-body p-0">
           <div className="d-flex align-top gap-4">
             {/* Index Badge */}

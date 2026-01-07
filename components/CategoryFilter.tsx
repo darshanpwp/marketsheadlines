@@ -32,7 +32,7 @@ export default function CategoryFilter({ categories }: CategoryFilterProps) {
     const currentCategorySlug = pathname.startsWith('/category/') ? pathname.split('/')[2] : '';
 
     return (
-        <div className="card border-0 shadow-sm rounded-4 h-100">
+        <div className="card bg-white border-0 shadow-sm rounded-4 h-100">
             <div className="card-body p-4 d-flex align-items-center">
                 <select
                     className="form-select border-0 bg-light rounded-pill py-2 ps-4 fw-medium text-secondary"
