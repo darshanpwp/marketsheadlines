@@ -550,5 +550,21 @@ export interface HomePageData {
   newsletter_description: string;
   default_daily_market_brief: string;
   default_weekly_deep_dive: string;
-  default_breaking_news_alerts: string;
+  default_breaking_news_alerts?: string;
+}
+
+export interface MarketTicker {
+  symbol: string;
+  name: string;
+  price: number;
+  change: number;
+  change_percent: number;
+  market?: string;
+  currency?: string;
+}
+
+export interface WordPressRestSettings {
+  title: string;
+  description: string;
+  page_for_posts: number;
 }

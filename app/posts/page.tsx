@@ -1,38 +1,41 @@
-import { getPostsWithDetails } from '@/lib/wordpress/api';
+import { getPostsWithDetails, getPostsPage, getAllCategories } from '@/lib/wordpress/api';
 import { Metadata } from 'next';
 import PostCard from '@/components/PostCard';
 import Pagination from '@/components/Pagination';
+import ArchiveToolbar from '@/components/ArchiveToolbar';
 
-export const metadata: Metadata = {
-  title: 'All Posts - Market Headlines',
-  description: 'Browse all posts and articles from Market Headlines',
-};
+// ... metadata ...
 
 export const revalidate = 60; // Revalidate every 60 seconds
 
 interface PageProps {
-  searchParams: Promise<{ page?: string }>;
+  searchParams: Promise<{ page?: string; search?: string }>;
 }
 
 export default async function PostsPage({ searchParams }: PageProps) {
   const resolvedParams = await searchParams;
   const currentPage = parseInt(resolvedParams.page || '1', 10);
+  const searchTerm = resolvedParams.search || '';
   const perPage = 16;
 
-  const { items: posts, totalItems, totalPages } = await getPostsWithDetails(perPage, currentPage);
+  const [postsPage, { items: posts, totalItems, totalPages }, categories] = await Promise.all([
+    getPostsPage(),
+    getPostsWithDetails(perPage, currentPage, searchTerm),
+    getAllCategories()
+  ]);
 
   return (
     <div className="min-vh-100 bg-white">
       {/* Redesigned Header */}
-      <div className="archive-header mb-5">
+      <div className="archive-header mb-5 bg-gradient-c">
         <div className="container">
           <div className="d-flex justify-content-between align-items-center">
             <div>
-              <h1 className="archive-title mb-0 h2">
-                World News
+              <h1 className="archive-title mb-0 h2 primary-text-blue">
+                {searchTerm ? `Search: ${searchTerm}` : (postsPage?.title || 'Archive')}
               </h1>
             </div>
-            <div className="text-secondary fw-medium small">
+            <div className="primary-text-blue fw-medium small">
               {totalItems} {totalItems === 1 ? 'Article' : 'Articles'}
             </div>
           </div>
@@ -40,6 +43,14 @@ export default async function PostsPage({ searchParams }: PageProps) {
       </div>
 
       <div className="container pb-5">
+
+        {/* Archive Toolbar */}
+        <div className="row mb-4">
+          <div className="col-12">
+            <ArchiveToolbar categories={categories} />
+          </div>
+        </div>
+
         {/* Posts Grid - 4 columns on desktop */}
         <div className="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
           {posts.map((post) => (
@@ -50,9 +61,9 @@ export default async function PostsPage({ searchParams }: PageProps) {
         </div>
 
         {posts.length === 0 && (
-          <div className="card border-0 bg-light text-center p-5">
+          <div className="card border-0 bg-light text-center p-5 mt-4">
             <p className="text-secondary mb-0">
-              No posts available at the moment.
+              {searchTerm ? `No results found for "${searchTerm}".` : 'No posts available at the moment.'}
             </p>
           </div>
         )}

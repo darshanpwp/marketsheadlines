@@ -65,12 +65,23 @@
 .p-80 {
   padding-top: 80px;
   padding-bottom: 80px;
+
+  @media (min-width: 992px) {
+    padding-top: 60px;
+    padding-bottom: 60px;
+  }
 }
 
 .p-60 {
-  padding-top: 60px;
-  padding-bottom: 60px;
+  padding-top: 30px;
+  padding-bottom: 30px;
+
+  @media (min-width: 992px) {
+    padding-top: 60px;
+    padding-bottom: 60px;
+  }
 }
+
 
 .color-menu-f {
   color: var(--color-menu-f);
@@ -105,7 +116,7 @@
 }
 
 .primary-text-blue {
-  color: var(--primary-text-blue);
+  color: var(--primary-text-blue) !important;
 }
 
 .fs-18 {
@@ -357,7 +368,6 @@ body .btn-primary {
 
 // Archive Header Styling
 .archive-header {
-  background-color: var(--archive-header-bg);
   padding: 4rem 0;
 
   .archive-title {
@@ -1039,4 +1049,13 @@ body .btn-primary {
 
 .min-w-0 {
   min-width: 0; // Fix for flexbox truncation
+}
+
+// Sticky Sidebar Utility
+.sticky-sidebar {
+  position: -webkit-sticky;
+  position: sticky;
+  top: 100px;
+  z-index: 100;
+  align-self: flex-start;
 }
