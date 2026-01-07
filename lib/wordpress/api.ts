@@ -979,7 +979,7 @@ export async function getHomePageData(): Promise<HomePageData | null> {
 
   try {
     const response = await fetchWithAuth(url, {
-      next: { revalidate: 3600 },
+      next: { revalidate: 60 },
     });
 
     if (!response.ok) {
