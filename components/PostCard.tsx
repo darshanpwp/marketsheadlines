@@ -30,7 +30,7 @@ export default function PostCard({ post, showExcerpt = false, filterCategory, de
   const fallbackImage = defaultImageUrl || 'https://dev-new-marketsheadlines.pantheonsite.io/wp-content/uploads/2026/01/thumbnail.png';
 
   return (
-    <article className="card h-100 shadow-sm border-0 hover-lift overflow-hidden">
+    <article className="card bg-white h-100 shadow-sm border-0 hover-lift overflow-hidden">
       {/* Image Link */}
       <div className="position-relative">
         <Link href={`/posts/${post.slug}`} className="text-decoration-none">

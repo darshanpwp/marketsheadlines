@@ -81,7 +81,7 @@ export default async function CategoryArchivePage({ params, searchParams }: Prop
         </div>
 
         {posts.length === 0 && (
-          <div className="card border-0 bg-light text-center p-5 mt-4">
+          <div className="card bg-white border-0 bg-light text-center p-5 mt-4">
             <p className="text-secondary mb-0">
               No posts found in this category.
             </p>

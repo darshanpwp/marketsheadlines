@@ -51,7 +51,7 @@ export default function ArchiveToolbar({ categories }: ArchiveToolbarProps) {
     };
 
     return (
-        <div className="card border-0 shadow-sm rounded-4 mb-5">
+        <div className="card bg-white border-0 shadow-sm rounded-4 mb-5">
             <div className="card-body p-4">
                 <div className="row g-3 align-items-center">
                     {/* Search Input */}

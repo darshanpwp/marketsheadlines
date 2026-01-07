@@ -16,7 +16,7 @@ export default function SearchWidget() {
     };
 
     return (
-        <div className="card border-0 shadow-sm rounded-4 mb-4">
+        <div className="card bg-white border-0 shadow-sm rounded-4 mb-4">
             <div className="card-body p-4">
                 <h4 className="font-serif fw-bold mb-3 primary-text-blue">Search</h4>
                 <form onSubmit={handleSearch} className="position-relative">

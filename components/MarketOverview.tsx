@@ -10,7 +10,7 @@ export default function MarketOverview({ tickers }: MarketOverviewProps) {
   }
 
   return (
-    <div className="card border p-4 shadow-sm rounded-4 market-overview">
+    <div className="card bg-white border p-4 shadow-sm rounded-4 market-overview">
       <h3 className="h4 fw-semibold mb-4 font-serif primary-text-blue">
         Market Overview
       </h3>

@@ -259,7 +259,7 @@ export default async function Home() {
 
               return (
                 <div className="col" key={feature.id || idx}>
-                  <div className="card h-100 text-center p-sm-5 p-3 hover-lift border-1 border-lighter">
+                  <div className="card bg-white h-100 text-center p-sm-5 p-3 hover-lift border-1 border-lighter bg-white">
                     <div className="mb-4">
                       <div className="d-inline-flex align-items-center bg-light-blue justify-content-center rounded-circle trust-icon-container overflow-hidden position-relative">
                         {feature.image ? (
@@ -286,7 +286,7 @@ export default async function Home() {
             {(!homePageData?.for_investors_organizations_features || homePageData.for_investors_organizations_features.length === 0) && (
               <>
                 <div className="col">
-                  <div className="card h-100 text-center p-sm-5 p-3 hover-lift border-1 border-lighter">
+                  <div className="card bg-white h-100 text-center p-sm-5 p-3 hover-lift border-1 border-lighter">
                     <div className="mb-4">
                       <div className="d-inline-flex align-items-center bg-light-blue justify-content-center rounded-circle trust-icon-container">
                         <i className="fa-solid fa-chart-line fs-5 primary-text-blue"></i>

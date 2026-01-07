@@ -9,7 +9,7 @@ export default async function CategoryList() {
     }
 
     return (
-        <div className="card border-0 shadow-sm rounded-4 mb-4">
+        <div className="card bg-white border-0 shadow-sm rounded-4 mb-4">
             <div className="card-body p-4">
                 <h4 className="font-serif fw-bold mb-3 primary-text-blue">Categories</h4>
                 <div className="d-flex flex-column gap-2">
