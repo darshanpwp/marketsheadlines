@@ -1,0 +1,136 @@
+{
+  "For Investors & Organizations": {
+    "for_investors_organizations_heading": "FOR INVESTORS & ORGANIZATIONS",
+    "for_investors_organizations_main_heading": "FOR INVESTORS & ORGANIZATIONS",
+    "for_investors_organizations_description": "Whether you're an investor, analyst, or organization, Markets Headlines delivers accurate, timely, and actionable market information.",
+    "for_investors_organizations_features": [
+      {
+        "id": "3504760",
+        "title": "Market-Moving News",
+        "description": "Global coverage of equities, commodities, ETFs, and sectors.",
+        "image": null
+      },
+      {
+        "id": "3504762",
+        "title": "Regulatory & Exchange Data",
+        "description": "Access filings from SEC, FCA, SEDAR+, and major exchanges.",
+        "image": null
+      },
+      {
+        "id": "3504764",
+        "title": "Global Perspective",
+        "description": "Insights across regions, industries, and asset classes.",
+        "image": null
+      }
+    ],
+    "request_a_quote_button_text": "Request a Quote",
+    "request_a_quote_button_url": "https://dev-new-marketsheadlines.pantheonsite.io/",
+    "register_for_access_button_text": "Register for Access",
+    "register_for_access_button_url": "https://dev-new-marketsheadlines.pantheonsite.io/"
+  },
+  "Market Intelligence Section": {
+    "market_intelligence_heading": "MARKET INTELLIGENCE",
+    "market_intelligence_main_heading": "Turn Headlines Into Market Intelligence",
+    "market_intelligence_description": "Markets move fast. We help you stay ahead with curated global news, regulatory disclosures, and market-moving insights — all in one place.",
+    "market_intelligence_features_text": [
+      "Real-time global market coverage",
+      "Regulatory filings from major authorities",
+      "Sector-specific intelligence (Energy, Pharma, ETFs & more)",
+      "Test 123"
+    ],
+    "get_market_intelligence_button_text": "Get Market Intelligence",
+    "get_market_intelligence_button_url": "https://dev-new-marketsheadlines.pantheonsite.io/get-market-intelligence",
+    "explore_coverage_button_text": "Explore Coverage",
+    "explore_coverage_button_url": "https://dev-new-marketsheadlines.pantheonsite.io/coverage",
+    "market_intelligence_image": "https://dev-new-marketsheadlines.pantheonsite.io/wp-content/uploads/2026/01/market-intelligence-Section-Image.jpg"
+  },
+  "Page Newsletter Section": {
+    "show_newsletter_section": "1",
+    "newsletter_heading": "Stay Ahead of the Markets",
+    "newsletter_description": "Get expert insights, breaking news, and market analysis delivered directly to your inbox",
+    "default_daily_market_brief": "1",
+    "default_weekly_deep_dive": "0",
+    "default_breaking_news_alerts": "1"
+  },
+  "ID": {
+    "ID": 3504679
+  },
+  "Title": {
+    "post_title": "Home"
+  },
+  "Content": {
+    "post_content": ""
+  },
+  "Excerpt": {
+    "post_excerpt": ""
+  },
+  "Author": {
+    "post_author": "1"
+  },
+  "Publish Date": {
+    "post_date": "2026-01-06 04:54:43"
+  },
+  "Publish Date (GMT)": {
+    "post_date_gmt": "2026-01-06 09:54:43"
+  },
+  "Status": {
+    "post_status": "publish"
+  },
+  "Comment Status": {
+    "comment_status": "closed"
+  },
+  "Ping Status": {
+    "ping_status": "closed"
+  },
+  "Password": {
+    "post_password": ""
+  },
+  "Permalink": {
+    "post_name": "home"
+  },
+  "To Ping": {
+    "to_ping": ""
+  },
+  "Pinged": {
+    "pinged": ""
+  },
+  "Last Modified Date": {
+    "post_modified": "2026-01-07 01:20:03"
+  },
+  "Last Modified Date (GMT)": {
+    "post_modified_gmt": "2026-01-07 06:20:03"
+  },
+  "Content (filtered)": {
+    "post_content_filtered": ""
+  },
+  "Parent": {
+    "post_parent": 0
+  },
+  "GUID": {
+    "guid": "https://dev-new-marketsheadlines.pantheonsite.io/?page_id=3504679"
+  },
+  "Menu Order": {
+    "menu_order": 0
+  },
+  "Type": {
+    "post_type": "page"
+  },
+  "Mime Type": {
+    "post_mime_type": ""
+  },
+  "Comment Count": {
+    "comment_count": "0"
+  },
+  "Comments": {
+    "comments": false
+  },
+  "Featured Image": {
+    "_thumbnail_id": false
+  },
+  "General": {
+    "ID": 3504679,
+    "post_title": "Home",
+    "post_content": "",
+    "post_excerpt": ""
+  }
+}

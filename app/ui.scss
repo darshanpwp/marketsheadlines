@@ -182,21 +182,33 @@
     background: linear-gradient(180deg, #0F172A 0%, #1E3A8A 50%, #0F172A 100%);
 }
 
+.newsletter-title {
+    font-family: var(--bs-font-serif);
+
+    & strong,
+    & b {
+        font-family: var(--bs-font-serif);
+    }
+}
+
 .newsletter-input {
     padding: 1rem 1.5rem;
     background-color: rgba(255, 255, 255, 0.1);
     backdrop-filter: blur(10px);
     border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
     color: var(--white);
+    font-size: 1rem;
 
     &::placeholder {
-        color: rgba(255, 255, 255, 0.6);
+        color: rgba(255, 255, 255, 0.7);
+        font-weight: 400;
     }
 
     &:focus {
-        background-color: rgba(255, 255, 255, 0.15);
-        border-color: rgba(255, 255, 255, 0.4);
-        box-shadow: 0 0 0 4px rgba(255, 255, 255, 0.1);
+        background-color: rgba(255, 255, 255, 0.2);
+        border-color: rgba(255, 255, 255, 0.5);
+        box-shadow: none;
         color: var(--white);
     }
 }
@@ -226,14 +238,15 @@
     .custom-checkbox {
         width: 24px;
         height: 24px;
-        border: 2px solid rgba(255, 255, 255, 0.4);
+        min-width: 24px;
+        border: 2px solid rgba(255, 255, 255, 0.5);
         border-radius: 4px;
         margin-right: 1rem;
         display: flex;
         align-items: center;
         justify-content: center;
         transition: all 0.2s ease;
-        flex-shrink: 0;
+        background-color: transparent;
 
         i {
             display: none;
@@ -257,6 +270,32 @@
     cursor: pointer;
     margin-bottom: 0;
     font-weight: 500;
+    color: var(--white);
+    font-size: 1rem;
+}
+
+.newsletter-submit-btn {
+    background-color: var(--white);
+    color: var(--primary-text-blue);
+    font-weight: 600;
+    padding: 1rem 2rem;
+    border-radius: 8px;
+    border: none;
+    transition: all 0.3s ease;
+    width: 100%;
+    margin-top: 2rem;
+    font-size: 1.2em;
+
+    &:hover {
+        background-color: #f8fafc;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    &:disabled {
+        opacity: 0.7;
+        transform: none;
+    }
 }
 
 .promo-tag {

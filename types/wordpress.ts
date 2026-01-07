@@ -530,4 +530,25 @@ export interface HomePageData {
   explore_coverage_button_text: string;
   explore_coverage_button_url: string;
   market_intelligence_image: string;
+  // Investors Section
+  for_investors_organizations_heading: string;
+  for_investors_organizations_main_heading: string;
+  for_investors_organizations_description: string;
+  for_investors_organizations_features: Array<{
+    id: string | number;
+    title: string;
+    description: string;
+    image: string | null;
+  }>;
+  request_a_quote_button_text: string;
+  request_a_quote_button_url: string;
+  register_for_access_button_text: string;
+  register_for_access_button_url: string;
+  // Newsletter Section
+  show_newsletter_section: string;
+  newsletter_heading: string;
+  newsletter_description: string;
+  default_daily_market_brief: string;
+  default_weekly_deep_dive: string;
+  default_breaking_news_alerts: string;
 }

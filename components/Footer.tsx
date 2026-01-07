@@ -104,7 +104,7 @@ export default async function Footer() {
             <div className="row g-4">
               {footerSections.map((section) => (
                 <div key={section.title} className="col-6 col-md-3">
-                  <h5 className="h6 fw-bold mb-3 text-uppercase text-white text-font-family small tracking-wider">{section.title}</h5>
+                  <h5 className="h6 fw-bold mb-3 fw-semibold  text-white text-font-family small tracking-wider">{section.title}</h5>
                   <ul className="list-unstyled">
                     {(section.items.length > 0 ? section.items : section.fallback).map((item: any, idx) => (
                       <li key={item.ID || idx} className="mb-2">
