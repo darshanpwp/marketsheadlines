@@ -194,14 +194,28 @@ export interface WordPressSite {
   logo: string;
 }
 
-/**
- * Represents a Search Result object returned by the REST API (or custom endpoint).
- */
 export interface WordPressSearchResult {
   id: number;
   title: string;
   slug: string;
   type: string;
+}
+
+/**
+ * Represents Global Theme Settings from custom Pods endpoint.
+ */
+export interface GlobalThemeSettings {
+  footer_logo?: {
+    guid: string;
+    alt?: string;
+  };
+  footer_sub_title?: string;
+  footer_copyright?: string;
+  social_media_urls?: string[];
+  blog_default_image?: {
+    guid: string;
+    ID: string;
+  };
 }
 
 // Simplified types for frontend consumption
@@ -550,5 +564,21 @@ export interface HomePageData {
   newsletter_description: string;
   default_daily_market_brief: string;
   default_weekly_deep_dive: string;
-  default_breaking_news_alerts: string;
+  default_breaking_news_alerts?: string;
+}
+
+export interface MarketTicker {
+  symbol: string;
+  name: string;
+  price: number;
+  change: number;
+  change_percent: number;
+  market?: string;
+  currency?: string;
+}
+
+export interface WordPressRestSettings {
+  title: string;
+  description: string;
+  page_for_posts: number;
 }

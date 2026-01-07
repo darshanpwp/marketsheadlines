@@ -9,9 +9,10 @@ interface PostCardProps {
   post: PostWithDetails;
   showExcerpt?: boolean;
   filterCategory?: string;
+  defaultImageUrl?: string;
 }
 
-export default function PostCard({ post, showExcerpt = false, filterCategory }: PostCardProps) {
+export default function PostCard({ post, showExcerpt = false, filterCategory, defaultImageUrl }: PostCardProps) {
   const readingTime = calculateReadingTime(post.content);
 
   // Determine which category to display
@@ -25,6 +26,9 @@ export default function PostCard({ post, showExcerpt = false, filterCategory }: 
     }
   }
 
+  // Use dynamic default image or hardcoded fallback as last resort
+  const fallbackImage = defaultImageUrl || 'https://dev-new-marketsheadlines.pantheonsite.io/wp-content/uploads/2026/01/thumbnail.png';
+
   return (
     <article className="card h-100 shadow-sm border-0 hover-lift overflow-hidden">
       {/* Image Link */}
@@ -32,7 +36,7 @@ export default function PostCard({ post, showExcerpt = false, filterCategory }: 
         <Link href={`/posts/${post.slug}`} className="text-decoration-none">
           <div className="position-relative aspect-video overflow-hidden">
             <Image
-              src={post.featuredMediaDetails?.source_url || 'https://dev-new-marketsheadlines.pantheonsite.io/wp-content/uploads/2026/01/thumbnail.png'}
+              src={post.featuredMediaDetails?.source_url || fallbackImage}
               alt={post.featuredMediaDetails?.alt_text || post.title}
               fill
               className="object-fit-cover"

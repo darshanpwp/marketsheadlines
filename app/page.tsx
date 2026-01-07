@@ -1,6 +1,9 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import { getPostsWithDetails, getPagesWithDetails, getHomePageData } from '@/lib/wordpress/api';
+import {
+  getPostsWithDetails, getPagesWithDetails, getHomePageData,
+  getMarketTickers, getGlobalThemeSettings
+} from '@/lib/wordpress/api';
 import MarketOverview from '@/components/MarketOverview';
 import TrendingListItem from '@/components/TrendingListItem';
 import NewsListItem from '@/components/NewsListItem';
@@ -13,9 +16,17 @@ import NewsletterForm from '@/components/NewsletterForm';
 export const revalidate = 60; // Revalidate every 60 seconds
 
 export default async function Home() {
-  const { items: posts } = await getPostsWithDetails();
+  const [postsResponse, homePageData, marketTickers, globalSettings] = await Promise.all([
+    getPostsWithDetails(10), // Fetch 10 posts
+    getHomePageData(),
+    getMarketTickers(),
+    getGlobalThemeSettings()
+  ]);
+
+  const defaultImageUrl = globalSettings?.blog_default_image?.guid || 'https://dev-new-marketsheadlines.pantheonsite.io/wp-content/uploads/2026/01/thumbnail.png';
+
+  const posts = postsResponse.items;
   const { items: pages } = await getPagesWithDetails();
-  const homePageData = await getHomePageData();
 
   // Get featured/sticky posts for hero carousel (at least 3)
   const stickyPosts = posts.filter(post => post.sticky);
@@ -38,7 +49,7 @@ export default async function Home() {
   ).slice(0, 3);
 
   return (
-    <main className="bg-white">
+    <div className="bg-white min-vh-100">
       {/* 1️⃣ Hero / Featured News Carousel Section */}
       <HeroCarousel posts={featuredPosts} />
 
@@ -67,7 +78,9 @@ export default async function Home() {
 
             {/* Right: Market Overview */}
             <div className="col-lg-4">
-              <MarketOverview />
+              <div className="sticky-sidebar">
+                <MarketOverview tickers={marketTickers} />
+              </div>
             </div>
           </div>
         </div>
@@ -176,7 +189,9 @@ export default async function Home() {
 
           {/* Right: Market Overview */}
           <div className="col-lg-4">
-            <MarketOverview />
+            <div className="sticky-sidebar">
+              <MarketOverview tickers={marketTickers} />
+            </div>
           </div>
         </div>
       </section>
@@ -194,7 +209,7 @@ export default async function Home() {
           <div className="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
             {worldNewsCards.map((post) => (
               <div key={post.id} className="col">
-                <PostCard post={post} />
+                <PostCard post={post} defaultImageUrl={defaultImageUrl} />
               </div>
             ))}
           </div>
@@ -214,7 +229,7 @@ export default async function Home() {
         <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
           {(businessPosts.length > 0 ? businessPosts : posts.slice(0, 3)).map((post) => (
             <div key={post.id} className="col">
-              <PostCard post={post} showExcerpt={true} filterCategory="business" />
+              <PostCard post={post} showExcerpt={true} filterCategory="business" defaultImageUrl={defaultImageUrl} />
             </div>
           ))}
         </div>
@@ -256,7 +271,7 @@ export default async function Home() {
                             className="w-50 h-50 object-fit-contain"
                           />
                         ) : (
-                          <i className={`fa-solid ${iconClass} fs-5 primary-text-blue`}></i>
+                          <i className={`fa - solid ${iconClass} fs - 5 primary - text - blue`}></i>
                         )}
                       </div>
                     </div>
@@ -323,6 +338,6 @@ export default async function Home() {
           </div>
         </section>
       )}
-    </main>
+    </div>
   );
 }

@@ -13,7 +13,11 @@ import type {
   WordPressMenu,
   PaginatedResponse,
   MarketHeadlinesSettings,
-  HomePageData
+  HomePageData,
+  MarketTicker,
+  WordPressRestSettings,
+  GlobalThemeSettings,
+  WordPressCategory
 } from '@/types/wordpress';
 
 const WP_API_URL = process.env.NEXT_PUBLIC_WP_API_URL || 'https://dev-new-marketsheadlines.pantheonsite.io/wp-json/wp/v2';
@@ -36,7 +40,7 @@ function getAuthHeader(): string | null {
     console.warn('WordPress credentials not configured. API requests may fail if authentication is required.');
     return null;
   }
-  return `Basic ${Buffer.from(`${WP_USERNAME}:${WP_PASSWORD}`).toString('base64')}`;
+  return `Basic ${Buffer.from(`${WP_USERNAME}:${WP_PASSWORD}`).toString('base64')} `;
 }
 
 // Fetch with authentication
@@ -59,7 +63,7 @@ async function fetchWithAuth(url: string, options: RequestInit = {}): Promise<Re
   });
 
   if (!response.ok) {
-    const errorMessage = `WordPress API error: ${response.status} ${response.statusText}`;
+    const errorMessage = `WordPress API error: ${response.status} ${response.statusText} `;
 
     // Provide helpful error message for authentication issues
 
@@ -186,6 +190,76 @@ export async function getPageBySlug(slug: string): Promise<PageWithDetails | nul
 }
 
 /**
+ * Fetch a single page by ID
+ */
+export async function getPage(id: number): Promise<Page | null> {
+  const url = `${WP_API_URL}/pages/${id}`;
+
+  try {
+    const response = await fetchWithAuth(url, {
+      next: { revalidate: 3600 },
+    });
+
+    const wpPage: WordPressPage = await response.json();
+    return transformPage(wpPage);
+  } catch (error) {
+    console.error(`Error fetching page with ID ${id}:`, error);
+    return null;
+  }
+}
+
+// ... existing imports ...
+// ... existing imports ...
+
+
+// ... getAllCategories ...
+
+/**
+ * Fetch global theme settings (Pods)
+ */
+export async function getGlobalThemeSettings(): Promise<GlobalThemeSettings | null> {
+  const url = `${WP_API_URL.replace('/wp/v2', '/custom/v1')}/global-pods-theme-settings/`;
+
+  try {
+    // Note: This endpoint might not require auth if public, but using fetchWithAuth is safe usually.
+    // Given the URL structure, it looks like a custom endpoint.
+    const response = await fetchWithAuth(url, {
+      next: { revalidate: 60 }, // Cache for 1 hour
+    });
+
+    if (!response.ok) {
+      console.warn('Failed to fetch global theme settings:', response.status);
+      return null;
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Error fetching global theme settings:', error);
+    return null;
+  }
+}
+
+/**
+ * Fetch all categories
+ */
+export async function getAllCategories(): Promise<WordPressCategory[]> {
+  const url = `${WP_API_URL}/categories?per_page=100&hide_empty=true`;
+  try {
+    const response = await fetchWithAuth(url, {
+      next: { revalidate: 3600 },
+    });
+
+    if (!response.ok) {
+      return [];
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Error fetching categories:', error);
+    return [];
+  }
+}
+/**
  * Fetch all page slugs for static generation
  */
 export async function getAllPageSlugs(): Promise<string[]> {
@@ -299,8 +373,12 @@ export async function getPosts(perPage: number = 10, page: number = 1): Promise<
 /**
  * Fetch all posts with embedded author, media, and taxonomy details with pagination
  */
-export async function getPostsWithDetails(perPage: number = 10, page: number = 1): Promise<PaginatedResponse<PostWithDetails>> {
-  const url = `${WP_API_URL}/posts?status=publish&_embed&per_page=${perPage}&page=${page}`;
+export async function getPostsWithDetails(perPage: number = 10, page: number = 1, search?: string): Promise<PaginatedResponse<PostWithDetails>> {
+  let url = `${WP_API_URL}/posts?status=publish&_embed&per_page=${perPage}&page=${page}`;
+
+  if (search) {
+    url += `&search=${encodeURIComponent(search)}`;
+  }
 
   try {
     const response = await fetchWithAuth(url, {
@@ -882,9 +960,9 @@ export async function getSiteIdentity(): Promise<{ title: string; description: s
  * Fetch MarketHeadlines settings from the custom endpoint
  */
 export async function getMarketHeadlinesSettings(): Promise<MarketHeadlinesSettings | null> {
-  // Use the new custom endpoint provided by the user
+  // Use the new custom endpoint provided by the user (same as global theme settings)
   const baseUrl = WP_API_URL.replace('/wp/v2', '/custom/v1');
-  const url = `${baseUrl}/theme-settings`;
+  const url = `${baseUrl}/global-pods-theme-settings/`;
 
   try {
     const response = await fetchWithAuth(url, {
@@ -904,10 +982,10 @@ export async function getMarketHeadlinesSettings(): Promise<MarketHeadlinesSetti
       description: '', // Default
       url: WP_API_URL, // Default to API URL if general settings aren't fetched
       logo: undefined,
-      footer_title: rawData.footer_title,
-      footer_sub_title: rawData.footer_sub_title,
-      footer_copyright: rawData.footer_copyright,
-      social: rawData.social_media_urls,
+      footer_title: rawData.footer_title || '',
+      footer_sub_title: rawData.footer_sub_title || '',
+      footer_copyright: rawData.footer_copyright || '',
+      social: rawData.social_media_urls || [],
       // Handle footer_logo object or string
       footer_logo: typeof rawData.footer_logo === 'object' && rawData.footer_logo?.guid
         ? rawData.footer_logo.guid
@@ -1052,6 +1130,70 @@ export async function getHomePageData(): Promise<HomePageData | null> {
     };
   } catch (error) {
     console.error('Error fetching Home Page Data:', error);
+    return null;
+  }
+}
+
+/**
+ * Fetch Market Tickers from custom endpoint
+ */
+export async function getMarketTickers(): Promise<MarketTicker[]> {
+  const url = 'https://dev-new-marketsheadlines.pantheonsite.io/wp-json/custom-market/v1/tickers';
+  try {
+    const response = await fetch(url, {
+      next: { revalidate: 60 },
+    });
+
+    if (!response.ok) {
+      console.warn('Failed to fetch market tickers:', response.status);
+      return [];
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Error fetching market tickers:', error);
+    return [];
+  }
+}
+// ... existing code ...
+
+
+// ... existing code ...
+
+/**
+ * Get the designated posts page from WordPress settings
+ */
+export async function getPostsPage(): Promise<Page | null> {
+  try {
+    // 1. Fetch Settings to get page_for_posts ID
+    // Note: /settings usually requires authentication. We'll handle 401 gracefully.
+    let settingsRes;
+    try {
+      settingsRes = await fetchWithAuth(`${WP_API_URL}/settings`);
+    } catch (error) {
+      if (error instanceof WordPressError && error.status === 401) {
+        // Silently fail for unauthenticated requests
+        return null;
+      }
+      throw error; // Re-throw other errors
+    }
+
+    // If we can't get settings (e.g. 401 unauthenticated), we can't determine the page
+    if (!settingsRes.ok) {
+      return null;
+    }
+
+    const settings: WordPressRestSettings = await settingsRes.json();
+    const postsPageId = settings.page_for_posts;
+
+    if (!postsPageId || postsPageId === 0) {
+      return null;
+    }
+
+    // 2. Fetch the actual Page
+    return await getPage(postsPageId);
+  } catch (error) {
+    console.error('Error fetching posts page:', error);
     return null;
   }
 }
