@@ -2,7 +2,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import {
   getPostsWithDetails, getPagesWithDetails, getHomePageData,
-  getMarketTickers
+  getMarketTickers, getGlobalThemeSettings
 } from '@/lib/wordpress/api';
 import MarketOverview from '@/components/MarketOverview';
 import TrendingListItem from '@/components/TrendingListItem';
@@ -16,11 +16,14 @@ import NewsletterForm from '@/components/NewsletterForm';
 export const revalidate = 60; // Revalidate every 60 seconds
 
 export default async function Home() {
-  const [postsResponse, homePageData, marketTickers] = await Promise.all([
+  const [postsResponse, homePageData, marketTickers, globalSettings] = await Promise.all([
     getPostsWithDetails(10), // Fetch 10 posts
     getHomePageData(),
-    getMarketTickers()
+    getMarketTickers(),
+    getGlobalThemeSettings()
   ]);
+
+  const defaultImageUrl = globalSettings?.blog_default_image?.guid || 'https://dev-new-marketsheadlines.pantheonsite.io/wp-content/uploads/2026/01/thumbnail.png';
 
   const posts = postsResponse.items;
   const { items: pages } = await getPagesWithDetails();
@@ -206,7 +209,7 @@ export default async function Home() {
           <div className="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
             {worldNewsCards.map((post) => (
               <div key={post.id} className="col">
-                <PostCard post={post} />
+                <PostCard post={post} defaultImageUrl={defaultImageUrl} />
               </div>
             ))}
           </div>
@@ -226,7 +229,7 @@ export default async function Home() {
         <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
           {(businessPosts.length > 0 ? businessPosts : posts.slice(0, 3)).map((post) => (
             <div key={post.id} className="col">
-              <PostCard post={post} showExcerpt={true} filterCategory="business" />
+              <PostCard post={post} showExcerpt={true} filterCategory="business" defaultImageUrl={defaultImageUrl} />
             </div>
           ))}
         </div>

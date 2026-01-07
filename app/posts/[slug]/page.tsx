@@ -1,4 +1,4 @@
-import { getPostBySlug, getPostsByCategory } from '@/lib/wordpress/api';
+import { getPostBySlug, getPostsByCategory, getMarketTickers, getGlobalThemeSettings } from '@/lib/wordpress/api';
 import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
 import Image from 'next/image';
@@ -39,6 +39,9 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 export default async function PostDetailPage({ params }: Props) {
   const { slug } = await params;
   const post = await getPostBySlug(slug);
+  const tickers = await getMarketTickers();
+  const globalSettings = await getGlobalThemeSettings();
+  const defaultImageUrl = globalSettings?.blog_default_image?.guid || 'https://dev-new-marketsheadlines.pantheonsite.io/wp-content/uploads/2026/01/thumbnail.png';
 
   if (!post) {
     notFound();
@@ -136,7 +139,7 @@ export default async function PostDetailPage({ params }: Props) {
           <div className="col-12">
             <div className="rounded-4 overflow-hidden shadow-sm position-relative mb-3" style={{ height: '600px' }}>
               <Image
-                src={post.featuredMediaDetails?.source_url || 'https://dev-new-marketsheadlines.pantheonsite.io/wp-content/uploads/2026/01/thumbnail.png'}
+                src={post.featuredMediaDetails?.source_url || defaultImageUrl}
                 alt={post.featuredMediaDetails?.alt_text || post.title}
                 fill
                 className="object-fit-cover"
@@ -176,7 +179,7 @@ export default async function PostDetailPage({ params }: Props) {
             <div className="sticky-top" style={{ top: '6rem', zIndex: 10 }}>
               {/* Market Overview Widget */}
               <div className="mb-4">
-                <MarketOverview />
+                <MarketOverview tickers={tickers} />
               </div>
 
               {/* Trending Stories Widget */}
@@ -204,7 +207,7 @@ export default async function PostDetailPage({ params }: Props) {
             <div className="row g-4">
               {filteredRelatedPosts.map((relatedPost) => (
                 <div key={relatedPost.id} className="col-md-4">
-                  <PostCard post={relatedPost} />
+                  <PostCard post={relatedPost} defaultImageUrl={defaultImageUrl} />
                 </div>
               ))}
             </div>

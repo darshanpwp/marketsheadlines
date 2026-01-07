@@ -14,7 +14,10 @@ import type {
   PaginatedResponse,
   MarketHeadlinesSettings,
   HomePageData,
-  MarketTicker
+  MarketTicker,
+  WordPressRestSettings,
+  GlobalThemeSettings,
+  WordPressCategory
 } from '@/types/wordpress';
 
 const WP_API_URL = process.env.NEXT_PUBLIC_WP_API_URL || 'https://dev-new-marketsheadlines.pantheonsite.io/wp-json/wp/v2';
@@ -206,7 +209,35 @@ export async function getPage(id: number): Promise<Page | null> {
 }
 
 // ... existing imports ...
-import { WordPressCategory } from '@/types/wordpress';
+// ... existing imports ...
+
+
+// ... getAllCategories ...
+
+/**
+ * Fetch global theme settings (Pods)
+ */
+export async function getGlobalThemeSettings(): Promise<GlobalThemeSettings | null> {
+  const url = `${WP_API_URL.replace('/wp/v2', '/custom/v1')}/global-pods-theme-settings/`;
+
+  try {
+    // Note: This endpoint might not require auth if public, but using fetchWithAuth is safe usually.
+    // Given the URL structure, it looks like a custom endpoint.
+    const response = await fetchWithAuth(url, {
+      next: { revalidate: 60 }, // Cache for 1 hour
+    });
+
+    if (!response.ok) {
+      console.warn('Failed to fetch global theme settings:', response.status);
+      return null;
+    }
+
+    return await response.json();
+  } catch (error) {
+    console.error('Error fetching global theme settings:', error);
+    return null;
+  }
+}
 
 /**
  * Fetch all categories
@@ -929,9 +960,9 @@ export async function getSiteIdentity(): Promise<{ title: string; description: s
  * Fetch MarketHeadlines settings from the custom endpoint
  */
 export async function getMarketHeadlinesSettings(): Promise<MarketHeadlinesSettings | null> {
-  // Use the new custom endpoint provided by the user
+  // Use the new custom endpoint provided by the user (same as global theme settings)
   const baseUrl = WP_API_URL.replace('/wp/v2', '/custom/v1');
-  const url = `${baseUrl}/theme-settings`;
+  const url = `${baseUrl}/global-pods-theme-settings/`;
 
   try {
     const response = await fetchWithAuth(url, {
@@ -951,10 +982,10 @@ export async function getMarketHeadlinesSettings(): Promise<MarketHeadlinesSetti
       description: '', // Default
       url: WP_API_URL, // Default to API URL if general settings aren't fetched
       logo: undefined,
-      footer_title: rawData.footer_title,
-      footer_sub_title: rawData.footer_sub_title,
-      footer_copyright: rawData.footer_copyright,
-      social: rawData.social_media_urls,
+      footer_title: rawData.footer_title || '',
+      footer_sub_title: rawData.footer_sub_title || '',
+      footer_copyright: rawData.footer_copyright || '',
+      social: rawData.social_media_urls || [],
       // Handle footer_logo object or string
       footer_logo: typeof rawData.footer_logo === 'object' && rawData.footer_logo?.guid
         ? rawData.footer_logo.guid
@@ -1124,7 +1155,8 @@ export async function getMarketTickers(): Promise<MarketTicker[]> {
     return [];
   }
 }
-import { WordPressRestSettings } from '@/types/wordpress';
+// ... existing code ...
+
 
 // ... existing code ...
 

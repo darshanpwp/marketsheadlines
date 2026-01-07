@@ -1,4 +1,4 @@
-import { getPostsByCategorySlug, getCategoryBySlug, getAllCategories } from '@/lib/wordpress/api';
+import { getPostsByCategorySlug, getCategoryBySlug, getAllCategories, getGlobalThemeSettings } from '@/lib/wordpress/api';
 import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
 import PostCard from '@/components/PostCard';
@@ -21,10 +21,11 @@ export default async function CategoryArchivePage({ params, searchParams }: Prop
   const searchTerm = resolvedSearchParams.search || '';
   const perPage = 16;
 
-  const [category, categories, postsData] = await Promise.all([
+  const [category, categories, postsData, globalSettings] = await Promise.all([
     getCategoryBySlug(slug),
     getAllCategories(),
-    getPostsByCategorySlug(slug, perPage, currentPage)
+    getPostsByCategorySlug(slug, perPage, currentPage),
+    getGlobalThemeSettings()
     // Note: getPostsByCategorySlug likely doesn't support 'search' param yet based on previous file views.
     // If it does, update here. If not, search on category page might only filter clientside or ignore search term?
     // WARNING: 'search' param support in getPostsByCategorySlug was NOT explicitly added in previous steps.
@@ -34,6 +35,8 @@ export default async function CategoryArchivePage({ params, searchParams }: Prop
     // Given the widget implementation (router.push('/posts?search=...')), it redirects AWAY from category page.
     // This is acceptable behavior for "adding a search bar".
   ]);
+
+  const defaultImageUrl = globalSettings?.blog_default_image?.guid || 'https://dev-new-marketsheadlines.pantheonsite.io/wp-content/uploads/2026/01/thumbnail.png';
 
   if (!category) {
     notFound();

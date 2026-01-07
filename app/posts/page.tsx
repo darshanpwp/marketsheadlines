@@ -1,4 +1,4 @@
-import { getPostsWithDetails, getPostsPage, getAllCategories } from '@/lib/wordpress/api';
+import { getPostsWithDetails, getPostsPage, getAllCategories, getGlobalThemeSettings } from '@/lib/wordpress/api';
 import { Metadata } from 'next';
 import PostCard from '@/components/PostCard';
 import Pagination from '@/components/Pagination';
@@ -18,11 +18,14 @@ export default async function PostsPage({ searchParams }: PageProps) {
   const searchTerm = resolvedParams.search || '';
   const perPage = 16;
 
-  const [postsPage, { items: posts, totalItems, totalPages }, categories] = await Promise.all([
+  const [postsPage, { items: posts, totalItems, totalPages }, categories, globalSettings] = await Promise.all([
     getPostsPage(),
     getPostsWithDetails(perPage, currentPage, searchTerm),
-    getAllCategories()
+    getAllCategories(),
+    getGlobalThemeSettings()
   ]);
+
+  const defaultImageUrl = globalSettings?.blog_default_image?.guid || 'https://dev-new-marketsheadlines.pantheonsite.io/wp-content/uploads/2026/01/thumbnail.png';
 
   return (
     <div className="min-vh-100 bg-white">
