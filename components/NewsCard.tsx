@@ -24,7 +24,7 @@ export default function NewsCard({ page }: NewsCardProps) {
         </div>
       </Link>
 
-      <div className="card-body p-3">
+      <div className="card-body p-3 bg-white">
         <Link href={`/news/${page.slug}`} className="text-decoration-none">
           <h2 className="h6 fw-bold mb-2 text-dark hover-primary transition-all line-clamp-2" style={{ lineHeight: '1.4' }}>
             {page.title}

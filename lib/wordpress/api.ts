@@ -973,7 +973,9 @@ function smartSplit(text: string): string[] {
  */
 export async function getHomePageData(): Promise<HomePageData | null> {
   const homePageId = 3504679;
-  const url = `${WP_API_URL}/pages/${homePageId}`;
+  // Use the new custom endpoint that returns Pods data
+  const baseUrl = WP_API_URL.replace('/wp/v2', '/custom/v1');
+  const url = `${baseUrl}/page-pods/${homePageId}/`;
 
   try {
     const response = await fetchWithAuth(url, {
@@ -981,41 +983,72 @@ export async function getHomePageData(): Promise<HomePageData | null> {
     });
 
     if (!response.ok) {
+      console.warn('Failed to fetch Home Page Pods data:', response.status);
       return null;
     }
 
     const data = await response.json();
 
-    // Handle market_intelligence_features_text which might be a string (newline/comma separated) or an array
-    let features: string[] = [];
-    const rawFeatures = data.market_intelligence_features_text;
+    // keys in data: "Market Intelligence Section", "For Investors & Organizations", "Page Newsletter Section", "General", etc.
+    const marketSection = data['Market Intelligence Section'] || {};
+    const investorsSection = data['For Investors & Organizations'] || {};
+    const newsletterSection = data['Page Newsletter Section'] || {};
 
-    if (Array.isArray(rawFeatures)) {
-      features = rawFeatures.map((f: unknown) => String(f)).filter(Boolean);
-    } else if (typeof rawFeatures === 'string') {
-      // 1. Try split by newline first (preferred)
-      const newlineSplit = rawFeatures.split(/\r?\n/).filter(Boolean);
+    // Handle market_intelligence_features_text
+    let marketFeatures: string[] = [];
+    const rawMarketFeatures = marketSection.market_intelligence_features_text;
 
-      // 2. If newline split failed (Still 1 item? might correspond to a single string)
+    if (Array.isArray(rawMarketFeatures)) {
+      marketFeatures = rawMarketFeatures.map((f: unknown) => String(f)).filter(Boolean);
+    } else if (typeof rawMarketFeatures === 'string') {
+      const newlineSplit = rawMarketFeatures.split(/\r?\n/).filter(Boolean);
       if (newlineSplit.length > 1) {
-        features = newlineSplit;
+        marketFeatures = newlineSplit;
       } else {
-        // 3. Fallback: Smart Split by comma (respecting parens)
-        // This handles cases like: "Real-time..., Regulatory..., Sector (Energy, Pharma), and Test"
-        features = smartSplit(rawFeatures);
+        marketFeatures = smartSplit(rawMarketFeatures);
       }
     }
 
+    // Handle investors features which should be an array of objects
+    const investorsFeatures = Array.isArray(investorsSection.for_investors_organizations_features)
+      ? investorsSection.for_investors_organizations_features.map((feature: any) => ({
+        ...feature,
+        // Ensure image is a string URL if it's an object (common in WP REST)
+        image: typeof feature.image === 'object' && feature.image?.guid
+          ? feature.image.guid
+          : (typeof feature.image === 'string' ? feature.image : null)
+      }))
+      : [];
+
     return {
-      market_intelligence_heading: data.market_intelligence_heading || '',
-      market_intelligence_main_heading: data.market_intelligence_main_heading || '',
-      market_intelligence_description: data.market_intelligence_description || '',
-      market_intelligence_features_text: features,
-      get_market_intelligence_button_text: data.get_market_intelligence_button_text || '',
-      get_market_intelligence_button_url: extractUrlFromAnchor(data.get_market_intelligence_button_url || ''),
-      explore_coverage_button_text: data.explore_coverage_button_text || '',
-      explore_coverage_button_url: extractUrlFromAnchor(data.explore_coverage_button_url || ''),
-      market_intelligence_image: data.market_intelligence_image || '',
+      // Market Intelligence Section
+      market_intelligence_heading: marketSection.market_intelligence_heading || '',
+      market_intelligence_main_heading: marketSection.market_intelligence_main_heading || '',
+      market_intelligence_description: marketSection.market_intelligence_description || '',
+      market_intelligence_features_text: marketFeatures,
+      get_market_intelligence_button_text: marketSection.get_market_intelligence_button_text || '',
+      get_market_intelligence_button_url: extractUrlFromAnchor(marketSection.get_market_intelligence_button_url || ''),
+      explore_coverage_button_text: marketSection.explore_coverage_button_text || '',
+      explore_coverage_button_url: extractUrlFromAnchor(marketSection.explore_coverage_button_url || ''),
+      market_intelligence_image: marketSection.market_intelligence_image || '',
+
+      // Investors & Organizations Section
+      for_investors_organizations_heading: investorsSection.for_investors_organizations_heading || '',
+      for_investors_organizations_main_heading: investorsSection.for_investors_organizations_main_heading || '',
+      for_investors_organizations_description: investorsSection.for_investors_organizations_description || '',
+      for_investors_organizations_features: investorsFeatures,
+      request_a_quote_button_text: investorsSection.request_a_quote_button_text || '',
+      request_a_quote_button_url: extractUrlFromAnchor(investorsSection.request_a_quote_button_url || ''),
+      register_for_access_button_text: investorsSection.register_for_access_button_text || '',
+      register_for_access_button_url: extractUrlFromAnchor(investorsSection.register_for_access_button_url || ''),
+
+      // Newsletter Section
+      show_newsletter_section: newsletterSection.show_newsletter_section || '0',
+      newsletter_heading: newsletterSection.newsletter_heading || '',
+      newsletter_description: newsletterSection.newsletter_description || '',
+      default_daily_market_brief: newsletterSection.default_daily_market_brief || '0',
+      default_weekly_deep_dive: newsletterSection.default_weekly_deep_dive || '0',
+      default_breaking_news_alerts: newsletterSection.default_breaking_news_alerts || '0',
     };
   } catch (error) {
     console.error('Error fetching Home Page Data:', error);
