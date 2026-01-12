@@ -1404,7 +1404,7 @@ export async function getHomePageData(): Promise<HomePageData | null> {
  * Fetch Market Tickers from custom endpoint
  */
 export async function getMarketTickers(): Promise<MarketTicker[]> {
-  const url = 'https://dev-new-marketsheadlines.pantheonsite.io/wp-json/custom-market/v1/tickers';
+  const url = `${WORDPRESS_URL}/wp-json/custom-market/v1/tickers`;
   try {
     const response = await fetch(url, {
       next: { revalidate: 60 },
