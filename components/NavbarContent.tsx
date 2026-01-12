@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import Image from 'next/image';
 import { WordPressMenuItem, SiteIdentity } from '@/types/wordpress';
+import { WORDPRESS_URL } from '@/lib/wordpress/api';
 
 interface NavbarContentProps {
     menuItems: WordPressMenuItem[];
@@ -77,7 +78,7 @@ export default function NavbarContent({ menuItems, siteIdentity }: NavbarContent
                     <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
                         {menuItems.map((item: WordPressMenuItem) => {
                             const hasChildren = item.child_items && item.child_items.length > 0;
-                            const href = item.url.replace('https://dev-new-marketsheadlines.pantheonsite.io', '') || '/';
+                            const href = item.url.replace('https://dev-new-marketsheadlines.pantheonsite.io', '').replace(WORDPRESS_URL, '') || '/';
 
                             if (hasChildren) {
                                 const isDropdownActive = activeDropdown === item.ID;
@@ -101,7 +102,7 @@ export default function NavbarContent({ menuItems, siteIdentity }: NavbarContent
                                                 <li key={child.ID}>
                                                     <Link
                                                         className="dropdown-item py-2 px-3 fw-medium"
-                                                        href={child.url.replace('https://dev-new-marketsheadlines.pantheonsite.io', '') || '/'}
+                                                        href={child.url.replace('https://dev-new-marketsheadlines.pantheonsite.io', '').replace(WORDPRESS_URL, '') || '/'}
                                                         onClick={closeMenu}
                                                     >
                                                         {child.title}
