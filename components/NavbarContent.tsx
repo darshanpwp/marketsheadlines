@@ -74,7 +74,7 @@ export default function NavbarContent({ menuItems, siteIdentity }: NavbarContent
 
                 {/* Navbar Links & Overlay */}
                 <div className={`collapse navbar-collapse ${isOpen ? 'show' : ''}`} id="navbarNav">
-                    <ul className="navbar-nav mx-auto mb-2 mb-lg-0">
+                    <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
                         {menuItems.map((item: WordPressMenuItem) => {
                             const hasChildren = item.child_items && item.child_items.length > 0;
                             const href = item.url.replace('https://dev-new-marketsheadlines.pantheonsite.io', '') || '/';
@@ -127,16 +127,7 @@ export default function NavbarContent({ menuItems, siteIdentity }: NavbarContent
                         })}
                     </ul>
 
-                    {/* Auth Buttons */}
-                    <div className="d-flex align-items-center gap-3 auth-buttons-mobile">
-                        <Link
-                            href="/register"
-                            className="btn btn-premium-primary"
-                            onClick={closeMenu}
-                        >
-                            Get Market Intelligence
-                        </Link>
-                    </div>
+
                 </div>
             </div>
         </nav>

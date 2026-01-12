@@ -1,4 +1,5 @@
 // Script to discover available Custom Post Types
+/* eslint-disable */
 const https = require('https');
 
 const WP_API_URL = process.env.NEXT_PUBLIC_WP_API_URL || 'https://dev-new-marketsheadlines.pantheonsite.io/wp-json/wp/v2';
@@ -15,7 +16,7 @@ function getAuthHeader() {
 function fetchEndpoint(path) {
   return new Promise((resolve, reject) => {
     const url = new URL(`${WP_API_URL}${path}`);
-    
+
     const options = {
       hostname: url.hostname,
       path: url.pathname + (url.search || ''),
@@ -58,7 +59,7 @@ function fetchEndpoint(path) {
 async function discoverCPTs() {
   try {
     console.log('Discovering available Custom Post Types...\n');
-    
+
     if (!WP_USERNAME || !WP_PASSWORD) {
       console.log('⚠️  WARNING: WP_USERNAME or WP_PASSWORD not found');
       console.log('Usage: node scripts/discover-cpts.js [username] [password]\n');
@@ -68,7 +69,7 @@ async function discoverCPTs() {
     // Try to get types endpoint
     console.log('1. Checking /wp/v2/types endpoint...');
     const typesResult = await fetchEndpoint('/types');
-    
+
     if (!typesResult.error && typesResult.data) {
       console.log('✅ Found post types:\n');
       Object.keys(typesResult.data).forEach(type => {

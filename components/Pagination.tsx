@@ -55,7 +55,7 @@ export default function Pagination({ totalPages, currentPage }: PaginationProps)
                         style={{ width: '40px', height: '40px' }}
                         aria-disabled={currentPage <= 1}
                     >
-                        <i className="fa-solid fa-chevron-left me-2 small"></i>
+                        <i className="fa-solid fa-chevron-left small"></i>
                     </Link>
                 </li>
 
@@ -64,7 +64,7 @@ export default function Pagination({ totalPages, currentPage }: PaginationProps)
                     <li key={page} className={`page-item ${currentPage === page ? 'active' : ''}`}>
                         <Link
                             href={createPageURL(page)}
-                            className={`page-link rounded-circle border-0 shadow-sm transition-all hover-lift d-flex align-items-center justify-content-center p-0 fw-medium ${currentPage === page ? 'bg-primary text-white' : 'bg-white text-dark'
+                            className={`page-link rounded-circle border-0 shadow-sm transition-all hover-lift d-flex align-items-center justify-content-center p-0 fw-medium ${currentPage === page ? 'primary-bg-blue text-white' : 'bg-white text-dark'
                                 }`}
                             style={{ width: '40px', height: '40px' }}
                         >
@@ -81,7 +81,7 @@ export default function Pagination({ totalPages, currentPage }: PaginationProps)
                         style={{ width: '40px', height: '40px' }}
                         aria-disabled={currentPage >= totalPages}
                     >
-                        <i className="fa-solid fa-chevron-right ms-2 small"></i>
+                        <i className="fa-solid fa-chevron-right small"></i>
                     </Link>
                 </li>
             </ul>

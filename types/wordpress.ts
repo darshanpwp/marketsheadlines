@@ -124,6 +124,7 @@ export interface WordPressMedia {
       [key: string]: MediaSize;
     };
     image_meta: {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       [key: string]: any;
     };
   };
@@ -165,6 +166,7 @@ export interface WordPressCategory {
   slug: string;
   taxonomy: string;
   parent: number;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   meta: any[];
   _links: WordPressLinks;
 }
@@ -180,6 +182,7 @@ export interface WordPressTag {
   name: string;
   slug: string;
   taxonomy: string;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   meta: any[];
   _links: WordPressLinks;
 }
@@ -216,6 +219,13 @@ export interface GlobalThemeSettings {
     guid: string;
     ID: string;
   };
+  // New Global CTA Section
+  single_post_cta_heading?: string;
+  single_post_cta_description?: string;
+  subscribe_to_newsletter_button_text?: string;
+  subscribe_to_newsletter_button_url?: string;
+  register_for_market_access_button_text?: string;
+  register_for_market_access_button_url?: string;
 }
 
 // Simplified types for frontend consumption
@@ -241,6 +251,7 @@ export interface Page {
     og_description: string;
     og_image: Array<{ url: string }>;
     twitter_image: string;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     schema: any;
   };
 }
@@ -291,6 +302,7 @@ export interface WordPressPost {
   format: string;
   meta: {
     footnotes: string;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     [key: string]: any;
   };
   categories: number[];
@@ -305,8 +317,10 @@ export interface WordPressPost {
       name: string;
       slug: string;
       taxonomy: string;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       _links?: any;
     }>>;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     replies?: any[];
   };
   class_list?: string[];
@@ -342,8 +356,10 @@ export interface Post {
     og_description: string;
     og_image: Array<{ url: string }>;
     twitter_image: string;
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     schema: any;
   };
+  customReadingTime?: string;
 }
 
 /**
@@ -534,6 +550,12 @@ export interface MarketHeadlinesSettings {
   social: string[];
 }
 
+export interface HomePageSection {
+  title: string;
+  view_all_url: string;
+  posts: PostWithDetails[];
+}
+
 export interface HomePageData {
   market_intelligence_heading: string;
   market_intelligence_main_heading: string;
@@ -565,6 +587,11 @@ export interface HomePageData {
   default_daily_market_brief: string;
   default_weekly_deep_dive: string;
   default_breaking_news_alerts?: string;
+  // Dynamic Content Sections
+  trending_now_section?: HomePageSection;
+  world_news_grid_section?: HomePageSection;
+  world_news_list_section?: HomePageSection;
+  business_section?: HomePageSection;
 }
 
 export interface MarketTicker {

@@ -1,4 +1,5 @@
 // Script to analyze WordPress posts endpoint with authentication
+/* eslint-disable */
 // Usage: node scripts/analyze-posts.js [username] [password]
 // Or set environment variables: WP_USERNAME and WP_PASSWORD
 
@@ -18,7 +19,7 @@ function getAuthHeader() {
 function fetchPosts() {
   return new Promise((resolve, reject) => {
     const url = new URL(`${WP_API_URL}/posts?per_page=2&_embed`);
-    
+
     const options = {
       hostname: url.hostname,
       path: url.pathname + url.search,
@@ -61,7 +62,7 @@ function fetchPosts() {
 async function analyzePosts() {
   try {
     console.log('Fetching posts from WordPress API...\n');
-    
+
     if (!WP_USERNAME || !WP_PASSWORD) {
       console.log('⚠️  WARNING: WP_USERNAME or WP_PASSWORD not found in .env.local');
       console.log('Please provide credentials to access the posts endpoint.\n');
@@ -73,34 +74,34 @@ async function analyzePosts() {
     }
 
     const posts = await fetchPosts();
-    
+
     if (Array.isArray(posts) && posts.length > 0) {
       console.log('✅ Successfully fetched posts!\n');
       console.log('=== POSTS ENDPOINT ANALYSIS ===\n');
       console.log(`Total posts in response: ${posts.length}\n`);
-      
+
       const firstPost = posts[0];
-      
+
       console.log('=== FIRST POST STRUCTURE ===\n');
       console.log(JSON.stringify(firstPost, null, 2));
-      
+
       console.log('\n\n=== KEY FIELDS ANALYSIS ===\n');
       console.log('Top-level fields:');
       Object.keys(firstPost).forEach(key => {
         const value = firstPost[key];
         let type = Array.isArray(value) ? 'array' : typeof value;
         let details = '';
-        
+
         if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
           const keys = Object.keys(value);
           details = ` (${keys.length} keys: ${keys.slice(0, 3).join(', ')}${keys.length > 3 ? '...' : ''})`;
         } else if (Array.isArray(value)) {
           details = ` (${value.length} items)`;
         }
-        
+
         console.log(`  ✓ ${key}: ${type}${details}`);
       });
-      
+
       // Analyze embedded data
       if (firstPost._embedded) {
         console.log('\n=== EMBEDDED DATA (_embed parameter) ===\n');
@@ -116,7 +117,7 @@ async function analyzePosts() {
           }
         });
       }
-      
+
       // Compare with pages structure
       console.log('\n=== DIFFERENCES FROM PAGES ===\n');
       const postSpecificFields = ['categories', 'tags', 'format', 'sticky', 'comment_status', 'ping_status'];
@@ -125,7 +126,7 @@ async function analyzePosts() {
           console.log(`  ✓ ${field}: ${typeof firstPost[field]}${Array.isArray(firstPost[field]) ? ` (${firstPost[field].length} items)` : ''}`);
         }
       });
-      
+
     } else {
       console.log('⚠️  No posts found in response');
       console.log('Response:', JSON.stringify(posts, null, 2));

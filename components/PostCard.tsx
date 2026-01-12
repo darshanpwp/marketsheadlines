@@ -81,7 +81,11 @@ export default function PostCard({ post, showExcerpt = false, filterCategory, de
             </span>
           )}
           <span>•</span>
-          <span>{readingTime} min read</span>
+          {post.customReadingTime ? (
+            <span>{post.customReadingTime}</span>
+          ) : (
+            <span>{readingTime} min read</span>
+          )}
           {post.sticky && (
             <>
               <span>•</span>

@@ -31,7 +31,7 @@ export default function TrendingListItem({ post, index }: TrendingListItemProps)
                     {category.name}
                   </span>
                 )}
-                <small className="text-muted ">{readingTime} min read</small>
+                <small className="text-muted ">{post.customReadingTime || `${readingTime} min read`}</small>
               </div>
 
               <h4

@@ -8,7 +8,7 @@ interface AuthorBoxProps {
 
 export default function AuthorBox({ author }: AuthorBoxProps) {
     return (
-        <div className="bg-white rounded-4 p-4 border shadow-sm transition-all h-100">
+        <div className="bg-white rounded-4 p-32 border shadow-sm transition-all h-100">
             <div className="d-flex flex-column flex-md-row align-items-center align-items-md-start gap-4">
                 <div className="flex-shrink-0">
                     {author.avatar_urls?.['96'] ? (
@@ -27,13 +27,13 @@ export default function AuthorBox({ author }: AuthorBoxProps) {
                 </div>
                 <div className="flex-grow-1 text-center text-md-start">
                     <div className="mb-2">
-                        <h4 className="fw-bold mb-1" style={{ fontFamily: 'var(--bs-font-serif)', fontSize: '1.25rem', color: 'var(--primary-navy)' }}>{author?.name || 'Anonymous Author'}</h4>
+                        <h4 className="fw-bold mb-1">{author?.name || 'Anonymous Author'}</h4>
                     </div>
-                    <p className="text-secondary mb-3 small" style={{ lineHeight: '1.6' }}>
+                    <p className="text-secondary mb-3" style={{ lineHeight: '1.6' }}>
                         {author.description || `${author.name} is a senior financial markets correspondent with over 15 years of experience covering global economic developments.`}
                     </p>
                     <div className="d-flex justify-content-center justify-content-md-start align-items-center">
-                        <Link href="#" className="fw-bold text-primary text-decoration-none small text-uppercase" style={{ fontSize: '0.7rem' }}>
+                        <Link href="#" className="fw-semibold primary-text-blue text-decoration-none small text-uppercase">
                             View all articles <i className="fa-solid fa-chevron-right ms-1"></i>
                         </Link>
                     </div>

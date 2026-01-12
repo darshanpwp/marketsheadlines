@@ -4,12 +4,12 @@ import Link from 'next/link';
 
 export default function NewsletterCTA() {
     return (
-        <div className="p-4 p-md-5 my-5 border newsletter-cta-card">
+        <div className="p-32 my-5 border border-lighter light-blue-bg newsletter-cta-card">
             <div className="newsletter-cta-content-wrapper">
-                <h2 className="fw-bold mb-3 newsletter-cta-title">
+                <h2 className="fw-semibold mb-2 newsletter-cta-title">
                     Get Deeper Market Intelligence
                 </h2>
-                <p className="mb-5 newsletter-cta-body">
+                <p className="mb-4 newsletter-cta-body fs-6">
                     Access regulatory filings, exchange updates, and curated market insights beyond the headlines.
                 </p>
                 <Link

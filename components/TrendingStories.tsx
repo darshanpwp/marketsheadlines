@@ -9,26 +9,23 @@ export default async function TrendingStories() {
 
     return (
         <div className="mb-5 bg-white rounded-4 border p-4 shadow-sm">
-            <h3 className="h4 fw-bold mb-4" style={{ fontFamily: 'var(--bs-font-serif)', color: 'var(--text-dark)' }}>
+            <h3 className="h4 fw-semibold mb-4 font-serif primary-text-blue">
                 Trending Now
             </h3>
-            <div className="d-flex flex-column gap-4">
+            <div className="d-flex flex-column gap-3">
                 {posts.map((post, index) => (
-                    <div key={post.id} className="d-flex gap-3 align-items-start last-child-no-border pb-3 border-bottom">
-                        <span className="fw-bold h4 mb-0 opacity-20" style={{ minWidth: '1.5rem', fontFamily: 'var(--bs-font-serif)', color: 'var(--text-dark)' }}>
-                            {index + 1}
-                        </span>
+                    <div key={post.id} className="d-flex gap-3 align-items-start border-0">
                         <div className="flex-grow-1">
-                            <div className="mb-1">
+                            <div className="mb-2 badge ligh-blue-hover primary-text-blue border-0 rounded-2 px-3 py-2 small fw-semibold">
                                 {post.categoryDetails?.[0] && (
-                                    <Link href={`/category/${post.categoryDetails[0].slug}`} className="text-uppercase fw-bold text-decoration-none" style={{ fontSize: '0.65rem', letterSpacing: '0.05em', color: 'var(--primary-navy)' }}>
+                                    <Link href={`/category/${post.categoryDetails[0].slug}`} className="text-capitalize primary-text-blue fw-bold text-decoration-none" style={{ fontSize: '0.65rem', letterSpacing: '0.05em', color: 'var(--primary-navy)' }}>
                                         {post.categoryDetails[0].name}
                                     </Link>
                                 )}
                             </div>
                             <Link
                                 href={`/posts/${post.slug}`}
-                                className="text-decoration-none hover-primary transition-all line-clamp-2 fw-bold mb-1 d-block"
+                                className="text-decoration-none hover-primary transition-all line-clamp-2 fw-bold mb-3 d-block"
                                 style={{ fontSize: '0.95rem', lineHeight: '1.4', color: 'var(--text-dark)' }}
                                 dangerouslySetInnerHTML={{ __html: post.title }}
                             />
