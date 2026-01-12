@@ -57,7 +57,7 @@ export default async function Footer() {
                 {quickLinksItems.map((item: WordPressMenuItem, idx: number) => (
                   <li key={item.ID || idx} className="col">
                     <Link
-                      href={(item.url || '').replace(WORDPRESS_URL, '') || '/'}
+                      href={(item.url || '').replace('https://dev-new-marketsheadlines.pantheonsite.io', '').replace(WORDPRESS_URL, '') || '/'}
                       className="color-menu-f text-decoration-none hover-white transition-all small footer-link d-inline-block py-1"
                     >
                       {item.title}
