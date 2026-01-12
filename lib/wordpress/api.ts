@@ -20,7 +20,7 @@ import type {
   WordPressCategory
 } from '@/types/wordpress';
 
-export const WORDPRESS_URL = process.env.NEXT_PUBLIC_WORDPRESS_URL || 'https://dev-new-marketsheadlines.pantheonsite.io';
+export const WORDPRESS_URL = process.env.NEXT_PUBLIC_WORDPRESS_URL || 'https://news.marketsheadlines.com';
 const WP_API_URL = process.env.NEXT_PUBLIC_WP_API_URL || `${WORDPRESS_URL}/wp-json/wp/v2`;
 const WP_USERNAME = process.env.WP_USERNAME;
 const WP_PASSWORD = process.env.WP_PASSWORD;

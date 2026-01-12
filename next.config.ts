@@ -10,6 +10,11 @@ const nextConfig: NextConfig = {
       },
       {
         protocol: 'https',
+        hostname: 'news.marketsheadlines.com',
+        pathname: '/wp-content/**',
+      },
+      {
+        protocol: 'https',
         hostname: 'secure.gravatar.com',
       },
       {
