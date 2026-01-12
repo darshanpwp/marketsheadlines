@@ -8,12 +8,16 @@ interface Props {
 }
 
 export default function GlobalCallToAction({ settings }: Props) {
-    // Falls back to design defaults if API returns null
-    const heading = settings?.single_post_cta_heading || "Stay Ahead of the Markets";
-    const description = settings?.single_post_cta_description || "Get breaking news, expert insights, and market analysis delivered directly to your inbox.";
+    // Strictly use API data, no hardcoded defaults
+    const heading = settings?.single_post_cta_heading;
+    const description = settings?.single_post_cta_description;
+    const subscribeText = settings?.subscribe_to_newsletter_button_text;
+    const subscribeUrl = settings?.subscribe_to_newsletter_button_url;
+    const registerText = settings?.register_for_market_access_button_text;
+    const registerUrl = settings?.register_for_market_access_button_url;
 
-    // Only hide if we really have no content and no defaults (unlikely with hardcoded defaults)
-    if (!heading && !settings?.subscribe_to_newsletter_button_text) {
+    // Remove the entire section if no valid content is available (checking heading as minimum)
+    if (!heading || !settings) {
         return null;
     }
 
@@ -21,29 +25,37 @@ export default function GlobalCallToAction({ settings }: Props) {
         <section className="bg-gradient-c2 p-80 rounded-4">
             <div className="container">
                 <div className="text-center mx-auto col-md-6 col-12">
-                    <h2 className="display-5 fw-bold mb-3 font-serif text-dark">
-                        {heading}
-                    </h2>
-                    <p className="text-secondary mb-5 fs-18">
-                        {description}
-                    </p>
+                    {heading && (
+                        <h2 className="display-5 fw-bold mb-3 font-serif text-dark">
+                            {heading}
+                        </h2>
+                    )}
+                    {description && (
+                        <p className="text-secondary mb-5 fs-18">
+                            {description}
+                        </p>
+                    )}
 
                     <div className="d-flex flex-column flex-sm-row justify-content-center gap-3">
-                        <Link
-                            href={settings?.subscribe_to_newsletter_button_url || '#'}
-                            className="btn btn-premium-primary py-3 px-4 d-inline-flex align-items-center justify-content-center"
-                        >
-                            {settings?.subscribe_to_newsletter_button_text || "Subscribe to Newsletter"}
-                            <i className="fa-solid fa-arrow-right ms-2"></i>
-                        </Link>
+                        {subscribeText && subscribeUrl && (
+                            <Link
+                                href={subscribeUrl}
+                                className="btn btn-premium-primary py-3 px-4 d-inline-flex align-items-center justify-content-center"
+                            >
+                                {subscribeText}
+                                <i className="fa-solid fa-arrow-right ms-2"></i>
+                            </Link>
+                        )}
 
-                        <Link
-                            href={settings?.register_for_market_access_button_url || '#'}
-                            className="btn btn-premium-outline py-3 px-4 d-inline-flex align-items-center justify-content-center"
-                        >
-                            {settings?.register_for_market_access_button_text || "Register for Market Access"}
-                            <i className="fa-solid fa-arrow-right ms-2"></i>
-                        </Link>
+                        {registerText && registerUrl && (
+                            <Link
+                                href={registerUrl}
+                                className="btn btn-premium-outline py-3 px-4 d-inline-flex align-items-center justify-content-center"
+                            >
+                                {registerText}
+                                <i className="fa-solid fa-arrow-right ms-2"></i>
+                            </Link>
+                        )}
                     </div>
                 </div>
             </div>
