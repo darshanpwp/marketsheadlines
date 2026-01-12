@@ -1,4 +1,5 @@
 // Script to fetch and analyze WordPress posts endpoint
+/* eslint-disable */
 const https = require('https');
 
 const url = 'https://dev-new-marketsheadlines.pantheonsite.io/wp-json/wp/v2/posts?per_page=2&_embed';
@@ -13,13 +14,13 @@ https.get(url, (res) => {
   res.on('end', () => {
     try {
       const posts = JSON.parse(data);
-      
+
       if (Array.isArray(posts) && posts.length > 0) {
         console.log('=== POSTS ENDPOINT ANALYSIS ===\n');
         console.log(`Total posts fetched: ${posts.length}`);
         console.log('\n=== FIRST POST STRUCTURE ===\n');
         console.log(JSON.stringify(posts[0], null, 2));
-        
+
         // Analyze structure
         console.log('\n=== KEY FIELDS ANALYSIS ===\n');
         const firstPost = posts[0];
@@ -29,7 +30,7 @@ https.get(url, (res) => {
           const type = Array.isArray(value) ? 'array' : typeof value;
           console.log(`  - ${key}: ${type}${typeof value === 'object' && value !== null && !Array.isArray(value) ? ` (${Object.keys(value).length} nested keys)` : ''}`);
         });
-        
+
         // Check for embedded data
         if (firstPost._embedded) {
           console.log('\n=== EMBEDDED DATA ===\n');

@@ -8,6 +8,7 @@ import MarketOverview from '@/components/MarketOverview';
 import TrendingStories from '@/components/TrendingStories';
 import AuthorBox from '@/components/AuthorBox';
 import NewsletterCTA from '@/components/NewsletterCTA';
+import GlobalCallToAction from '@/components/GlobalCallToAction';
 import { PaginatedResponse, PostWithDetails } from '@/types/wordpress';
 
 type Props = {
@@ -41,6 +42,7 @@ export default async function PostDetailPage({ params }: Props) {
   const post = await getPostBySlug(slug);
   const tickers = await getMarketTickers();
   const globalSettings = await getGlobalThemeSettings();
+  // Use global default image from Pods settings, with a fallback hardcoded URL
   const defaultImageUrl = globalSettings?.blog_default_image?.guid || 'https://dev-new-marketsheadlines.pantheonsite.io/wp-content/uploads/2026/01/thumbnail.png';
 
   if (!post) {
@@ -58,12 +60,12 @@ export default async function PostDetailPage({ params }: Props) {
   const readingTime = Math.ceil(post.content.split(' ').length / 200);
 
   return (
-    <article className="bg-white min-vh-100 pb-5">
+    <article className="bg-white min-vh-100">
       {/* Article Header Section */}
       <header className="pt-5 pb-4">
         <div className="container">
           <div className="row justify-content-center">
-            <div className="col-lg-10 col-xl-8">
+            <div className="col-lg-12 col-xl-10">
               {/* Breadcrumbs */}
               <nav aria-label="breadcrumb" className="mb-3">
                 <ol className="breadcrumb mb-0">
@@ -83,13 +85,13 @@ export default async function PostDetailPage({ params }: Props) {
               </div>
 
               <h1
-                className="fw-bold mb-3 lh-sm post-title-main"
+                className="fw-semibold mb-3 lh-sm post-title-main"
                 dangerouslySetInnerHTML={{ __html: post.title }}
               />
 
               {post.excerpt && (
                 <div
-                  className="mb-5 post-excerpt-main"
+                  className="mb-5 post-excerpt-main fs-18"
                   dangerouslySetInnerHTML={{ __html: post.excerpt }}
                 />
               )}
@@ -133,98 +135,97 @@ export default async function PostDetailPage({ params }: Props) {
         </div>
       </header>
 
-      <div className="container">
-        {/* Full Width Featured Image */}
-        <div className="row justify-content-center mb-5">
-          <div className="col-12">
-            <div className="rounded-4 overflow-hidden shadow-sm position-relative mb-3" style={{ height: '600px' }}>
-              <Image
-                src={post.featuredMediaDetails?.source_url || defaultImageUrl}
-                alt={post.featuredMediaDetails?.alt_text || post.title}
-                fill
-                className="object-fit-cover"
-                priority
-                sizes="100vw"
+      <div className="post-listing p-60 pt-0">
+        <div className="container">
+          {/* Full Width Featured Image */}
+          <div className="row justify-content-center mb-5">
+            <div className="col-12">
+              <div className="rounded-4 overflow-hidden shadow-sm position-relative mb-3" style={{ height: '600px' }}>
+                <Image
+                  src={post.featuredMediaDetails?.source_url || defaultImageUrl}
+                  alt={post.featuredMediaDetails?.alt_text || post.title}
+                  fill
+                  className="object-fit-cover"
+                  priority
+                  sizes="100vw"
+                />
+              </div>
+              <p className="text-center text-muted small fst-italic mt-2 opacity-75">
+                {post.featuredMediaDetails?.caption ? (
+                  <span dangerouslySetInnerHTML={{ __html: post.featuredMediaDetails.caption }} />
+                ) : (
+                  "Major stock exchanges worldwide responded positively to trade agreement developments"
+                )}
+              </p>
+            </div>
+          </div>
+
+          <div className="row g-5">
+            {/* Main Content Column */}
+            <div className="col-lg-8">
+              {/* Article Body */}
+              <div
+                className="article-content fs-18 mb-5"
+                dangerouslySetInnerHTML={{ __html: post.content }}
               />
+
+              {/* Newsletter CTA in content flow */}
+              <NewsletterCTA />
             </div>
-            <p className="text-center text-muted small fst-italic mt-2 opacity-75">
-              {post.featuredMediaDetails?.caption ? (
-                <span dangerouslySetInnerHTML={{ __html: post.featuredMediaDetails.caption }} />
-              ) : (
-                "Major stock exchanges worldwide responded positively to trade agreement developments"
-              )}
-            </p>
-          </div>
-        </div>
 
-        <div className="row g-5">
-          {/* Main Content Column */}
-          <div className="col-lg-8">
-            {/* Article Body */}
-            <div
-              className="article-content rich-text mb-5"
-              style={{
-                fontSize: '1.25rem',
-                lineHeight: '2'
-              }}
-              dangerouslySetInnerHTML={{ __html: post.content }}
-            />
+            {/* Sidebar Column */}
+            <aside className="col-lg-4">
+              <div className="sticky-top" style={{ top: '6rem', zIndex: 10 }}>
+                {/* Market Overview Widget */}
+                <div className="mb-4">
+                  <MarketOverview tickers={tickers} />
+                </div>
 
-            {/* Newsletter CTA in content flow */}
-            <NewsletterCTA />
-          </div>
-
-          {/* Sidebar Column */}
-          <aside className="col-lg-4">
-            <div className="sticky-top" style={{ top: '6rem', zIndex: 10 }}>
-              {/* Market Overview Widget */}
-              <div className="mb-4">
-                <MarketOverview tickers={tickers} />
-              </div>
-
-              {/* Trending Stories Widget */}
-              <div className="mb-4">
-                <TrendingStories />
-              </div>
-
-              {/* Advertisement / Promo */}
-              <div className="bg-light rounded-4 p-5 text-center border-dashed border-2 mb-4 position-relative overflow-hidden">
-                <div className="position-relative z-1">
-                  <div className="text-secondary x-small text-uppercase mb-3 opacity-50 fw-bold tracking-wider">Advertisement</div>
-                  <h5 className="font-serif fw-bold mb-3">Premium Market Intelligence</h5>
-                  <p className="text-muted small mb-4">Get exclusive access to real-time data and expert analysis.</p>
-                  <Link href="#" className="btn btn-outline-primary btn-sm rounded-pill fw-bold text-uppercase">Learn More</Link>
+                {/* Trending Stories Widget */}
+                <div className="mb-4">
+                  <TrendingStories />
                 </div>
               </div>
-            </div>
-          </aside>
+            </aside>
+          </div>
+
+
         </div>
-
-        {/* Related Stories Section */}
-        {filteredRelatedPosts.length > 0 && (
-          <div className="pt-5 border-top mt-5 mb-5">
-            <h3 className="fw-bold mb-4" style={{ fontFamily: 'var(--bs-font-serif)' }}>Related Stories</h3>
-            <div className="row g-4">
-              {filteredRelatedPosts.map((relatedPost) => (
-                <div key={relatedPost.id} className="col-md-4">
-                  <PostCard post={relatedPost} defaultImageUrl={defaultImageUrl} />
-                </div>
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Author Box Section */}
-        {post.authorDetails && (
-          <div className="pt-5 mt-5">
-            <div className="row justify-content-center">
-              <div className="col-lg-8">
-                <AuthorBox author={post.authorDetails} />
-              </div>
-            </div>
-          </div>
-        )}
       </div>
+      <div className="related-sec bg-light-c p-60">
+        <div className="container">
+          <div className="row col-10 m-auto">
+            {/* Related Stories Section */}
+            {filteredRelatedPosts.length > 0 && (
+              <div className="p-0">
+                <h3 className="h2 fw-semibold mb-4 font-serif primary-text-blue">Related Stories</h3>
+                <div className="row g-4">
+                  {filteredRelatedPosts.map((relatedPost) => (
+                    <div key={relatedPost.id} className="col-md-4">
+                      <PostCard post={relatedPost} defaultImageUrl={defaultImageUrl} />
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {/* Author Box Section */}
+            {post.authorDetails && (
+              <div className="pt-5 p-0">
+                <div className="row justify-content-center">
+                  <div className="col-lg-12">
+                    <AuthorBox author={post.authorDetails} />
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      </div>
+
+      {/* Global Call to Action Section */}
+      <GlobalCallToAction settings={globalSettings} />
+
     </article>
   );
 }

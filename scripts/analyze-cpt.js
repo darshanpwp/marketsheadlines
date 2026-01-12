@@ -1,4 +1,5 @@
 // Script to analyze WordPress Custom Post Type endpoint
+/* eslint-disable */
 const https = require('https');
 
 const WP_API_URL = process.env.NEXT_PUBLIC_WP_API_URL || 'https://dev-new-marketsheadlines.pantheonsite.io/wp-json/wp/v2';
@@ -16,7 +17,7 @@ function getAuthHeader() {
 function fetchCPT(cptSlug) {
   return new Promise((resolve, reject) => {
     const url = new URL(`${WP_API_URL}/${cptSlug}?per_page=2&_embed`);
-    
+
     const options = {
       hostname: url.hostname,
       path: url.pathname + url.search,
@@ -60,7 +61,7 @@ async function analyzeCPT() {
   try {
     console.log(`Analyzing Custom Post Type: ${CPT_SLUG}\n`);
     console.log(`Endpoint: ${WP_API_URL}/${CPT_SLUG}\n`);
-    
+
     if (!WP_USERNAME || !WP_PASSWORD) {
       console.log('⚠️  WARNING: WP_USERNAME or WP_PASSWORD not found');
       console.log('Usage: node scripts/analyze-cpt.js [username] [password] [cpt-slug]\n');
@@ -68,34 +69,34 @@ async function analyzeCPT() {
     }
 
     const { items, statusCode } = await fetchCPT(CPT_SLUG);
-    
+
     if (Array.isArray(items) && items.length > 0) {
       console.log('✅ Successfully fetched CPT data!\n');
       console.log('=== CPT ENDPOINT ANALYSIS ===\n');
       console.log(`Total items in response: ${items.length}\n`);
-      
+
       const firstItem = items[0];
-      
+
       console.log('=== FIRST ITEM STRUCTURE ===\n');
       console.log(JSON.stringify(firstItem, null, 2));
-      
+
       console.log('\n\n=== KEY FIELDS ANALYSIS ===\n');
       console.log('Top-level fields:');
       Object.keys(firstItem).forEach(key => {
         const value = firstItem[key];
         let type = Array.isArray(value) ? 'array' : typeof value;
         let details = '';
-        
+
         if (typeof value === 'object' && value !== null && !Array.isArray(value)) {
           const keys = Object.keys(value);
           details = ` (${keys.length} keys: ${keys.slice(0, 3).join(', ')}${keys.length > 3 ? '...' : ''})`;
         } else if (Array.isArray(value)) {
           details = ` (${value.length} items)`;
         }
-        
+
         console.log(`  ✓ ${key}: ${type}${details}`);
       });
-      
+
       // Analyze embedded data
       if (firstItem._embedded) {
         console.log('\n=== EMBEDDED DATA (_embed parameter) ===\n');
@@ -111,23 +112,23 @@ async function analyzeCPT() {
           }
         });
       }
-      
+
       // Compare with standard posts
       console.log('\n=== COMPARISON WITH STANDARD POSTS ===\n');
       const standardPostFields = ['id', 'date', 'slug', 'title', 'content', 'excerpt', 'author', 'featured_media', 'categories', 'tags'];
       const cptFields = Object.keys(firstItem);
-      
+
       const commonFields = standardPostFields.filter(field => cptFields.includes(field));
       const uniqueFields = cptFields.filter(field => !standardPostFields.includes(field));
-      
+
       console.log(`Common fields with posts: ${commonFields.length}`);
       commonFields.forEach(field => console.log(`  ✓ ${field}`));
-      
+
       if (uniqueFields.length > 0) {
         console.log(`\nUnique CPT fields: ${uniqueFields.length}`);
         uniqueFields.forEach(field => console.log(`  ⭐ ${field}`));
       }
-      
+
     } else if (Array.isArray(items) && items.length === 0) {
       console.log('⚠️  CPT endpoint exists but no items found');
       console.log('This might be a valid CPT with no published items.\n');

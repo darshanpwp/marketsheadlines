@@ -32,7 +32,7 @@ export default function NewsListItem({ post, index }: NewsListItemProps) {
                     {category.name}
                   </span>
                 )}
-                <span className="text-muted small">{readingTime} min read</span>
+                <span className="text-muted small">{post.customReadingTime || `${readingTime} min read`}</span>
               </div>
               <h4
                 className="h6 mb-0 text-font-family text-dark text-short-truncate fs-6 lh-base"

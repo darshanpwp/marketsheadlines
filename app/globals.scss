@@ -23,6 +23,9 @@
   --danger-red: #EF4444;
   --color-menu-f: #99A1AF;
 
+  --colr-light-blue: #E8EDFF;
+  --colr-light-blue-hover: #E8F0FF;
+
   // Bootstrap Overrides
   --bs-body-bg: var(--white);
   --bs-body-color: var(--text-dark);
@@ -62,13 +65,30 @@
   }
 }
 
+.light-blue-bg {
+  background-color: var(--colr-light-blue);
+}
+
+.ligh-blue-hover {
+  background-color: var(--colr-light-blue-hover);
+}
+
+.p-32 {
+  padding: 32px;
+}
+
+.fs-18 {
+  font-size: 18px !important;
+  line-height: 1.5 !important;
+}
+
 .p-80 {
-  padding-top: 80px;
-  padding-bottom: 80px;
+  padding-top: 60px;
+  padding-bottom: 60px;
 
   @media (min-width: 992px) {
-    padding-top: 60px;
-    padding-bottom: 60px;
+    padding-top: 80px;
+    padding-bottom: 80px;
   }
 }
 
@@ -89,6 +109,11 @@
 
 .bg-gradient-c {
   background: linear-gradient(180deg, #F8FAFC 0%, #E8F0FF 100%);
+}
+
+.bg-gradient-c2 {
+  background: linear-gradient(180deg, #E8F0FF 0%, #F8FAFC 100%);
+
 }
 
 .bg-light-blue {
@@ -112,7 +137,7 @@
 }
 
 .primary-bg-blue {
-  background-color: var(--primary-bg-blue);
+  background-color: var(--primary-bg-blue) !important;
 }
 
 .primary-text-blue {
@@ -1058,4 +1083,10 @@ body .btn-primary {
   top: 100px;
   z-index: 100;
   align-self: flex-start;
+}
+
+.hover-white {
+  &:hover {
+    color: var(--white) !important;
+  }
 }

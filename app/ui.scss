@@ -499,3 +499,31 @@
 .trending-chevron {
     color: var(--primary-navy);
 }
+
+.article-content {
+    color: var(--primary-navy);
+}
+
+.article-content p {
+    line-height: 1.5 !important;
+    margin: 1rem 0 !important;
+}
+
+.article-content a {
+    color: var(--primary-text-blue);
+}
+
+.article-content img {
+    width: auto;
+
+    max-width: 100%;
+}
+
+// Utility for line clamping
+.line-clamp-1 {
+    display: -webkit-box;
+    -webkit-line-clamp: 1;
+    line-clamp: 1;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}

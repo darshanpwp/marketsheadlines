@@ -704,6 +704,7 @@ function transformCPT(wpCPT: WordPressCPT): CPT {
     'featured_media', 'template', 'class_list', '_links', '_embedded'
   ];
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const customFields: Record<string, any> = {};
   Object.keys(wpCPT).forEach(key => {
     if (!standardFields.includes(key)) {
@@ -912,6 +913,8 @@ export async function getMenu(slug: string): Promise<WordPressMenu | null> {
 /**
  * Fetch site settings
  */
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function getSiteSettings(): Promise<any> {
   const url = `${WP_API_URL}/settings`;
   try {
@@ -1009,6 +1012,25 @@ function extractUrlFromAnchor(html: string): string {
 }
 
 
+
+/**
+ * Helper to normalize WordPress URLs to relative paths
+ */
+function normalizeWpUrl(urlInput: string): string {
+  const url = extractUrlFromAnchor(urlInput);
+  if (!url) return '';
+  try {
+    // If it's already relative, return as is
+    if (url.startsWith('/')) return url;
+
+    const urlObj = new URL(url);
+    // Return pathname (e.g., /category/business)
+    return urlObj.pathname;
+  } catch (e) {
+    return url;
+  }
+}
+
 /**
  * Smart split function to handle comma-separated lists while respecting parentheses
  */
@@ -1044,6 +1066,49 @@ function smartSplit(text: string): string[] {
     }
     return item;
   });
+}
+
+/**
+ * Fetch latest posts for fallback
+ */
+export async function getAllPosts(limit: number = 5): Promise<PostWithDetails[]> {
+  const url = `${WP_API_URL}/posts?per_page=${limit}&status=publish&_embed`;
+  try {
+    const response = await fetchWithAuth(url, { next: { revalidate: 60 } });
+    if (!response.ok) return [];
+    const items: any[] = await response.json();
+    return items.map((post) => {
+      const embedded = post._embedded || {};
+      const categoryDetails = (embedded['wp:term']?.flat() || [])
+        .filter((term: any) => term.taxonomy === 'category')
+        .map((term: any) => ({ id: term.id, name: term.name, slug: term.slug }));
+
+      const author = embedded.author?.[0];
+      const media = embedded['wp:featuredmedia']?.[0];
+
+      return {
+        id: post.id,
+        slug: post.slug,
+        title: post.title.rendered,
+        content: post.content.rendered,
+        excerpt: post.excerpt.rendered,
+        date: post.date,
+        modified: post.modified,
+        author: post.author,
+        featuredMedia: post.featured_media,
+        link: post.link,
+        categories: post.categories || [],
+        tags: post.tags || [],
+        categoryDetails,
+        authorDetails: author ? { name: author.name, id: author.id, url: author.link, description: author.description, slug: author.slug, avatar_urls: author.avatar_urls } : undefined,
+        featuredMediaDetails: media ? { source_url: media.source_url, alt_text: media.alt_text, id: media.id, date: media.date, guid: media.guid, modified: media.modified, slug: media.slug, status: media.status, type: media.type, link: media.link, title: media.title, author: media.author, caption: media.caption, media_type: media.media_type, mime_type: media.mime_type, media_details: media.media_details } : undefined,
+        customReadingTime: post.reading_time || '', // Attempt to get custom field if exposed
+      } as PostWithDetails;
+    });
+  } catch (e) {
+    console.error('Error fetching latest posts:', e);
+    return [];
+  }
 }
 
 /**
@@ -1087,16 +1152,115 @@ export async function getHomePageData(): Promise<HomePageData | null> {
       }
     }
 
-    // Handle investors features which should be an array of objects
-    const investorsFeatures = Array.isArray(investorsSection.for_investors_organizations_features)
-      ? investorsSection.for_investors_organizations_features.map((feature: any) => ({
-        ...feature,
-        // Ensure image is a string URL if it's an object (common in WP REST)
-        image: typeof feature.image === 'object' && feature.image?.guid
-          ? feature.image.guid
-          : (typeof feature.image === 'string' ? feature.image : null)
-      }))
-      : [];
+    // Handle investors features
+    let investorsFeatures: Array<{ id: string | number; title: string; description: string; image: string | null }> = [];
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const rawInvestorsFeatures = investorsSection.for_investors_organizations_features as any[];
+
+    if (Array.isArray(rawInvestorsFeatures) && rawInvestorsFeatures.length > 0) {
+      const featureIds = rawInvestorsFeatures.map(f => f.ID || f.id).filter(Boolean);
+
+      if (featureIds.length > 0) {
+        // Fetch full feature items to get custom fields (features_title, features_description, image)
+        // utilizing the standard WP REST API endpoint discovered: /wp/v2/feature_item
+        try {
+          const featuresUrl = `${WP_API_URL}/feature_item?include=${featureIds.join(',')}&per_page=100`;
+          const featuresRes = await fetch(featuresUrl, { next: { revalidate: 300 } });
+
+          if (featuresRes.ok) {
+            const featuresData = await featuresRes.json();
+            // Map back to preserve order if needed, or just use the fetched list
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            investorsFeatures = featuresData.map((item: any) => ({
+              id: item.id,
+              title: item.features_title || item.title?.rendered || '',
+              description: item.features_description || item.content?.rendered || '',
+              // item.image is the attachment object from REST
+              image: item.image?.guid || item.image?.source_url || null
+            }));
+          } else {
+            // Fallback to the raw data if fetch fails
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            investorsFeatures = rawInvestorsFeatures.map((feature: any) => ({
+              id: feature.ID || feature.id,
+              title: feature.post_title || feature.title,
+              description: feature.post_content || feature.description || '',
+              image: typeof feature.image === 'object' && feature.image?.guid ? feature.image.guid : (typeof feature.image === 'string' ? feature.image : null)
+            }));
+          }
+        } catch (e) {
+          console.error('Error fetching rich feature items:', e);
+          // Fallback
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          investorsFeatures = rawInvestorsFeatures.map((feature: any) => ({
+            id: feature.ID || feature.id,
+            title: feature.post_title || feature.title,
+            description: feature.post_content || feature.description || '',
+            image: typeof feature.image === 'object' && feature.image?.guid ? feature.image.guid : (typeof feature.image === 'string' ? feature.image : null)
+          }));
+        }
+      }
+    }
+
+    // Helper to transform Pods "simple posts" into PostWithDetails
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const transformPodsPost = (simplePost: any): PostWithDetails => {
+      // Extract slug from link
+      const link = simplePost.link || '';
+      const slug = link.split('/').filter(Boolean).pop() || '';
+
+      return {
+        id: simplePost.id,
+        slug: slug,
+        title: simplePost.title,
+        content: '', // Not needed for cards
+        excerpt: '', // Can be populated if API provides it later
+        date: '',
+        modified: '',
+        author: 0,
+        featuredMedia: 0,
+        link: link,
+        categories: [],
+        tags: [],
+        format: 'standard',
+        sticky: false,
+        commentStatus: 'closed',
+        customReadingTime: simplePost.reading_time || '',
+        featuredMediaDetails: simplePost.image ? {
+          source_url: simplePost.image,
+
+          alt_text: simplePost.title,
+          // minimal mock for other required fields
+          id: 0, date: '', date_gmt: '', guid: { rendered: '' }, modified: '', modified_gmt: '', slug: '', status: '', type: '', link: '', title: { rendered: '' }, author: 0, caption: { rendered: '' }, media_type: '', mime_type: '', media_details: { width: 0, height: 0, file: '', sizes: {}, image_meta: {} }
+        } : undefined,
+        categoryDetails: simplePost.category ? [{
+          id: 0,
+          name: simplePost.category,
+          slug: simplePost.category.toLowerCase().replace(/\s+/g, '-')
+        }] : [],
+        authorDetails: {
+          name: '',
+          id: 0, url: '', description: '', link: '', slug: '', avatar_urls: {} // simplified
+        }
+      } as PostWithDetails;
+    };
+
+    // Parse dynamic sections
+    const trendingSection = data['Trending Now'] || {};
+    const worldGridSection = data['World News Grid'] || {};
+    const worldListSection = data['World News'] || {};
+    const businessSection = data['Business Section'] || {};
+
+    // Trending Section Fallback Logic
+    let trendingPosts: PostWithDetails[] = [];
+    if (trendingSection.posts && Array.isArray(trendingSection.posts) && trendingSection.posts.length > 0) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      trendingPosts = trendingSection.posts.map((p: any) => transformPodsPost(p));
+    } else {
+      // Fallback to latest posts if no posts selected (empty category)
+      trendingPosts = await getAllPosts(5);
+    }
 
     return {
       // Market Intelligence Section
@@ -1127,6 +1291,31 @@ export async function getHomePageData(): Promise<HomePageData | null> {
       default_daily_market_brief: newsletterSection.default_daily_market_brief || '0',
       default_weekly_deep_dive: newsletterSection.default_weekly_deep_dive || '0',
       default_breaking_news_alerts: newsletterSection.default_breaking_news_alerts || '0',
+
+      // Dynamic Content Sections
+      trending_now_section: {
+        title: trendingSection.title || 'Trending Now',
+        view_all_url: normalizeWpUrl(trendingSection.view_all_url || ''),
+        posts: trendingPosts
+      },
+      world_news_grid_section: {
+        title: worldGridSection.title || 'World News',
+        view_all_url: normalizeWpUrl(worldGridSection.view_all_url || ''),
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        posts: (worldGridSection.posts || []).map((p: any) => transformPodsPost(p))
+      },
+      world_news_list_section: {
+        title: worldListSection.title || 'World News',
+        view_all_url: normalizeWpUrl(worldListSection.view_all_url || ''),
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        posts: (worldListSection.posts || []).map((p: any) => transformPodsPost(p))
+      },
+      business_section: {
+        title: businessSection.title || 'Business',
+        view_all_url: normalizeWpUrl(businessSection.view_all_url || ''),
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        posts: (businessSection.posts || []).map((p: any) => transformPodsPost(p))
+      }
     };
   } catch (error) {
     console.error('Error fetching Home Page Data:', error);

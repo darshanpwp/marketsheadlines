@@ -4,15 +4,18 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { PostWithDetails } from '@/types/wordpress';
 import { calculateReadingTime } from '@/lib/utils';
-import { useEffect } from 'react';
 
 interface HeroCarouselProps {
     posts: PostWithDetails[];
+    defaultImageUrl?: string;
 }
 
-export default function HeroCarousel({ posts }: HeroCarouselProps) {
+export default function HeroCarousel({ posts, defaultImageUrl }: HeroCarouselProps) {
     // Initialize bootstrap carousel if needed, though data-bs attributes usually handle it.
     // We can add a simple useEffect to ensure it initializes properly if dynamic.
+
+    // Fallback image source
+    const fallbackImage = defaultImageUrl || 'https://dev-new-marketsheadlines.pantheonsite.io/wp-content/uploads/2026/01/thumbnail.png';
 
     return (
         <section className="container-fluid px-0">
@@ -48,17 +51,13 @@ export default function HeroCarousel({ posts }: HeroCarouselProps) {
                             >
                                 {/* Background Image */}
                                 <div className="hero-bg position-absolute w-100 h-100 top-0 start-0 overflow-hidden z-0">
-                                    {post.featuredMediaDetails?.source_url ? (
-                                        <Image
-                                            src={post.featuredMediaDetails.source_url}
-                                            alt={post.title}
-                                            fill
-                                            className="object-fit-cover transition-transform duration-700 hover-scale"
-                                            priority={index === 0}
-                                        />
-                                    ) : (
-                                        <div className="w-100 h-100 bg-secondary"></div>
-                                    )}
+                                    <Image
+                                        src={post.featuredMediaDetails?.source_url || fallbackImage}
+                                        alt={post.title}
+                                        fill
+                                        className="object-fit-cover transition-transform duration-700 hover-scale"
+                                        priority={index === 0}
+                                    />
 
                                     {/* Brand Navy Overlay with Gradient */}
                                     <div className="hero-overlay position-absolute w-100 h-100 top-0 start-0 hero-gradient-overlay z-1"></div>
@@ -78,7 +77,7 @@ export default function HeroCarousel({ posts }: HeroCarouselProps) {
                                                 dangerouslySetInnerHTML={{ __html: post.title }}
                                             />
                                             <div
-                                                className="lead hero-excerpt opacity-90 fw-light text-truncate max-w-100"
+                                                className="lead hero-excerpt opacity-90 fw-light line-clamp-1 max-w-100"
                                                 dangerouslySetInnerHTML={{
                                                     __html: post.excerpt || 'Stay informed with the latest market insights and financial news.'
                                                 }}
