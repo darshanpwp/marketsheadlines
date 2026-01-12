@@ -66,17 +66,7 @@ export default async function PostDetailPage({ params }: Props) {
         <div className="container">
           <div className="row justify-content-center">
             <div className="col-lg-12 col-xl-10">
-              {/* Breadcrumbs */}
-              <nav aria-label="breadcrumb" className="mb-3">
-                <ol className="breadcrumb mb-0">
-                  <li className="breadcrumb-item">
-                    <Link href="/" className="text-decoration-none small text-uppercase fw-bold opacity-75 breadcrumb-link-home">Home</Link>
-                  </li>
-                  <li className="breadcrumb-item active" aria-current="page">
-                    <span className="text-uppercase fw-bold breadcrumb-text-active">Markets</span>
-                  </li>
-                </ol>
-              </nav>
+
 
               <div className="mb-4">
                 <span className="post-category-badge">
@@ -198,7 +188,7 @@ export default async function PostDetailPage({ params }: Props) {
             {/* Related Stories Section */}
             {filteredRelatedPosts.length > 0 && (
               <div className="p-0">
-                <h3 className="h2 fw-semibold mb-4 font-serif primary-text-blue">Related Stories</h3>
+                <h3 className="h2 fw-semibold mb-4 font-serif primary-text-blue">Related News</h3>
                 <div className="row g-4">
                   {filteredRelatedPosts.map((relatedPost) => (
                     <div key={relatedPost.id} className="col-md-4">

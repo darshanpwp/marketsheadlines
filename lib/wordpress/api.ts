@@ -319,6 +319,30 @@ export async function getUserById(id: number): Promise<WordPressUser | null> {
 }
 
 // Transform WordPress post to simplified format
+/**
+ * Fetch user/author by slug
+ */
+export async function getAuthorBySlug(slug: string): Promise<WordPressUser | null> {
+  const url = `${WP_API_URL}/users?slug=${slug}`;
+
+  try {
+    const response = await fetchWithAuth(url, {
+      next: { revalidate: 3600 },
+    });
+
+    const users: WordPressUser[] = await response.json();
+
+    if (users.length === 0) {
+      return null;
+    }
+
+    return users[0];
+  } catch (error) {
+    console.error(`Error fetching user with slug "${slug}":`, error);
+    return null;
+  }
+}
+
 function transformPost(wpPost: WordPressPost): Post {
   return {
     id: wpPost.id,
@@ -607,6 +631,58 @@ export async function getPostsByTag(tagId: number, perPage: number = 10, page: n
     return { items, totalItems, totalPages };
   } catch (error) {
     console.error(`Error fetching posts by tag ${tagId}:`, error);
+    return { items: [], totalItems: 0, totalPages: 0 };
+  }
+}
+
+/**
+ * Fetch posts by author ID with pagination
+ */
+export async function getPostsByAuthor(authorId: number, perPage: number = 10, page: number = 1): Promise<PaginatedResponse<PostWithDetails>> {
+  const url = `${WP_API_URL}/posts?author=${authorId}&status=publish&_embed&per_page=${perPage}&page=${page}`;
+
+  try {
+    const response = await fetchWithAuth(url, {
+      next: { revalidate: 60 },
+    });
+
+    const totalItems = parseInt(response.headers.get('X-WP-Total') || '0', 10);
+    const totalPages = parseInt(response.headers.get('X-WP-TotalPages') || '0', 10);
+    const posts: WordPressPost[] = await response.json();
+
+    const items = posts.map((wpPost) => {
+      const post = transformPost(wpPost);
+      const embedded = wpPost._embedded;
+
+      const allTerms = embedded?.['wp:term']?.flat() || [];
+      const categoryDetails = allTerms
+        .filter((term) => term.taxonomy === 'category')
+        .map((term) => ({
+          id: term.id,
+          name: term.name,
+          slug: term.slug,
+        }));
+
+      const tagDetails = allTerms
+        .filter((term) => term.taxonomy === 'post_tag')
+        .map((term) => ({
+          id: term.id,
+          name: term.name,
+          slug: term.slug,
+        }));
+
+      return {
+        ...post,
+        authorDetails: embedded?.author?.[0] as WordPressUser | undefined,
+        featuredMediaDetails: embedded?.['wp:featuredmedia']?.[0] as WordPressMedia | undefined,
+        categoryDetails,
+        tagDetails,
+      } as PostWithDetails;
+    });
+
+    return { items, totalItems, totalPages };
+  } catch (error) {
+    console.error(`Error fetching posts by author ${authorId}:`, error);
     return { items: [], totalItems: 0, totalPages: 0 };
   }
 }
