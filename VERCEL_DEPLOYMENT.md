@@ -27,7 +27,7 @@ Add these in the Vercel dashboard under **Settings → Environment Variables**:
 
 | Variable Name | Value | Environment |
 |--------------|-------|-------------|
-| `NEXT_PUBLIC_WP_API_URL` | `https://dev-new-marketsheadlines.pantheonsite.io/wp-json/wp/v2` | Production, Preview, Development |
+| `NEXT_PUBLIC_WP_API_URL` | `https://news.marketsheadlines.com/wp-json/wp/v2` | Production, Preview, Development |
 | `WP_USERNAME` | `news-release` | Production, Preview, Development |
 | `WP_PASSWORD` | `SRC-DisclosureTS-13_820` | Production, Preview, Development |
 

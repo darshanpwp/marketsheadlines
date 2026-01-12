@@ -2,7 +2,8 @@ import Link from 'next/link';
 import Image from 'next/image';
 import {
   getPostsWithDetails, getHomePageData,
-  getMarketTickers, getGlobalThemeSettings
+  getMarketTickers, getGlobalThemeSettings,
+  WORDPRESS_URL
 } from '@/lib/wordpress/api';
 import MarketOverview from '@/components/MarketOverview';
 import TrendingListItem from '@/components/TrendingListItem';
@@ -22,7 +23,7 @@ export default async function Home() {
     getGlobalThemeSettings()
   ]);
 
-  const defaultImageUrl = globalSettings?.blog_default_image?.guid || 'https://dev-new-marketsheadlines.pantheonsite.io/wp-content/uploads/2026/01/thumbnail.png';
+  const defaultImageUrl = globalSettings?.blog_default_image?.guid || `${WORDPRESS_URL}/wp-content/uploads/2026/01/thumbnail.png`;
 
   const posts = postsResponse.items;
 
