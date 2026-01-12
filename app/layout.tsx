@@ -5,6 +5,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import Script from "next/script";
 import Head from "next/head";
+import { getSiteIcon } from "@/lib/wordpress/api";
 
 const playfairDisplay = Playfair_Display({
   variable: "--font-playfair",
@@ -19,10 +20,18 @@ const inter = Inter({
 
 
 
-export const metadata: Metadata = {
-  title: "WP Next Headless - Market Headlines",
-  description: "WordPress headless CMS with Next.js",
-};
+
+export async function generateMetadata(): Promise<Metadata> {
+  const siteIcon = await getSiteIcon();
+
+  return {
+    title: "WP Next Headless - Market Headlines",
+    description: "WordPress headless CMS with Next.js",
+    icons: {
+      icon: siteIcon || '/favicon.ico',
+    },
+  };
+}
 
 export default function RootLayout({
   children,

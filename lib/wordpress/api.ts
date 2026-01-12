@@ -260,6 +260,23 @@ export async function getAllCategories(): Promise<WordPressCategory[]> {
     return [];
   }
 }
+
+/**
+ * Fetch site icon from root API
+ */
+export async function getSiteIcon(): Promise<string> {
+  const url = WORDPRESS_URL + '/wp-json/';
+
+  try {
+    const response = await fetch(url, { next: { revalidate: 3600 } });
+    if (!response.ok) return '';
+    const data = await response.json();
+    return data.site_icon_url || '';
+  } catch (error) {
+    console.error('Error fetching site icon:', error);
+    return '';
+  }
+}
 /**
  * Fetch all page slugs for static generation
  */
