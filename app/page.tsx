@@ -226,7 +226,6 @@ export default async function Home() {
       </section>
 
       {/* 7️⃣ Trust / Value Proposition Section */}
-      {/* 7️⃣ Trust / Value Proposition Section */}
       {(homePageData?.for_investors_organizations_heading || homePageData?.for_investors_organizations_main_heading || (homePageData?.for_investors_organizations_features && homePageData.for_investors_organizations_features.length > 0)) && (
         <section className="hm-trust p-60">
           <div className="container">
@@ -305,7 +304,7 @@ export default async function Home() {
 
       {/* 8️⃣ Newsletter Subscription Section */}
       {(homePageData?.show_newsletter_section !== '0') && (
-        <section className="container-fluid p-80 newsletter-section-main">
+        <section className="container-fluid p-80 newsletter-section-main" id="newsletter-section">
           <div className="container">
             <div className="row justify-content-center">
               <div className="col-lg-8 text-center text-white">

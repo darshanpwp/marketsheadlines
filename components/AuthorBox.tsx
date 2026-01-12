@@ -33,7 +33,7 @@ export default function AuthorBox({ author }: AuthorBoxProps) {
                         {author.description || `${author.name} is a senior financial markets correspondent with over 15 years of experience covering global economic developments.`}
                     </p>
                     <div className="d-flex justify-content-center justify-content-md-start align-items-center">
-                        <Link href="#" className="fw-semibold primary-text-blue text-decoration-none small text-uppercase">
+                        <Link href={author?.slug ? `/author/${author.slug}` : '#'} className="fw-semibold primary-text-blue text-decoration-none small text-uppercase">
                             View all articles <i className="fa-solid fa-chevron-right ms-1"></i>
                         </Link>
                     </div>
