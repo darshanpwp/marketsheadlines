@@ -35,7 +35,7 @@ export default async function PostsPage({ searchParams }: PageProps) {
           <div className="d-flex justify-content-between align-items-center">
             <div>
               <h1 className="archive-title mb-0 h2 primary-text-blue">
-                {searchTerm ? `Search: ${searchTerm}` : (postsPage?.title || 'Archive')}
+                {searchTerm ? `Search: ${searchTerm}` : (postsPage?.title || 'Latest News')}
               </h1>
             </div>
             <div className="primary-text-blue fw-medium small">
