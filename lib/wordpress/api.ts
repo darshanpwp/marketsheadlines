@@ -46,6 +46,22 @@ function getAuthHeader(): string | null {
   return `Basic ${Buffer.from(`${WP_USERNAME}:${WP_PASSWORD}`).toString('base64')} `;
 }
 
+export function normalizeWpUrl(urlInput: string | undefined | null): string {
+  if (!urlInput) return '';
+  const match = urlInput.match(/href="([^"]*)"/);
+  const url = match ? match[1] : urlInput;
+  return url.replace(/(https?:)?\/\/.*\.pantheonsite\.io/g, 'https://news.marketsheadlines.com');
+}
+
+function normalizeMedia(media: WordPressMedia | undefined): WordPressMedia | undefined {
+  if (!media) return undefined;
+  return {
+    ...media,
+    source_url: normalizeWpUrl(media.source_url),
+    guid: { ...media.guid, rendered: normalizeWpUrl(media.guid?.rendered) }
+  } as WordPressMedia;
+}
+
 // Fetch with authentication
 async function fetchWithAuth(url: string, options: RequestInit = {}): Promise<Response> {
   const authHeader = getAuthHeader();
@@ -88,13 +104,13 @@ function transformPage(wpPage: WordPressPage): Page {
     id: wpPage.id,
     slug: wpPage.slug,
     title: wpPage.title.rendered,
-    content: wpPage.content.rendered,
-    excerpt: wpPage.excerpt.rendered,
+    content: normalizeWpUrl(wpPage.content.rendered),
+    excerpt: normalizeWpUrl(wpPage.excerpt.rendered),
     date: wpPage.date,
     modified: wpPage.modified,
     author: wpPage.author,
     featuredMedia: wpPage.featured_media,
-    link: wpPage.link,
+    link: normalizeWpUrl(wpPage.link),
     seo: wpPage.yoast_head_json ? {
       title: wpPage.yoast_head_json.title,
       description: wpPage.yoast_head_json.description,
@@ -161,7 +177,7 @@ export async function getPagesWithDetails(perPage: number = 10, page: number = 1
       return {
         ...page,
         authorDetails: embedded?.author?.[0] as WordPressUser | undefined,
-        featuredMediaDetails: embedded?.['wp:featuredmedia']?.[0] as WordPressMedia | undefined,
+        featuredMediaDetails: normalizeMedia(embedded?.['wp:featuredmedia']?.[0]),
       } as PageWithDetails;
     });
 
@@ -200,7 +216,7 @@ export async function getPageBySlug(slug: string): Promise<PageWithDetails | nul
     return {
       ...page,
       authorDetails: embedded?.author?.[0] as WordPressUser | undefined,
-      featuredMediaDetails: embedded?.['wp:featuredmedia']?.[0] as WordPressMedia | undefined,
+      featuredMediaDetails: normalizeMedia(embedded?.['wp:featuredmedia']?.[0]),
     } as PageWithDetails;
   } catch (error) {
     if (error instanceof WordPressError && error.status === 404) {
@@ -399,13 +415,13 @@ function transformPost(wpPost: WordPressPost): Post {
     id: wpPost.id,
     slug: wpPost.slug,
     title: wpPost.title.rendered,
-    content: wpPost.content.rendered,
-    excerpt: wpPost.excerpt.rendered,
+    content: normalizeWpUrl(wpPost.content.rendered),
+    excerpt: normalizeWpUrl(wpPost.excerpt.rendered),
     date: wpPost.date,
     modified: wpPost.modified,
     author: wpPost.author,
     featuredMedia: wpPost.featured_media,
-    link: wpPost.link,
+    link: normalizeWpUrl(wpPost.link),
     categories: wpPost.categories || [],
     tags: wpPost.tags || [],
     format: wpPost.format || 'standard',
@@ -509,7 +525,7 @@ export async function getPostsWithDetails(perPage: number = 10, page: number = 1
       return {
         ...post,
         authorDetails: embedded?.author?.[0] as WordPressUser | undefined,
-        featuredMediaDetails: embedded?.['wp:featuredmedia']?.[0] as WordPressMedia | undefined,
+        featuredMediaDetails: normalizeMedia(embedded?.['wp:featuredmedia']?.[0]),
         categoryDetails,
         tagDetails,
       } as PostWithDetails;
@@ -573,7 +589,7 @@ export async function getPostBySlug(slug: string): Promise<PostWithDetails | nul
     return {
       ...post,
       authorDetails: embedded?.author?.[0] as WordPressUser | undefined,
-      featuredMediaDetails: embedded?.['wp:featuredmedia']?.[0] as WordPressMedia | undefined,
+      featuredMediaDetails: normalizeMedia(embedded?.['wp:featuredmedia']?.[0]),
       categoryDetails,
       tagDetails,
     } as PostWithDetails;
@@ -659,7 +675,7 @@ export async function getPostsByCategory(categoryId: number, perPage: number = 1
       return {
         ...post,
         authorDetails: embedded?.author?.[0] as WordPressUser | undefined,
-        featuredMediaDetails: embedded?.['wp:featuredmedia']?.[0] as WordPressMedia | undefined,
+        featuredMediaDetails: normalizeMedia(embedded?.['wp:featuredmedia']?.[0]),
         categoryDetails,
         tagDetails,
       } as PostWithDetails;
@@ -716,7 +732,7 @@ export async function getPostsByTag(tagId: number, perPage: number = 10, page: n
       return {
         ...post,
         authorDetails: embedded?.author?.[0] as WordPressUser | undefined,
-        featuredMediaDetails: embedded?.['wp:featuredmedia']?.[0] as WordPressMedia | undefined,
+        featuredMediaDetails: normalizeMedia(embedded?.['wp:featuredmedia']?.[0]),
         categoryDetails,
         tagDetails,
       } as PostWithDetails;
@@ -772,7 +788,7 @@ export async function getPostsByAuthor(authorId: number, perPage: number = 10, p
       return {
         ...post,
         authorDetails: embedded?.author?.[0] as WordPressUser | undefined,
-        featuredMediaDetails: embedded?.['wp:featuredmedia']?.[0] as WordPressMedia | undefined,
+        featuredMediaDetails: normalizeMedia(embedded?.['wp:featuredmedia']?.[0]),
         categoryDetails,
         tagDetails,
       } as PostWithDetails;
@@ -894,13 +910,13 @@ function transformCPT(wpCPT: WordPressCPT): CPT {
     id: wpCPT.id,
     slug: wpCPT.slug,
     title: wpCPT.title.rendered,
-    content: wpCPT.content.rendered,
-    excerpt: wpCPT.excerpt?.rendered,
+    content: normalizeWpUrl(wpCPT.content.rendered),
+    excerpt: normalizeWpUrl(wpCPT.excerpt?.rendered),
     date: wpCPT.date,
     modified: wpCPT.modified,
     author: wpCPT.author,
     featuredMedia: wpCPT.featured_media,
-    link: wpCPT.link,
+    link: normalizeWpUrl(wpCPT.link),
     type: wpCPT.type,
     status: wpCPT.status,
     template: wpCPT.template,
@@ -981,7 +997,7 @@ export async function getCPTItemsWithDetails(cptSlug: string, perPage: number = 
       return {
         ...cpt,
         authorDetails: embedded?.author?.[0] as WordPressUser | undefined,
-        featuredMediaDetails: embedded?.['wp:featuredmedia']?.[0] as WordPressMedia | undefined,
+        featuredMediaDetails: normalizeMedia(embedded?.['wp:featuredmedia']?.[0]),
         categoryDetails: categoryDetails.length > 0 ? categoryDetails : undefined,
         tagDetails: tagDetails.length > 0 ? tagDetails : undefined,
       } as CPTWithDetails;
@@ -1042,7 +1058,7 @@ export async function getCPTItemBySlug(cptSlug: string, slug: string): Promise<C
     return {
       ...cpt,
       authorDetails: embedded?.author?.[0] as WordPressUser | undefined,
-      featuredMediaDetails: embedded?.['wp:featuredmedia']?.[0] as WordPressMedia | undefined,
+      featuredMediaDetails: normalizeMedia(embedded?.['wp:featuredmedia']?.[0]),
       categoryDetails: categoryDetails.length > 0 ? categoryDetails : undefined,
       tagDetails: tagDetails.length > 0 ? tagDetails : undefined,
     } as CPTWithDetails;
@@ -1224,23 +1240,7 @@ function extractUrlFromAnchor(html: string): string {
 
 
 
-/**
- * Helper to normalize WordPress URLs to relative paths
- */
-function normalizeWpUrl(urlInput: string): string {
-  const url = extractUrlFromAnchor(urlInput);
-  if (!url) return '';
-  try {
-    // If it's already relative, return as is
-    if (url.startsWith('/')) return url;
 
-    const urlObj = new URL(url);
-    // Return pathname (e.g., /category/business)
-    return urlObj.pathname;
-  } catch (e) {
-    return url;
-  }
-}
 
 /**
  * Smart split function to handle comma-separated lists while respecting parentheses
@@ -1426,7 +1426,7 @@ export async function getHomePageData(): Promise<HomePageData | null> {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const transformPodsPost = (simplePost: any): PostWithDetails => {
       // Extract slug from link
-      const link = simplePost.link || '';
+      const link = normalizeWpUrl(simplePost.link) || '';
       const slug = link.split('/').filter(Boolean).pop() || '';
 
       return {
@@ -1447,7 +1447,7 @@ export async function getHomePageData(): Promise<HomePageData | null> {
         commentStatus: 'closed',
         customReadingTime: simplePost.reading_time || '',
         featuredMediaDetails: simplePost.image ? {
-          source_url: simplePost.image,
+          source_url: normalizeWpUrl(simplePost.image),
 
           alt_text: simplePost.title,
           // minimal mock for other required fields

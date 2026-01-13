@@ -137,7 +137,7 @@ The codebase is well-structured, follows modern Next.js patterns, and implements
 **Location**: `lib/wordpress/api.ts` line 15
 
 ```typescript
-const WP_API_URL = process.env.NEXT_PUBLIC_WP_API_URL || 'https://dev-new-marketsheadlines.pantheonsite.io/wp-json/wp/v2';
+const WP_API_URL = process.env.NEXT_PUBLIC_WP_API_URL || 'https://news.marketsheadlines.com/wp-json/wp/v2';
 ```
 
 **Issue**: Hardcoded fallback URL  

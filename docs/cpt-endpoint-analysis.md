@@ -2,7 +2,7 @@
 
 ## Endpoint Pattern
 ```
-https://dev-new-marketsheadlines.pantheonsite.io/wp-json/wp/v2/{cpt-slug}
+https://news.marketsheadlines.com/wp-json/wp/v2/{cpt-slug}
 ```
 
 ## Discovered CPTs

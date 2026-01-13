@@ -147,7 +147,7 @@ images: {
   remotePatterns: [
     {
       protocol: 'https',
-      hostname: 'dev-new-marketsheadlines.pantheonsite.io',
+      hostname: 'news.marketsheadlines.com',
       pathname: '/wp-content/**',
     },
   ],

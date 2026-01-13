@@ -1,9 +1,11 @@
-import { getPostsByCategorySlug, getCategoryBySlug, getAllCategories, getGlobalThemeSettings } from '@/lib/wordpress/api';
+import { getPostsByCategorySlug, getCategoryBySlug, getAllCategories, getGlobalThemeSettings, normalizeWpUrl } from '@/lib/wordpress/api';
 import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
 import PostCard from '@/components/PostCard';
 import Pagination from '@/components/Pagination';
 import ArchiveToolbar from '@/components/ArchiveToolbar';
+
+import { DEFAULT_POST_IMAGE } from '@/lib/constants';
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -36,7 +38,7 @@ export default async function CategoryArchivePage({ params, searchParams }: Prop
     // This is acceptable behavior for "adding a search bar".
   ]);
 
-  const defaultImageUrl = globalSettings?.blog_default_image?.guid || 'https://dev-new-marketsheadlines.pantheonsite.io/wp-content/uploads/2026/01/thumbnail.png';
+  const defaultImageUrl = normalizeWpUrl(globalSettings?.blog_default_image?.guid) || DEFAULT_POST_IMAGE;
 
   if (!category) {
     notFound();

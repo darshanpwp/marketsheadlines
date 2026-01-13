@@ -2,7 +2,7 @@
 /* eslint-disable */
 const https = require('https');
 
-const url = 'https://dev-new-marketsheadlines.pantheonsite.io/wp-json/wp/v2/posts?per_page=2&_embed';
+const url = 'https://news.marketsheadlines.com/wp-json/wp/v2/posts?per_page=2&_embed';
 
 https.get(url, (res) => {
   let data = '';

@@ -4,6 +4,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { PostWithDetails } from '@/types/wordpress';
 import { calculateReadingTime } from '@/lib/utils';
+import { DEFAULT_POST_IMAGE } from '@/lib/constants';
 
 interface HeroCarouselProps {
     posts: PostWithDetails[];
@@ -15,7 +16,7 @@ export default function HeroCarousel({ posts, defaultImageUrl }: HeroCarouselPro
     // We can add a simple useEffect to ensure it initializes properly if dynamic.
 
     // Fallback image source
-    const fallbackImage = defaultImageUrl || 'https://dev-new-marketsheadlines.pantheonsite.io/wp-content/uploads/2026/01/thumbnail.png';
+    const fallbackImage = defaultImageUrl || DEFAULT_POST_IMAGE;
 
     return (
         <section className="container-fluid px-0">
