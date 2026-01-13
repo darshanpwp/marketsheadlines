@@ -265,8 +265,9 @@ export async function getGlobalThemeSettings(): Promise<GlobalThemeSettings | nu
   try {
     // Using direct fetch to avoid potential 415 issues with unnecessary headers/auth
     // This endpoint should be public.
-    const response = await fetch(url, {
-      next: { revalidate: 60 }, // Cache for 1 hour
+    // Use timeout to fail fast (3s)
+    const response = await fetchWithTimeout(url, {
+      next: { revalidate: 60 },
     });
 
     if (!response.ok) {
@@ -274,9 +275,29 @@ export async function getGlobalThemeSettings(): Promise<GlobalThemeSettings | nu
       return null;
     }
 
-    return await response.json();
+    const data = await response.json();
+
+    // Normalize URLs in the response
+    if (data) {
+      if (data.blog_default_image) {
+        if (typeof data.blog_default_image === 'string') {
+          data.blog_default_image = normalizeWpUrl(data.blog_default_image);
+        } else if (data.blog_default_image.guid) {
+          data.blog_default_image.guid = normalizeWpUrl(data.blog_default_image.guid);
+        }
+      }
+      if (data.footer_logo) {
+        if (typeof data.footer_logo === 'string') {
+          data.footer_logo = normalizeWpUrl(data.footer_logo);
+        } else if (data.footer_logo.guid) {
+          data.footer_logo.guid = normalizeWpUrl(data.footer_logo.guid);
+        }
+      }
+    }
+
+    return data;
   } catch (error) {
-    console.error('Error fetching global theme settings:', error);
+    console.warn('Error fetching global theme settings:', error instanceof Error ? error.message : error);
     return null;
   }
 }
@@ -1104,7 +1125,8 @@ export async function getMenu(slug: string): Promise<WordPressMenu | null> {
 
   try {
     // Use direct fetch to avoid 415 errors
-    const response = await fetch(url, {
+    // Use timeout to fail fast (3s)
+    const response = await fetchWithTimeout(url, {
       next: { revalidate: 60 },
       headers: {
         'Accept': 'application/json'
@@ -1122,7 +1144,7 @@ export async function getMenu(slug: string): Promise<WordPressMenu | null> {
     if (error instanceof WordPressError && (error.status === 404 || error.status === 401)) {
       return null;
     }
-    console.error(`Error fetching menu "${slug}":`, error);
+    console.warn(`Error fetching menu "${slug}":`, error instanceof Error ? error.message : error);
     return null;
   }
 }
@@ -1131,12 +1153,32 @@ export async function getMenu(slug: string): Promise<WordPressMenu | null> {
  * Fetch site settings
  */
 
+/**
+ * Fetch with timeout helper
+ */
+async function fetchWithTimeout(url: string, options: RequestInit = {}, timeout = 3000): Promise<Response> {
+  const controller = new AbortController();
+  const id = setTimeout(() => controller.abort(), timeout);
+  try {
+    const response = await fetch(url, {
+      ...options,
+      signal: controller.signal
+    });
+    clearTimeout(id);
+    return response;
+  } catch (error) {
+    clearTimeout(id);
+    throw error;
+  }
+}
+
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function getSiteSettings(): Promise<any> {
   const url = `${WP_API_URL}/settings`;
+  console.log(`[DEBUG] getSiteSettings fetching: ${url}`);
   try {
-    // Use direct fetch to avoid 415 errors
-    const response = await fetch(url, {
+    // Use timeout to fail fast (3s) instead of hanging for 10s
+    const response = await fetchWithTimeout(url, {
       next: { revalidate: 60 },
     });
 
@@ -1153,7 +1195,8 @@ export async function getSiteSettings(): Promise<any> {
       // Silently fail for authentication errors on settings
       return null;
     }
-    console.error('Error fetching site settings:', error);
+    // Only log warning to avoid huge stack traces in dev console for timeouts
+    console.warn(`Error fetching site settings (${url}):`, error instanceof Error ? error.message : error);
     return null;
   }
 }
@@ -1396,7 +1439,7 @@ export async function getHomePageData(): Promise<HomePageData | null> {
               title: item.features_title || item.title?.rendered || '',
               description: item.features_description || item.content?.rendered || '',
               // item.image is the attachment object from REST
-              image: item.image?.guid || item.image?.source_url || null
+              image: normalizeWpUrl(item.image?.guid || item.image?.source_url)
             }));
           } else {
             // Fallback to the raw data if fetch fails
@@ -1405,7 +1448,7 @@ export async function getHomePageData(): Promise<HomePageData | null> {
               id: feature.ID || feature.id,
               title: feature.post_title || feature.title,
               description: feature.post_content || feature.description || '',
-              image: typeof feature.image === 'object' && feature.image?.guid ? feature.image.guid : (typeof feature.image === 'string' ? feature.image : null)
+              image: normalizeWpUrl(typeof feature.image === 'object' && feature.image?.guid ? feature.image.guid : (typeof feature.image === 'string' ? feature.image : null))
             }));
           }
         } catch (e) {
@@ -1416,7 +1459,7 @@ export async function getHomePageData(): Promise<HomePageData | null> {
             id: feature.ID || feature.id,
             title: feature.post_title || feature.title,
             description: feature.post_content || feature.description || '',
-            image: typeof feature.image === 'object' && feature.image?.guid ? feature.image.guid : (typeof feature.image === 'string' ? feature.image : null)
+            image: normalizeWpUrl(typeof feature.image === 'object' && feature.image?.guid ? feature.image.guid : (typeof feature.image === 'string' ? feature.image : null))
           }));
         }
       }
@@ -1488,12 +1531,12 @@ export async function getHomePageData(): Promise<HomePageData | null> {
       market_intelligence_description: marketSection.market_intelligence_description || '',
       market_intelligence_features_text: marketFeatures,
       get_market_intelligence_button_text: marketSection.get_market_intelligence_button_text || '',
-      get_market_intelligence_button_url: extractUrlFromAnchor(marketSection.get_market_intelligence_button_url || ''),
+      get_market_intelligence_button_url: normalizeWpUrl(marketSection.get_market_intelligence_button_url),
       explore_coverage_button_text: marketSection.explore_coverage_button_text || '',
-      explore_coverage_button_url: extractUrlFromAnchor(marketSection.explore_coverage_button_url || ''),
-      market_intelligence_image: (marketSection.market_intelligence_image && typeof marketSection.market_intelligence_image === 'object')
+      explore_coverage_button_url: normalizeWpUrl(marketSection.explore_coverage_button_url),
+      market_intelligence_image: normalizeWpUrl((marketSection.market_intelligence_image && typeof marketSection.market_intelligence_image === 'object')
         ? (marketSection.market_intelligence_image.guid || marketSection.market_intelligence_image.source_url || '')
-        : (typeof marketSection.market_intelligence_image === 'string' ? marketSection.market_intelligence_image : ''),
+        : (typeof marketSection.market_intelligence_image === 'string' ? marketSection.market_intelligence_image : '')),
 
       // Investors & Organizations Section
       for_investors_organizations_heading: investorsSection.for_investors_organizations_heading || '',
@@ -1501,9 +1544,9 @@ export async function getHomePageData(): Promise<HomePageData | null> {
       for_investors_organizations_description: investorsSection.for_investors_organizations_description || '',
       for_investors_organizations_features: investorsFeatures,
       request_a_quote_button_text: investorsSection.request_a_quote_button_text || '',
-      request_a_quote_button_url: extractUrlFromAnchor(investorsSection.request_a_quote_button_url || ''),
+      request_a_quote_button_url: normalizeWpUrl(investorsSection.request_a_quote_button_url),
       register_for_access_button_text: investorsSection.register_for_access_button_text || '',
-      register_for_access_button_url: extractUrlFromAnchor(investorsSection.register_for_access_button_url || ''),
+      register_for_access_button_url: normalizeWpUrl(investorsSection.register_for_access_button_url),
 
       // Newsletter Section
       show_newsletter_section: newsletterSection.show_newsletter_section || '0',
@@ -1550,7 +1593,7 @@ export async function getHomePageData(): Promise<HomePageData | null> {
 export async function getMarketTickers(): Promise<MarketTicker[]> {
   const url = `${WORDPRESS_URL}/wp-json/custom-market/v1/tickers`;
   try {
-    const response = await fetch(url, {
+    const response = await fetchWithTimeout(url, {
       next: { revalidate: 60 },
       headers: {
         'Accept': 'application/json'
@@ -1565,7 +1608,7 @@ export async function getMarketTickers(): Promise<MarketTicker[]> {
     const data = await response.json();
     return Array.isArray(data) ? data : [];
   } catch (error) {
-    console.error('Error fetching market tickers:', error);
+    console.warn('Error fetching market tickers:', error instanceof Error ? error.message : error);
     return [];
   }
 }
