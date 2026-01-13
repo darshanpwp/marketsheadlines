@@ -2,7 +2,7 @@
 /* eslint-disable */
 const https = require('https');
 
-const WP_API_URL = process.env.NEXT_PUBLIC_WP_API_URL || 'https://dev-new-marketsheadlines.pantheonsite.io/wp-json/wp/v2';
+const WP_API_URL = process.env.NEXT_PUBLIC_WP_API_URL || 'https://news.marketsheadlines.com/wp-json/wp/v2';
 const WP_USERNAME = process.argv[2] || process.env.WP_USERNAME;
 const WP_PASSWORD = process.argv[3] || process.env.WP_PASSWORD;
 const CPT_SLUG = process.argv[4] || 'news-release'; // Default or pass as 4th argument

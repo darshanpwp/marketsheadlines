@@ -5,11 +5,6 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       {
         protocol: 'https',
-        hostname: '*.pantheonsite.io',
-        pathname: '/wp-content/**',
-      },
-      {
-        protocol: 'https',
         hostname: 'news.marketsheadlines.com',
         pathname: '/wp-content/**',
       },

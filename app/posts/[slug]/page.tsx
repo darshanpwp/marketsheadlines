@@ -1,4 +1,4 @@
-import { getPostBySlug, getPostsByCategory, getMarketTickers, getGlobalThemeSettings } from '@/lib/wordpress/api';
+import { getPostBySlug, getPostsByCategory, getMarketTickers, getGlobalThemeSettings, normalizeWpUrl } from '@/lib/wordpress/api';
 import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
 import Image from 'next/image';
@@ -10,6 +10,8 @@ import AuthorBox from '@/components/AuthorBox';
 import NewsletterCTA from '@/components/NewsletterCTA';
 import GlobalCallToAction from '@/components/GlobalCallToAction';
 import { PaginatedResponse, PostWithDetails } from '@/types/wordpress';
+
+import { DEFAULT_POST_IMAGE } from '@/lib/constants';
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -43,7 +45,7 @@ export default async function PostDetailPage({ params }: Props) {
   const tickers = await getMarketTickers();
   const globalSettings = await getGlobalThemeSettings();
   // Use global default image from Pods settings, with a fallback hardcoded URL
-  const defaultImageUrl = globalSettings?.blog_default_image?.guid || 'https://dev-new-marketsheadlines.pantheonsite.io/wp-content/uploads/2026/01/thumbnail.png';
+  const defaultImageUrl = normalizeWpUrl(globalSettings?.blog_default_image?.guid) || DEFAULT_POST_IMAGE;
 
   if (!post) {
     notFound();

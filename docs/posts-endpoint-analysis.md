@@ -2,7 +2,7 @@
 
 ## Endpoint
 ```
-https://dev-new-marketsheadlines.pantheonsite.io/wp-json/wp/v2/posts
+https://news.marketsheadlines.com/wp-json/wp/v2/posts
 ```
 
 ## Authentication Status
