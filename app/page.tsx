@@ -5,6 +5,7 @@ import {
   getMarketTickers, getGlobalThemeSettings,
   WORDPRESS_URL
 } from '@/lib/wordpress/api';
+import { DEFAULT_POST_IMAGE } from '@/lib/constants';
 import MarketOverview from '@/components/MarketOverview';
 import TrendingListItem from '@/components/TrendingListItem';
 import NewsListItem from '@/components/NewsListItem';
@@ -12,6 +13,7 @@ import PostCard from '@/components/PostCard';
 
 import HeroCarousel from '@/components/HeroCarousel';
 import NewsletterForm from '@/components/NewsletterForm';
+import ErrorBoundary from '@/components/ErrorBoundary';
 
 export const revalidate = 60; // Revalidate every 60 seconds
 
@@ -23,7 +25,7 @@ export default async function Home() {
     getGlobalThemeSettings()
   ]);
 
-  const defaultImageUrl = globalSettings?.blog_default_image?.guid || `${WORDPRESS_URL}/wp-content/uploads/2026/01/thumbnail.png`;
+  const defaultImageUrl = globalSettings?.blog_default_image?.guid || DEFAULT_POST_IMAGE;
 
   const posts = postsResponse.items;
 
@@ -50,36 +52,38 @@ export default async function Home() {
       <HeroCarousel posts={featuredPosts} defaultImageUrl={defaultImageUrl} />
 
       {/* 2️⃣ Trending Now + Market Overview */}
-      <section className="p-60 bg-light-c">
-        <div className="container py-4">
-          <div className="row g-5">
-            {/* Left: Trending Now */}
-            <div className="col-lg-8">
-              <div className="d-flex align-items-center justify-content-between mb-4">
-                <h2 className="primary-text-blue mb-0 font-serif">{trendingSection?.title || 'Trending Now'}</h2>
+      <ErrorBoundary sectionName="Trending & Market Overview">
+        <section className="p-60 bg-light-c">
+          <div className="container py-4">
+            <div className="row g-5">
+              {/* Left: Trending Now */}
+              <div className="col-lg-8">
+                <div className="d-flex align-items-center justify-content-between mb-4">
+                  <h2 className="primary-text-blue mb-0 font-serif">{trendingSection?.title || 'Trending Now'}</h2>
+                </div>
+
+                <div className="mb-5">
+                  {trendingPosts.map((post, index) => (
+                    <TrendingListItem key={post.id} post={post} index={index + 1} />
+                  ))}
+                </div>
+
+                <Link href={trendingSection?.view_all_url || '/posts'} className="btn primary-text-blue px-4 fw-bold">
+                  View All Trending Stories
+                  <i className="fa-solid fa-arrow-right ms-2 small"></i>
+                </Link>
               </div>
 
-              <div className="mb-5">
-                {trendingPosts.map((post, index) => (
-                  <TrendingListItem key={post.id} post={post} index={index + 1} />
-                ))}
-              </div>
-
-              <Link href={trendingSection?.view_all_url || '/posts'} className="btn primary-text-blue px-4 fw-bold">
-                View All Trending Stories
-                <i className="fa-solid fa-arrow-right ms-2 small"></i>
-              </Link>
-            </div>
-
-            {/* Right: Market Overview */}
-            <div className="col-lg-4">
-              <div className="sticky-sidebar">
-                <MarketOverview tickers={marketTickers} />
+              {/* Right: Market Overview */}
+              <div className="col-lg-4">
+                <div className="sticky-sidebar">
+                  <MarketOverview tickers={marketTickers} />
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      </section>
+        </section>
+      </ErrorBoundary>
 
       {/* 3️⃣ Market Intelligence Promo Section */}
       {/* 3️⃣ Market Intelligence Promo Section */}
@@ -155,76 +159,82 @@ export default async function Home() {
       )}
 
       {/* 4️⃣ World News – List View */}
-      <section className="container p-60">
-        <div className="d-flex justify-content-between align-items-center mb-5">
-          <h2 className="primary-text-blue mb-0">{worldListSection?.title || 'World News'}</h2>
-          <Link href={worldListSection?.view_all_url || '/posts'} className="primary-text-blue text-decoration-none fw-semibold">
-            View All
-            <i className="fa-solid fa-chevron-right ms-2 small"></i>
-          </Link>
-        </div>
-
-        <div className="row g-4">
-          {/* Left: News List */}
-          <div className="col-lg-8">
-            {worldNewsPosts.length > 0 ? (
-              worldNewsPosts.map((post, index) => (
-                <NewsListItem key={post.id} post={post} index={index + 1} />
-              ))
-            ) : (
-              posts.slice(0, 5).map((post, index) => (
-                <NewsListItem key={post.id} post={post} index={index + 1} />
-              ))
-            )}
-          </div>
-
-          {/* Right: Market Overview */}
-          <div className="col-lg-4">
-            <div className="sticky-sidebar">
-              <MarketOverview tickers={marketTickers} />
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* 5️⃣ World News – Card Grid */}
-      <section className="world-news-card-grid p-60 bg-light-c">
-        <div className="container">
+      <ErrorBoundary sectionName="World News List">
+        <section className="container p-60">
           <div className="d-flex justify-content-between align-items-center mb-5">
-            <h2 className="primary-text-blue mb-0">{worldGridSection?.title || 'World News'}</h2>
-            <Link href={worldGridSection?.view_all_url || '/posts'} className="primary-text-blue text-decoration-none fw-semibold">
+            <h2 className="primary-text-blue mb-0">{worldListSection?.title || 'World News'}</h2>
+            <Link href={worldListSection?.view_all_url || '/posts'} className="primary-text-blue text-decoration-none fw-semibold">
               View All
               <i className="fa-solid fa-chevron-right ms-2 small"></i>
             </Link>
           </div>
-          <div className="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
-            {worldNewsCards.map((post) => (
+
+          <div className="row g-4">
+            {/* Left: News List */}
+            <div className="col-lg-8">
+              {worldNewsPosts.length > 0 ? (
+                worldNewsPosts.map((post, index) => (
+                  <NewsListItem key={post.id} post={post} index={index + 1} />
+                ))
+              ) : (
+                posts.slice(0, 5).map((post, index) => (
+                  <NewsListItem key={post.id} post={post} index={index + 1} />
+                ))
+              )}
+            </div>
+
+            {/* Right: Market Overview */}
+            <div className="col-lg-4">
+              <div className="sticky-sidebar">
+                <MarketOverview tickers={marketTickers} />
+              </div>
+            </div>
+          </div>
+        </section>
+      </ErrorBoundary>
+
+      {/* 5️⃣ World News – Card Grid */}
+      <ErrorBoundary sectionName="World News Grid">
+        <section className="world-news-card-grid p-60 bg-light-c">
+          <div className="container">
+            <div className="d-flex justify-content-between align-items-center mb-5">
+              <h2 className="primary-text-blue mb-0">{worldGridSection?.title || 'World News'}</h2>
+              <Link href={worldGridSection?.view_all_url || '/posts'} className="primary-text-blue text-decoration-none fw-semibold">
+                View All
+                <i className="fa-solid fa-chevron-right ms-2 small"></i>
+              </Link>
+            </div>
+            <div className="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
+              {worldNewsCards.map((post) => (
+                <div key={post.id} className="col">
+                  <PostCard post={post} defaultImageUrl={defaultImageUrl} />
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      </ErrorBoundary>
+
+      {/* 6️⃣ Business Section */}
+      <ErrorBoundary sectionName="Business Section">
+        <section className="container p-60">
+          <div className="d-flex justify-content-between align-items-center mb-5">
+            <h2 className="primary-text-blue mb-0">{businessSection?.title || 'Business'}</h2>
+            <Link href={businessSection?.view_all_url || '/posts'} className="primary-text-blue text-decoration-none fw-semibold">
+              View All
+              <i className="fa-solid fa-chevron-right ms-2 small"></i>
+            </Link>
+          </div>
+
+          <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            {(businessPosts.length > 0 ? businessPosts : posts.slice(0, 3)).map((post) => (
               <div key={post.id} className="col">
-                <PostCard post={post} defaultImageUrl={defaultImageUrl} />
+                <PostCard post={post} showExcerpt={true} filterCategory="business" defaultImageUrl={defaultImageUrl} />
               </div>
             ))}
           </div>
-        </div>
-      </section>
-
-      {/* 6️⃣ Business Section */}
-      <section className="container p-60">
-        <div className="d-flex justify-content-between align-items-center mb-5">
-          <h2 className="primary-text-blue mb-0">{businessSection?.title || 'Business'}</h2>
-          <Link href={businessSection?.view_all_url || '/posts'} className="primary-text-blue text-decoration-none fw-semibold">
-            View All
-            <i className="fa-solid fa-chevron-right ms-2 small"></i>
-          </Link>
-        </div>
-
-        <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-          {(businessPosts.length > 0 ? businessPosts : posts.slice(0, 3)).map((post) => (
-            <div key={post.id} className="col">
-              <PostCard post={post} showExcerpt={true} filterCategory="business" defaultImageUrl={defaultImageUrl} />
-            </div>
-          ))}
-        </div>
-      </section>
+        </section>
+      </ErrorBoundary>
 
       {/* 7️⃣ Trust / Value Proposition Section */}
       {(homePageData?.for_investors_organizations_heading || homePageData?.for_investors_organizations_main_heading || (homePageData?.for_investors_organizations_features && homePageData.for_investors_organizations_features.length > 0)) && (

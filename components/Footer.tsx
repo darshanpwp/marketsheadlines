@@ -50,7 +50,7 @@ export default async function Footer() {
           {/* Quick Links (Right Column) */}
           <div className="col-lg-8">
             <div className="mb-4">
-              <h5 className="h6 fw-bold mb-4 fw-semibold text-white text-font-family small tracking-wider">Quick Links</h5>
+              <h5 className="h6 fw-bold mb-4 fw-semibold text-white text-font-family tracking-wider">Quick Links</h5>
 
               {/* Responsive 3-column grid for links */}
               <ul className="list-unstyled row row-cols-1 row-cols-sm-2 row-cols-md-3 g-2">

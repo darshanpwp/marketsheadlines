@@ -4,6 +4,7 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { PostWithDetails } from '@/types/wordpress';
 import { formatDate, calculateReadingTime } from '@/lib/utils';
+import { DEFAULT_POST_IMAGE } from '@/lib/constants';
 
 interface PostCardProps {
   post: PostWithDetails;
@@ -27,7 +28,7 @@ export default function PostCard({ post, showExcerpt = false, filterCategory, de
   }
 
   // Use dynamic default image or hardcoded fallback as last resort
-  const fallbackImage = defaultImageUrl || 'https://dev-new-marketsheadlines.pantheonsite.io/wp-content/uploads/2026/01/thumbnail.png';
+  const fallbackImage = defaultImageUrl || DEFAULT_POST_IMAGE;
 
   return (
     <article className="card bg-white h-100 shadow-sm border-0 hover-lift overflow-hidden">

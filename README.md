@@ -12,6 +12,14 @@ A modern headless WordPress implementation using Next.js 16, React 19, and Tailw
 - ✅ **Responsive Design** - Mobile-first design with Tailwind CSS v4
 - ✅ **Image Optimization** - Next.js Image component with remote patterns
 - ✅ **Dark Mode Support** - Built-in dark mode theming
+- ✅ **Resilience** - Error Boundaries for graceful UI degradation
+- ✅ **Contract Testing** - Scripts to verify WordPress API data structure
+
+## Key Files
+
+- `lib/constants.ts` - Centralized configuration for site-wide constants (e.g. default images).
+- `components/ErrorBoundary.tsx` - Handles React errors in dynamic sections.
+- `scripts/check-content.js` - Verifies the integrity of the Home Page JSON data from WordPress Pods.
 
 ## Project Structure
 
@@ -96,6 +104,18 @@ Located in `lib/wordpress/api.ts`:
 - `getAllPageSlugs()` - Get all slugs for static generation
 - `getMediaById(id)` - Fetch media by ID
 - `getUserById(id)` - Fetch user/author by ID
+
+### Verification Scripts
+
+Run these scripts to verify the WordPress backend returns data in the expected format:
+
+```bash
+# Verify Home Page Pods Data Structure
+node scripts/check-content.js
+
+# Verify General Settings
+node scripts/verify_global_settings.js
+```
 
 ## Key Features
 
