@@ -1,4 +1,5 @@
 import { getAuthorBySlug, getPostsByAuthor, getAllCategories, getGlobalThemeSettings } from '@/lib/wordpress/api';
+import { DEFAULT_POST_IMAGE } from '@/lib/constants';
 import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
 import Image from 'next/image';
@@ -54,7 +55,7 @@ export default async function AuthorArchivePage({ params, searchParams }: Props)
     ]);
 
     const { items: posts, totalItems, totalPages } = postsData;
-    const defaultImageUrl = globalSettings?.blog_default_image?.guid || 'https://dev-new-marketsheadlines.pantheonsite.io/wp-content/uploads/2026/01/thumbnail.png';
+    const defaultImageUrl = globalSettings?.blog_default_image?.guid || DEFAULT_POST_IMAGE;
 
     return (
         <div className="min-vh-100 bg-white">
