@@ -1,6 +1,6 @@
 const https = require('https');
 
-const url = 'https://dev-new-marketsheadlines.pantheonsite.io/wp-json/custom/v1/global-pods-theme-settings/';
+const url = 'https://news.marketsheadlines.com/wp-json/custom/v1/global-pods-theme-settings/';
 
 https.get(url, (res) => {
     let data = '';
