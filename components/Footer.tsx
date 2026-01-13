@@ -25,13 +25,14 @@ export default async function Footer() {
           <div className="col-lg-4 mb-4 mb-lg-0">
             {settings?.footer_logo || settings?.logo ? (
               <div className="mb-3 position-relative" style={{ width: '180px', height: '60px' }}>
-                <Link href="/" className="d-block w-100 h-100 position-relative">
+                <Link href="/" className="d-block w-100 h-100 position-relative" suppressHydrationWarning>
                   <Image
                     src={settings?.footer_logo || settings?.logo || ''}
                     alt={settings?.name || 'Market Headlines'}
                     fill
                     className="object-fit-contain object-position-left"
                     sizes="(max-width: 768px) 150px, 180px"
+                    suppressHydrationWarning
                   />
                 </Link>
               </div>
@@ -57,7 +58,7 @@ export default async function Footer() {
                 {quickLinksItems.map((item: WordPressMenuItem, idx: number) => (
                   <li key={item.ID || idx} className="col">
                     <Link
-                      href={(item.url || '').replace('https://dev-new-marketsheadlines.pantheonsite.io', '').replace(WORDPRESS_URL, '') || '/'}
+                      href={(item.url || '').replace(WORDPRESS_URL, '').replace('/wp-json', '') || '/'}
                       className="color-menu-f text-decoration-none hover-white transition-all small footer-link d-inline-block py-1"
                     >
                       {item.title}

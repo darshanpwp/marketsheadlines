@@ -3,6 +3,7 @@
 import { useState } from 'react';
 
 import { useRouter } from 'next/navigation';
+import { WORDPRESS_URL } from '@/lib/wordpress/api';
 
 interface NewsletterFormProps {
     defaultDaily?: boolean;
@@ -36,7 +37,7 @@ export default function NewsletterForm({
         };
 
         try {
-            const response = await fetch('https://dev-new-marketsheadlines.pantheonsite.io/wp-json/newsletter/v1/subscribe', {
+            const response = await fetch(`${WORDPRESS_URL}/wp-json/newsletter/v1/subscribe`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
