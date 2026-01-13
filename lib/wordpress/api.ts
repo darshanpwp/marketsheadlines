@@ -17,11 +17,13 @@ import type {
   MarketTicker,
   WordPressRestSettings,
   GlobalThemeSettings,
-  WordPressCategory
+  WordPressCategory,
+  WordPressMenuItem
 } from '@/types/wordpress';
 
 export const WORDPRESS_URL = process.env.NEXT_PUBLIC_WORDPRESS_URL || 'https://news.marketsheadlines.com';
 const WP_API_URL = process.env.NEXT_PUBLIC_WP_API_URL || `${WORDPRESS_URL}/wp-json/wp/v2`;
+const MARKET_HEADLINES_API_URL = `${WORDPRESS_URL}/wp-json/marketheadlines/v1`;
 const WP_USERNAME = process.env.WP_USERNAME;
 const WP_PASSWORD = process.env.WP_PASSWORD;
 
@@ -49,9 +51,14 @@ async function fetchWithAuth(url: string, options: RequestInit = {}): Promise<Re
   const authHeader = getAuthHeader();
 
   const headers: Record<string, string> = {
-    'Content-Type': 'application/json',
     ...(options.headers as Record<string, string>),
   };
+
+  // Only add Content-Type for methods that typically require a body
+  const method = options.method?.toUpperCase() || 'GET';
+  if (method !== 'GET' && method !== 'HEAD') {
+    headers['Content-Type'] = 'application/json';
+  }
 
   // Only add authorization if credentials are available
   if (authHeader) {
@@ -109,11 +116,16 @@ export async function getPages(perPage: number = 10, page: number = 1): Promise<
   const url = `${WP_API_URL}/pages?per_page=${perPage}&page=${page}&status=publish&_embed`;
 
   try {
-    const response = await fetchWithAuth(url, {
+    // Use direct fetch to avoid 415 errors
+    const response = await fetch(url, {
       next: { revalidate: 60 }, // ISR: Revalidate every 60 seconds
+      headers: { 'Accept': 'application/json' }
     });
 
+    if (!response.ok) return [];
+
     const pages: WordPressPage[] = await response.json();
+    if (!Array.isArray(pages)) return [];
     return pages.map(transformPage);
   } catch (error) {
     console.error('Error fetching pages:', error);
@@ -129,12 +141,17 @@ export async function getPagesWithDetails(perPage: number = 10, page: number = 1
   const url = `${WP_API_URL}/pages?status=publish&_embed&per_page=${perPage}&page=${page}`;
 
   try {
-    const response = await fetchWithAuth(url, {
+    // Use direct fetch to avoid 415 errors
+    const response = await fetch(url, {
       next: { revalidate: 60 },
+      headers: { 'Accept': 'application/json' }
     });
 
     const totalItems = parseInt(response.headers.get('X-WP-Total') || '0', 10);
     const totalPages = parseInt(response.headers.get('X-WP-TotalPages') || '0', 10);
+
+    if (!response.ok) return { items: [], totalItems: 0, totalPages: 0 };
+
     const pages: WordPressPage[] = await response.json();
 
     const items = pages.map((wpPage) => {
@@ -162,9 +179,13 @@ export async function getPageBySlug(slug: string): Promise<PageWithDetails | nul
   const url = `${WP_API_URL}/pages?slug=${slug}&status=publish&_embed`;
 
   try {
-    const response = await fetchWithAuth(url, {
+    // Use direct fetch to avoid 415 errors
+    const response = await fetch(url, {
       next: { revalidate: 60 },
+      headers: { 'Accept': 'application/json' }
     });
+
+    if (!response.ok) return null;
 
     const pages: WordPressPage[] = await response.json();
 
@@ -197,9 +218,13 @@ export async function getPage(id: number): Promise<Page | null> {
   const url = `${WP_API_URL}/pages/${id}`;
 
   try {
-    const response = await fetchWithAuth(url, {
+    // Use direct fetch to avoid 415 errors
+    const response = await fetch(url, {
       next: { revalidate: 3600 },
+      headers: { 'Accept': 'application/json' }
     });
+
+    if (!response.ok) return null;
 
     const wpPage: WordPressPage = await response.json();
     return transformPage(wpPage);
@@ -222,9 +247,9 @@ export async function getGlobalThemeSettings(): Promise<GlobalThemeSettings | nu
   const url = `${WP_API_URL.replace('/wp/v2', '/custom/v1')}/global-pods-theme-settings/`;
 
   try {
-    // Note: This endpoint might not require auth if public, but using fetchWithAuth is safe usually.
-    // Given the URL structure, it looks like a custom endpoint.
-    const response = await fetchWithAuth(url, {
+    // Using direct fetch to avoid potential 415 issues with unnecessary headers/auth
+    // This endpoint should be public.
+    const response = await fetch(url, {
       next: { revalidate: 60 }, // Cache for 1 hour
     });
 
@@ -246,8 +271,10 @@ export async function getGlobalThemeSettings(): Promise<GlobalThemeSettings | nu
 export async function getAllCategories(): Promise<WordPressCategory[]> {
   const url = `${WP_API_URL}/categories?per_page=100&hide_empty=true`;
   try {
-    const response = await fetchWithAuth(url, {
-      next: { revalidate: 3600 },
+    // Use direct fetch to avoid 415 errors
+    const response = await fetch(url, {
+      next: { revalidate: 60 },
+      headers: { 'Accept': 'application/json' }
     });
 
     if (!response.ok) {
@@ -268,7 +295,7 @@ export async function getSiteIcon(): Promise<string> {
   const url = WORDPRESS_URL + '/wp-json/';
 
   try {
-    const response = await fetch(url, { next: { revalidate: 3600 } });
+    const response = await fetch(url, { next: { revalidate: 60 } });
     if (!response.ok) return '';
     const data = await response.json();
     return data.site_icon_url || '';
@@ -284,8 +311,10 @@ export async function getAllPageSlugs(): Promise<string[]> {
   const url = `${WP_API_URL}/pages?status=publish&per_page=100`;
 
   try {
-    const response = await fetchWithAuth(url, {
-      next: { revalidate: 3600 }, // Cache for 1 hour
+    // Use direct fetch to avoid 415 errors
+    const response = await fetch(url, {
+      next: { revalidate: 60 }, // Cache for 1 hour
+      headers: { 'Accept': 'application/json' }
     });
 
     const pages: WordPressPage[] = await response.json();
@@ -306,7 +335,7 @@ export async function getMediaById(id: number): Promise<WordPressMedia | null> {
 
   try {
     const response = await fetchWithAuth(url, {
-      next: { revalidate: 3600 }, // Cache for 1 hour
+      next: { revalidate: 60 }, // Cache for 1 hour
     });
 
     return await response.json();
@@ -326,7 +355,7 @@ export async function getUserById(id: number): Promise<WordPressUser | null> {
 
   try {
     const response = await fetchWithAuth(url, {
-      next: { revalidate: 3600 }, // Cache for 1 hour
+      next: { revalidate: 60 }, // Cache for 1 hour
     });
 
     return await response.json();
@@ -344,8 +373,12 @@ export async function getAuthorBySlug(slug: string): Promise<WordPressUser | nul
   const url = `${WP_API_URL}/users?slug=${slug}`;
 
   try {
-    const response = await fetchWithAuth(url, {
-      next: { revalidate: 3600 },
+    // Use direct fetch to avoid 415 errors
+    const response = await fetch(url, {
+      next: { revalidate: 60 },
+      headers: {
+        'Accept': 'application/json'
+      }
     });
 
     const users: WordPressUser[] = await response.json();
@@ -399,11 +432,19 @@ export async function getPosts(perPage: number = 10, page: number = 1): Promise<
   const url = `${WP_API_URL}/posts?per_page=${perPage}&page=${page}&status=publish&_embed`;
 
   try {
-    const response = await fetchWithAuth(url, {
+    // Use direct fetch to avoid 415 errors
+    const response = await fetch(url, {
       next: { revalidate: 60 }, // ISR: Revalidate every 60 seconds
+      headers: { 'Accept': 'application/json' }
     });
 
+    if (!response.ok) {
+      if (response.status === 404) return [];
+      throw new Error(`Failed to fetch posts: ${response.status}`);
+    }
+
     const posts: WordPressPost[] = await response.json();
+    if (!Array.isArray(posts)) return [];
     return posts.map(transformPost);
   } catch (error) {
     console.error('Error fetching posts:', error);
@@ -423,13 +464,25 @@ export async function getPostsWithDetails(perPage: number = 10, page: number = 1
   }
 
   try {
-    const response = await fetchWithAuth(url, {
+    // Use direct fetch to avoid 415 errors
+    const response = await fetch(url, {
       next: { revalidate: 60 },
+      headers: { 'Accept': 'application/json' }
     });
+
+    if (!response.ok) {
+      if (response.status === 404) return { items: [], totalItems: 0, totalPages: 0 };
+      throw new Error(`Failed to fetch posts with details: ${response.status}`);
+    }
 
     const totalItems = parseInt(response.headers.get('X-WP-Total') || '0', 10);
     const totalPages = parseInt(response.headers.get('X-WP-TotalPages') || '0', 10);
     const posts: WordPressPost[] = await response.json();
+
+    if (!Array.isArray(posts)) {
+      console.warn('API returned non-array for posts:', posts);
+      return { items: [], totalItems: 0, totalPages: 0 };
+    }
 
     const items = posts.map((wpPost) => {
       const post = transformPost(wpPost);
@@ -476,9 +529,17 @@ export async function getPostBySlug(slug: string): Promise<PostWithDetails | nul
   const url = `${WP_API_URL}/posts?slug=${slug}&status=publish&_embed`;
 
   try {
-    const response = await fetchWithAuth(url, {
+    // Use direct fetch to avoid 415 errors
+    const response = await fetch(url, {
       next: { revalidate: 60 },
+      headers: { 'Accept': 'application/json' }
     });
+
+    if (!response.ok) {
+      if (response.status === 404) return null;
+      console.error(`getPostBySlug failed for ${slug}: ${response.status} ${response.statusText}`);
+      throw new Error(`Failed to fetch post with slug "${slug}": ${response.status}`);
+    }
 
     const posts: WordPressPost[] = await response.json();
 
@@ -532,9 +593,13 @@ export async function getAllPostSlugs(): Promise<string[]> {
   const url = `${WP_API_URL}/posts?status=publish&per_page=100`;
 
   try {
-    const response = await fetchWithAuth(url, {
-      next: { revalidate: 3600 }, // Cache for 1 hour
+    // Use direct fetch to avoid 415 errors
+    const response = await fetch(url, {
+      next: { revalidate: 60 }, // Cache for 1 hour
+      headers: { 'Accept': 'application/json' }
     });
+
+    if (!response.ok) return [];
 
     const posts = await response.json() as WordPressPost[];
     if (!Array.isArray(posts)) {
@@ -554,12 +619,19 @@ export async function getPostsByCategory(categoryId: number, perPage: number = 1
   const url = `${WP_API_URL}/posts?categories=${categoryId}&status=publish&_embed&per_page=${perPage}&page=${page}`;
 
   try {
-    const response = await fetchWithAuth(url, {
+    // Use direct fetch to avoid 415 errors
+    const response = await fetch(url, {
       next: { revalidate: 60 },
+      headers: { 'Accept': 'application/json' }
     });
 
     const totalItems = parseInt(response.headers.get('X-WP-Total') || '0', 10);
     const totalPages = parseInt(response.headers.get('X-WP-TotalPages') || '0', 10);
+
+    if (!response.ok) return { items: [], totalItems: 0, totalPages: 0 };
+
+    if (!response.ok) return { items: [], totalItems: 0, totalPages: 0 };
+
     const posts = await response.json() as WordPressPost[];
 
     const items = posts.map((wpPost) => {
@@ -607,12 +679,16 @@ export async function getPostsByTag(tagId: number, perPage: number = 10, page: n
   const url = `${WP_API_URL}/posts?tags=${tagId}&status=publish&_embed&per_page=${perPage}&page=${page}`;
 
   try {
-    const response = await fetchWithAuth(url, {
+    // Use direct fetch to avoid 415 errors
+    const response = await fetch(url, {
       next: { revalidate: 60 },
+      headers: { 'Accept': 'application/json' }
     });
 
     const totalItems = parseInt(response.headers.get('X-WP-Total') || '0', 10);
     const totalPages = parseInt(response.headers.get('X-WP-TotalPages') || '0', 10);
+    if (!response.ok) return { items: [], totalItems: 0, totalPages: 0 };
+
     const posts: WordPressPost[] = await response.json();
 
     const items = posts.map((wpPost) => {
@@ -660,12 +736,16 @@ export async function getPostsByAuthor(authorId: number, perPage: number = 10, p
   const url = `${WP_API_URL}/posts?author=${authorId}&status=publish&_embed&per_page=${perPage}&page=${page}`;
 
   try {
-    const response = await fetchWithAuth(url, {
+    // Use direct fetch to avoid 415 errors
+    const response = await fetch(url, {
       next: { revalidate: 60 },
+      headers: { 'Accept': 'application/json' }
     });
 
     const totalItems = parseInt(response.headers.get('X-WP-Total') || '0', 10);
     const totalPages = parseInt(response.headers.get('X-WP-TotalPages') || '0', 10);
+    if (!response.ok) return { items: [], totalItems: 0, totalPages: 0 };
+
     const posts: WordPressPost[] = await response.json();
 
     const items = posts.map((wpPost) => {
@@ -712,8 +792,10 @@ export async function getCategoryBySlug(slug: string): Promise<{ id: number; nam
   const url = `${WP_API_URL}/categories?slug=${slug}`;
 
   try {
-    const response = await fetchWithAuth(url, {
-      next: { revalidate: 3600 }, // Cache for 1 hour
+    // Use direct fetch to avoid 415 errors
+    const response = await fetch(url, {
+      next: { revalidate: 60 }, // Cache for 1 hour
+      headers: { 'Accept': 'application/json' }
     });
 
     const categories = await response.json();
@@ -741,8 +823,10 @@ export async function getTagBySlug(slug: string): Promise<{ id: number; name: st
   const url = `${WP_API_URL}/tags?slug=${slug}`;
 
   try {
-    const response = await fetchWithAuth(url, {
-      next: { revalidate: 3600 }, // Cache for 1 hour
+    // Use direct fetch to avoid 415 errors
+    const response = await fetch(url, {
+      next: { revalidate: 60 }, // Cache for 1 hour
+      headers: { 'Accept': 'application/json' }
     });
 
     const tags = await response.json();
@@ -835,9 +919,13 @@ export async function getCPTItems(cptSlug: string, perPage: number = 10, page: n
   const url = `${WP_API_URL}/${cptSlug}?per_page=${perPage}&page=${page}&status=publish&_embed`;
 
   try {
-    const response = await fetchWithAuth(url, {
+    // Use direct fetch to avoid 415 errors
+    const response = await fetch(url, {
       next: { revalidate: 60 }, // ISR: Revalidate every 60 seconds
+      headers: { 'Accept': 'application/json' }
     });
+
+    if (!response.ok) return [];
 
     const items: WordPressCPT[] = await response.json();
     return items.map(transformCPT);
@@ -855,12 +943,17 @@ export async function getCPTItemsWithDetails(cptSlug: string, perPage: number = 
   const url = `${WP_API_URL}/${cptSlug}?status=publish&_embed&per_page=${perPage}&page=${page}`;
 
   try {
-    const response = await fetchWithAuth(url, {
+    // Use direct fetch to avoid 415 errors
+    const response = await fetch(url, {
       next: { revalidate: 60 },
+      headers: { 'Accept': 'application/json' }
     });
 
     const totalItems = parseInt(response.headers.get('X-WP-Total') || '0', 10);
     const totalPages = parseInt(response.headers.get('X-WP-TotalPages') || '0', 10);
+
+    if (!response.ok) return { items: [], totalItems: 0, totalPages: 0 };
+
     const items: WordPressCPT[] = await response.json();
 
     const result = items.map((wpCPT) => {
@@ -910,9 +1003,13 @@ export async function getCPTItemBySlug(cptSlug: string, slug: string): Promise<C
   const url = `${WP_API_URL}/${cptSlug}?slug=${slug}&status=publish&_embed`;
 
   try {
-    const response = await fetchWithAuth(url, {
+    // Use direct fetch to avoid 415 errors
+    const response = await fetch(url, {
       next: { revalidate: 60 },
+      headers: { 'Accept': 'application/json' }
     });
+
+    if (!response.ok) return null;
 
     const items: WordPressCPT[] = await response.json();
 
@@ -966,9 +1063,13 @@ export async function getAllCPTItemSlugs(cptSlug: string): Promise<string[]> {
   const url = `${WP_API_URL}/${cptSlug}?status=publish&per_page=100`;
 
   try {
-    const response = await fetchWithAuth(url, {
-      next: { revalidate: 3600 }, // Cache for 1 hour
+    // Use direct fetch to avoid 415 errors
+    const response = await fetch(url, {
+      next: { revalidate: 60 }, // Cache for 1 hour
+      headers: { 'Accept': 'application/json' }
     });
+
+    if (!response.ok) return [];
 
     const items: WordPressCPT[] = await response.json();
     return items.map((item) => item.slug);
@@ -984,21 +1085,27 @@ export async function getAllCPTItemSlugs(cptSlug: string): Promise<string[]> {
 export async function getMenu(slug: string): Promise<WordPressMenu | null> {
   const baseUrl = WP_API_URL.replace('/wp/v2', '/menus/v1');
   const url = `${baseUrl}/menus/${slug}`;
+
   try {
-    const response = await fetchWithAuth(url, {
+    // Use direct fetch to avoid 415 errors
+    const response = await fetch(url, {
       next: { revalidate: 60 },
+      headers: {
+        'Accept': 'application/json'
+      }
     });
 
-    return await response.json();
-  } catch (error) {
-    // Gracefully handle 404s (Not Found) and 401s (Unauthorized)
-    if (error instanceof WordPressError && (error.status === 404 || error.status === 401)) {
-      if (error.status === 401) {
-        console.warn(`Warning: Unauthorized (401) when fetching menu "${slug}". Using fallback.`);
-      }
+    if (!response.ok) {
+      if (response.status === 404) return null;
+      console.warn(`Warning: Failed to fetch menu "${slug}". Status: ${response.status}`);
       return null;
     }
 
+    return await response.json();
+  } catch (error) {
+    if (error instanceof WordPressError && (error.status === 404 || error.status === 401)) {
+      return null;
+    }
     console.error(`Error fetching menu "${slug}":`, error);
     return null;
   }
@@ -1012,9 +1119,18 @@ export async function getMenu(slug: string): Promise<WordPressMenu | null> {
 export async function getSiteSettings(): Promise<any> {
   const url = `${WP_API_URL}/settings`;
   try {
-    const response = await fetchWithAuth(url, {
-      next: { revalidate: 3600 },
+    // Use direct fetch to avoid 415 errors
+    const response = await fetch(url, {
+      next: { revalidate: 60 },
     });
+
+    // Gracefully handle 401s (which are expected for public unauthenticated requests to settings)
+    if (!response.ok) {
+      if (response.status === 401 || response.status === 403) return null;
+      console.warn('Failed to fetch site settings:', response.status);
+      return null;
+    }
+
     return await response.json();
   } catch (error) {
     if (error instanceof WordPressError && (error.status === 401 || error.status === 403)) {
@@ -1057,12 +1173,13 @@ export async function getSiteIdentity(): Promise<{ title: string; description: s
  * Fetch MarketHeadlines settings from the custom endpoint
  */
 export async function getMarketHeadlinesSettings(): Promise<MarketHeadlinesSettings | null> {
-  // Use the new custom endpoint provided by the user (same as global theme settings)
+  // Use the custom value for Pods settings
   const baseUrl = WP_API_URL.replace('/wp/v2', '/custom/v1');
   const url = `${baseUrl}/global-pods-theme-settings/`;
 
   try {
-    const response = await fetchWithAuth(url, {
+    // Using direct fetch to avoid 415 on this sensitive custom endpoint
+    const response = await fetch(url, {
       next: { revalidate: 3600 }, // Cache for 1 hour
     });
 
@@ -1168,7 +1285,11 @@ function smartSplit(text: string): string[] {
 export async function getAllPosts(limit: number = 5): Promise<PostWithDetails[]> {
   const url = `${WP_API_URL}/posts?per_page=${limit}&status=publish&_embed`;
   try {
-    const response = await fetchWithAuth(url, { next: { revalidate: 60 } });
+    // Use direct fetch to avoid 415 errors
+    const response = await fetch(url, {
+      next: { revalidate: 60 },
+      headers: { 'Accept': 'application/json' }
+    });
     if (!response.ok) return [];
     const items: any[] = await response.json();
     return items.map((post) => {
@@ -1215,8 +1336,12 @@ export async function getHomePageData(): Promise<HomePageData | null> {
   const url = `${baseUrl}/page-pods/${homePageId}/`;
 
   try {
-    const response = await fetchWithAuth(url, {
+    // Use direct fetch to avoid potential 415/401 on custom endpoint
+    const response = await fetch(url, {
       next: { revalidate: 60 },
+      headers: {
+        'Accept': 'application/json'
+      }
     });
 
     if (!response.ok) {
@@ -1366,7 +1491,9 @@ export async function getHomePageData(): Promise<HomePageData | null> {
       get_market_intelligence_button_url: extractUrlFromAnchor(marketSection.get_market_intelligence_button_url || ''),
       explore_coverage_button_text: marketSection.explore_coverage_button_text || '',
       explore_coverage_button_url: extractUrlFromAnchor(marketSection.explore_coverage_button_url || ''),
-      market_intelligence_image: marketSection.market_intelligence_image || '',
+      market_intelligence_image: (marketSection.market_intelligence_image && typeof marketSection.market_intelligence_image === 'object')
+        ? (marketSection.market_intelligence_image.guid || marketSection.market_intelligence_image.source_url || '')
+        : (typeof marketSection.market_intelligence_image === 'string' ? marketSection.market_intelligence_image : ''),
 
       // Investors & Organizations Section
       for_investors_organizations_heading: investorsSection.for_investors_organizations_heading || '',
@@ -1412,7 +1539,7 @@ export async function getHomePageData(): Promise<HomePageData | null> {
       }
     };
   } catch (error) {
-    console.error('Error fetching Home Page Data:', error);
+    console.error('CRITICAL ERROR in getHomePageData:', error);
     return null;
   }
 }
@@ -1425,6 +1552,9 @@ export async function getMarketTickers(): Promise<MarketTicker[]> {
   try {
     const response = await fetch(url, {
       next: { revalidate: 60 },
+      headers: {
+        'Accept': 'application/json'
+      }
     });
 
     if (!response.ok) {
@@ -1432,7 +1562,8 @@ export async function getMarketTickers(): Promise<MarketTicker[]> {
       return [];
     }
 
-    return await response.json();
+    const data = await response.json();
+    return Array.isArray(data) ? data : [];
   } catch (error) {
     console.error('Error fetching market tickers:', error);
     return [];
@@ -1452,7 +1583,7 @@ export async function getPostsPage(): Promise<Page | null> {
     // Note: /settings usually requires authentication. We'll handle 401 gracefully.
     let settingsRes;
     try {
-      settingsRes = await fetchWithAuth(`${WP_API_URL}/settings`);
+      settingsRes = await fetch(`${WP_API_URL}/settings`, { headers: { 'Accept': 'application/json' } });
     } catch (error) {
       if (error instanceof WordPressError && error.status === 401) {
         // Silently fail for unauthenticated requests
@@ -1478,5 +1609,22 @@ export async function getPostsPage(): Promise<Page | null> {
   } catch (error) {
     console.error('Error fetching posts page:', error);
     return null;
+  }
+}
+
+/**
+ * Global Search using custom endpoint
+ */
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export async function getGlobalSearch(query: string): Promise<any[]> {
+  const url = `${MARKET_HEADLINES_API_URL}/search?q=${encodeURIComponent(query)}`;
+  try {
+    // Use direct fetch to avoid 415 errors
+    const response = await fetch(url, { next: { revalidate: 60 }, headers: { 'Accept': 'application/json' } });
+    if (!response.ok) return [];
+    return await response.json();
+  } catch (error) {
+    console.error('Error fetching global search:', error);
+    return [];
   }
 }
