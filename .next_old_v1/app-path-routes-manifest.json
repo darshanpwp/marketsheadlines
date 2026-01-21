@@ -1,0 +1,12 @@
+{
+  "/_global-error/page": "/_global-error",
+  "/_not-found/page": "/_not-found",
+  "/author/[slug]/page": "/author/[slug]",
+  "/category/[slug]/page": "/category/[slug]",
+  "/favicon.ico/route": "/favicon.ico",
+  "/page": "/",
+  "/posts/[slug]/page": "/posts/[slug]",
+  "/posts/page": "/posts",
+  "/tag/[slug]/page": "/tag/[slug]",
+  "/thank-you/page": "/thank-you"
+}

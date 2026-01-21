@@ -45,15 +45,15 @@ export default async function TagArchivePage({ params, searchParams }: Props) {
   return (
     <div className="min-vh-100 bg-white">
       {/* Redesigned Header */}
-      <div className="archive-header mb-5">
+      <div className="archive-header mb-5 bg-gradient-c">
         <div className="container">
           <div className="d-flex justify-content-between align-items-center">
             <div>
-              <h1 className="archive-title mb-0 h2">
+              <h1 className="archive-title mb-0 h2 primary-text-blue">
                 Tag: {tag.name}
               </h1>
             </div>
-            <div className="text-secondary fw-medium small">
+            <div className="primary-text-blue fw-medium small">
               {totalItems} {totalItems === 1 ? 'Article' : 'Articles'}
             </div>
           </div>
@@ -61,8 +61,8 @@ export default async function TagArchivePage({ params, searchParams }: Props) {
       </div>
 
       <div className="container pb-5">
-        {/* Posts Grid - 4 columns on desktop */}
-        <div className="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
+        {/* Posts Grid - Responsive layout */}
+        <div className="row row-cols-1 row-cols-sm-2 row-cols-lg-3 row-cols-xl-4 g-4">
           {posts.map((post) => (
             <div key={post.id} className="col">
               <PostCard post={post} />

@@ -74,8 +74,8 @@ export default function NavbarContent({ menuItems, siteIdentity }: NavbarContent
                 </div>
 
                 {/* Navbar Links & Overlay */}
-                <div className={`collapse navbar-collapse ${isOpen ? 'show' : ''}`} id="navbarNav">
-                    <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
+                <div className={`collapse navbar-collapse mobile-nav-overlay ${isOpen ? 'show' : ''}`} id="navbarNav">
+                    <ul className="navbar-nav ms-auto mb-2 mb-lg-0 align-items-lg-center">
                         {menuItems.map((item: WordPressMenuItem) => {
                             const hasChildren = item.child_items && item.child_items.length > 0;
                             const href = item.url.replace(WORDPRESS_URL, '').replace('/wp-json', '') || '/';

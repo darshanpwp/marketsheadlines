@@ -62,6 +62,7 @@ function normalizeMedia(media: WordPressMedia | undefined): WordPressMedia | und
   } as WordPressMedia;
 }
 
+
 // Fetch with authentication
 async function fetchWithAuth(url: string, options: RequestInit = {}): Promise<Response> {
   const authHeader = getAuthHeader();
@@ -216,7 +217,7 @@ export async function getPageBySlug(slug: string): Promise<PageWithDetails | nul
     return {
       ...page,
       authorDetails: embedded?.author?.[0] as WordPressUser | undefined,
-      featuredMediaDetails: normalizeMedia(embedded?.['wp:featuredmedia']?.[0]),
+      featuredMediaDetails: embedded?.['wp:featuredmedia']?.[0],
     } as PageWithDetails;
   } catch (error) {
     if (error instanceof WordPressError && error.status === 404) {
@@ -294,6 +295,7 @@ export async function getGlobalThemeSettings(): Promise<GlobalThemeSettings | nu
         }
       }
     }
+
 
     return data;
   } catch (error) {
