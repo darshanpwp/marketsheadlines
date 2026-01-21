@@ -55,8 +55,8 @@ export default async function PostsPage({ searchParams }: PageProps) {
           </div>
         </div>
 
-        {/* Posts Grid - 4 columns on desktop */}
-        <div className="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
+        {/* Posts Grid - Responsive layout */}
+        <div className="row row-cols-1 row-cols-sm-2 row-cols-lg-3 row-cols-xl-4 g-4">
           {posts.map((post) => (
             <div key={post.id} className="col">
               <PostCard post={post} />

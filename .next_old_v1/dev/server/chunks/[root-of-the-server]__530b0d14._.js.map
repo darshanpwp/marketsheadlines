@@ -1,0 +1,6 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 46, "column": 0}, "map": {"version":3,"sources":["file:///C:/wamp64/www/Marketheadlines/wp-next-headless/app/test-feed/route.ts"],"sourcesContent":["import { NextResponse } from 'next/server';\r\n\r\nexport const dynamic = 'force-dynamic';\r\n\r\nexport async function GET() {\r\n    console.log('[Test Feed] Hit!');\r\n    return new NextResponse('Hello World', { status: 200 });\r\n}\r\n"],"names":[],"mappings":";;;;;;AAAA;;AAEO,MAAM,UAAU;AAEhB,eAAe;IAClB,QAAQ,GAAG,CAAC;IACZ,OAAO,IAAI,gJAAY,CAAC,eAAe;QAAE,QAAQ;IAAI;AACzD"}}]
+}

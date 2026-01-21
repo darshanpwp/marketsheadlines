@@ -527,3 +527,167 @@
     -webkit-box-orient: vertical;
     overflow: hidden;
 }
+
+// 10. Premium Responsive Navbar Styles
+@media (max-width: 991.98px) {
+    .mobile-toggle {
+        z-index: 1100;
+        cursor: pointer;
+        width: 30px;
+        height: 24px;
+        position: relative;
+        transform: rotate(0deg);
+        transition: .5s ease-in-out;
+        margin-left: auto;
+
+        span {
+            display: block;
+            position: absolute;
+            height: 3px;
+            width: 100%;
+            background: var(--primary-navy);
+            border-radius: 9px;
+            opacity: 1;
+            left: 0;
+            transform-origin: center;
+            transition: .25s ease-in-out;
+
+            &:nth-child(1) {
+                top: 0px;
+            }
+
+            &:nth-child(2) {
+                top: 10px;
+            }
+
+            &:nth-child(3) {
+                top: 20px;
+            }
+        }
+
+        &.open span {
+            &:nth-child(1) {
+                top: 11px;
+                transform: rotate(45deg);
+                background: var(--primary-navy); // Ensure visibility
+            }
+
+            &:nth-child(2) {
+                opacity: 0;
+                width: 0%;
+            }
+
+            &:nth-child(3) {
+                top: 11px;
+                transform: rotate(-45deg);
+                background: var(--primary-navy); // Ensure visibility
+            }
+        }
+    }
+
+    .mobile-nav-overlay {
+        position: fixed;
+        top: 80px; // Start below header
+        left: 0;
+        width: 100vw;
+        height: calc(100vh - 80px); // Full height minus header
+        background-color: var(--white);
+        z-index: 1050;
+        padding-top: 2rem; // Reduced padding
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: center;
+        overflow-y: auto;
+        transition: opacity 0.3s ease, transform 0.3s ease;
+        opacity: 0;
+        pointer-events: none;
+        transform: translateY(-10px); // Slide in from slightly above
+
+        &.show {
+            opacity: 1;
+            pointer-events: auto;
+            transform: translateY(0);
+        }
+
+        .navbar-nav {
+            width: 100%;
+            text-align: center;
+
+            .nav-item {
+                margin: 0.5rem 0;
+
+                .nav-link {
+                    font-size: 1.5rem;
+                    font-weight: 600;
+                    color: var(--primary-navy);
+                    padding: 1rem;
+                    position: relative; // Ensure context for ::after removal
+
+                    // Remove default underline from globals
+                    &::after {
+                        display: none !important;
+                    }
+
+                    &:hover {
+                        color: var(--primary-text-blue);
+                        opacity: 0.8;
+                    }
+                }
+            }
+
+            // Mobile Dropdown styling
+            .dropdown-menu {
+                background: transparent;
+                border: none;
+                box-shadow: none;
+                padding: 0;
+                margin-top: 0;
+                text-align: center;
+
+                .dropdown-item {
+                    font-size: 1.1rem;
+                    color: var(--text-muted);
+                    padding: 0.75rem;
+
+                    &:hover {
+                        color: var(--primary-text-blue);
+                        background: transparent;
+                    }
+                }
+            }
+        }
+    }
+
+    // Hide default bootstrap collapse transition to allow our custom one
+    .collapse:not(.show) {
+        display: flex !important; // Override display:none but hide via opacity
+        opacity: 0;
+        pointer-events: none;
+    }
+
+    .collapsing {
+        display: flex !important;
+        height: 100vh !important;
+        opacity: 0;
+        transition: opacity 0.3s linear;
+    }
+}
+
+// 11. Single Post Responsive Hero
+.single-post-hero {
+    height: 300px;
+    width: 100%;
+
+    @media (min-width: 768px) {
+        height: 400px;
+    }
+
+    @media (min-width: 992px) {
+        height: 500px;
+    }
+
+    @media (min-width: 1200px) {
+        height: 600px;
+    }
+}

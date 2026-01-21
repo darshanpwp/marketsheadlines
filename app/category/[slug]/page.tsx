@@ -14,7 +14,22 @@ type Props = {
 
 export const revalidate = 60; // Revalidate every 60 seconds
 
-// ... generateMetadata ...
+// Generate metadata for SEO
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params;
+  const category = await getCategoryBySlug(slug);
+
+  if (!category) {
+    return {
+      title: 'Category Not Found',
+    };
+  }
+
+  return {
+    title: `${category.name} - Market Headlines`,
+    description: `Read the latest news and updates in ${category.name}.`,
+  };
+}
 
 export default async function CategoryArchivePage({ params, searchParams }: Props) {
   const { slug } = await params;
@@ -28,14 +43,6 @@ export default async function CategoryArchivePage({ params, searchParams }: Prop
     getAllCategories(),
     getPostsByCategorySlug(slug, perPage, currentPage),
     getGlobalThemeSettings()
-    // Note: getPostsByCategorySlug likely doesn't support 'search' param yet based on previous file views.
-    // If it does, update here. If not, search on category page might only filter clientside or ignore search term?
-    // WARNING: 'search' param support in getPostsByCategorySlug was NOT explicitly added in previous steps.
-    // I need to check api.ts or just rely on global search redirecting to /posts.
-    // Actually, SearchWidget redirects to /posts?search=... so putting it here just acts as a portal to global search.
-    // It WON'T search *within* the category unless I update the widget or API. 
-    // Given the widget implementation (router.push('/posts?search=...')), it redirects AWAY from category page.
-    // This is acceptable behavior for "adding a search bar".
   ]);
 
   const defaultImageUrl = normalizeWpUrl(globalSettings?.blog_default_image?.guid) || DEFAULT_POST_IMAGE;
@@ -73,8 +80,8 @@ export default async function CategoryArchivePage({ params, searchParams }: Prop
           </div>
         </div>
 
-        {/* Posts Grid - 4 columns on desktop */}
-        <div className="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
+        {/* Posts Grid - Responsive layout */}
+        <div className="row row-cols-1 row-cols-sm-2 row-cols-lg-3 row-cols-xl-4 g-4">
           {posts.map((post) => (
             <div key={post.id} className="col">
               <PostCard post={post} />
@@ -99,4 +106,3 @@ export default async function CategoryArchivePage({ params, searchParams }: Prop
     </div>
   );
 }
-

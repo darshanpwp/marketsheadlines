@@ -64,7 +64,7 @@ export default async function PostDetailPage({ params }: Props) {
   return (
     <article className="bg-white min-vh-100">
       {/* Article Header Section */}
-      <header className="pt-5 pb-4">
+      <header className="pt-4 pb-3 pt-lg-5 pb-lg-4">
         <div className="container">
           <div className="row justify-content-center">
             <div className="col-lg-12 col-xl-10">
@@ -130,9 +130,9 @@ export default async function PostDetailPage({ params }: Props) {
       <div className="post-listing p-60 pt-0">
         <div className="container">
           {/* Full Width Featured Image */}
-          <div className="row justify-content-center mb-5">
+          <div className="row justify-content-center mb-4 mb-lg-5">
             <div className="col-12">
-              <div className="rounded-4 overflow-hidden shadow-sm position-relative mb-3" style={{ height: '600px' }}>
+              <div className="rounded-4 overflow-hidden shadow-sm position-relative mb-3 single-post-hero">
                 <Image
                   src={post.featuredMediaDetails?.source_url || defaultImageUrl}
                   alt={post.featuredMediaDetails?.alt_text || post.title}
@@ -152,12 +152,12 @@ export default async function PostDetailPage({ params }: Props) {
             </div>
           </div>
 
-          <div className="row g-5">
+          <div className="row g-4 g-lg-5">
             {/* Main Content Column */}
             <div className="col-lg-8">
               {/* Article Body */}
               <div
-                className="article-content fs-18 mb-5"
+                className="article-content fs-18 mb-4 mb-lg-5"
                 dangerouslySetInnerHTML={{ __html: post.content }}
               />
 
@@ -186,31 +186,33 @@ export default async function PostDetailPage({ params }: Props) {
       </div>
       <div className="related-sec bg-light-c p-60">
         <div className="container">
-          <div className="row col-10 m-auto">
-            {/* Related Stories Section */}
-            {filteredRelatedPosts.length > 0 && (
-              <div className="p-0">
-                <h3 className="h2 fw-semibold mb-4 font-serif primary-text-blue">Related News</h3>
-                <div className="row g-4">
-                  {filteredRelatedPosts.map((relatedPost) => (
-                    <div key={relatedPost.id} className="col-md-4">
-                      <PostCard post={relatedPost} defaultImageUrl={defaultImageUrl} />
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Author Box Section */}
-            {post.authorDetails && (
-              <div className="pt-5 p-0">
-                <div className="row justify-content-center">
-                  <div className="col-lg-12">
-                    <AuthorBox author={post.authorDetails} />
+          <div className="row justify-content-center">
+            <div className="col-12 col-lg-10">
+              {/* Related Stories Section */}
+              {filteredRelatedPosts.length > 0 && (
+                <div className="p-0">
+                  <h3 className="h2 fw-semibold mb-4 font-serif primary-text-blue">Related News</h3>
+                  <div className="row row-cols-1 row-cols-sm-2 row-cols-lg-3 g-4">
+                    {filteredRelatedPosts.map((relatedPost) => (
+                      <div key={relatedPost.id} className="col">
+                        <PostCard post={relatedPost} defaultImageUrl={defaultImageUrl} />
+                      </div>
+                    ))}
                   </div>
                 </div>
-              </div>
-            )}
+              )}
+
+              {/* Author Box Section */}
+              {post.authorDetails && (
+                <div className="pt-5 p-0">
+                  <div className="row justify-content-center">
+                    <div className="col-lg-12">
+                      <AuthorBox author={post.authorDetails} />
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>
