@@ -6,5 +6,5 @@ export async function GET(
     { params }: { params: Promise<{ slug: string }> }
 ) {
     const { slug } = await params;
-    return proxyFeed(`/category/${slug}/feed`, request);
+    return proxyFeed(`/author/${slug}/feed`, request);
 }

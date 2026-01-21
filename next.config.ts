@@ -20,10 +20,6 @@ const nextConfig: NextConfig = {
   },
   async rewrites() {
     return [
-      {
-        source: '/category/:slug/feed',
-        destination: '/api/feed/:slug',
-      },
     ];
   },
 };
