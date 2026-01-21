@@ -48,6 +48,7 @@ export default function RootLayout({
           crossOrigin="anonymous"
           referrerPolicy="no-referrer"
         />
+        <link rel="alternate" type="application/rss+xml" title="Market Headlines RSS Feed" href="/feed" />
       </head>
       <body
         className="antialiased"
