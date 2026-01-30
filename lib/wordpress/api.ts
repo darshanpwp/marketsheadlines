@@ -20,6 +20,7 @@ import type {
   WordPressCategory,
   WordPressMenuItem
 } from '@/types/wordpress';
+import { SITE_URL } from '@/lib/constants';
 
 export const WORDPRESS_URL = process.env.NEXT_PUBLIC_WORDPRESS_URL || 'https://news.marketsheadlines.com';
 const WP_API_URL = process.env.NEXT_PUBLIC_WP_API_URL || `${WORDPRESS_URL}/wp-json/wp/v2`;
@@ -50,7 +51,40 @@ export function normalizeWpUrl(urlInput: string | undefined | null): string {
   if (!urlInput) return '';
   const match = urlInput.match(/href="([^"]*)"/);
   const url = match ? match[1] : urlInput;
-  return url.replace(/(https?:)?\/\/.*\.pantheonsite\.io/g, 'https://news.marketsheadlines.com');
+  return url.replace(/(https?:)?\/\/.*\.pantheonsite\.io/g, WORDPRESS_URL);
+}
+
+/**
+ * Normalizes a URL to the frontend domain (SITE_URL).
+ * Replaces backend domain (news.) with frontend domain (www.).
+ * Also handles bulk content replacement for href attributes.
+ */
+export function normalizeToFrontendUrl(input: string | undefined | null): string {
+  if (!input) return '';
+
+  // 1. Handle single URL case (e.g. "https://news.marketheadlines.com/foo")
+  if (!input.includes(' ') && !input.includes('<')) {
+    let url = input.replace(/(https?:)?\/\/.*\.pantheonsite\.io/g, WORDPRESS_URL);
+    if (typeof url === 'string' && url.includes(WORDPRESS_URL)) {
+      return url.replace(WORDPRESS_URL, SITE_URL);
+    }
+    return url;
+  }
+
+  // 2. Handle HTML Content case (finding href="...")
+  // We only replace news.marketsheadlines.com (WORDPRESS_URL) inside href="..." to separate links from images
+  let content = input.replace(/(https?:)?\/\/.*\.pantheonsite\.io/g, WORDPRESS_URL);
+
+  // Replace backend domain in hrefs with frontend domain
+  // Escape WORDPRESS_URL for regex use
+  const escapedWpUrl = WORDPRESS_URL.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const hrefRegex = new RegExp(`href="${escapedWpUrl}([^"]*)"`, 'g');
+
+  content = content.replace(hrefRegex, (match, path) => {
+    return `href="${SITE_URL}${path}"`;
+  });
+
+  return content;
 }
 
 function normalizeMedia(media: WordPressMedia | undefined): WordPressMedia | undefined {
@@ -119,13 +153,13 @@ function transformPage(wpPage: WordPressPage): Page {
     id: wpPage.id,
     slug: wpPage.slug,
     title: wpPage.title.rendered,
-    content: normalizeWpUrl(wpPage.content.rendered),
-    excerpt: normalizeWpUrl(wpPage.excerpt.rendered),
+    content: normalizeToFrontendUrl(wpPage.content.rendered),
+    excerpt: normalizeToFrontendUrl(wpPage.excerpt.rendered),
     date: wpPage.date,
     modified: wpPage.modified,
     author: wpPage.author,
     featuredMedia: wpPage.featured_media,
-    link: normalizeWpUrl(wpPage.link),
+    link: normalizeToFrontendUrl(wpPage.link),
     seo: wpPage.yoast_head_json ? {
       title: wpPage.yoast_head_json.title,
       description: wpPage.yoast_head_json.description,
@@ -282,10 +316,10 @@ export async function getGlobalThemeSettings(): Promise<GlobalThemeSettings | nu
   try {
     // Using direct fetch to avoid potential 415 issues with unnecessary headers/auth
     // This endpoint should be public.
-    // Use timeout to fail fast (3s)
+    // Use timeout to fail fast (10s)
     const response = await fetchWithTimeout(url, {
       next: { revalidate: 60 },
-    });
+    }, 10000);
 
     if (!response.ok) {
       console.warn('Failed to fetch global theme settings:', response.status);
@@ -309,6 +343,19 @@ export async function getGlobalThemeSettings(): Promise<GlobalThemeSettings | nu
         } else if (data.footer_logo.guid) {
           data.footer_logo.guid = normalizeWpUrl(data.footer_logo.guid);
         }
+      }
+
+      // Normalize Social URLs
+      if (data.social_media_urls && Array.isArray(data.social_media_urls)) {
+        data.social_media_urls = data.social_media_urls.map((url: string) => normalizeToFrontendUrl(url));
+      }
+
+      // Normalize CTA URLs
+      if (data.subscribe_to_newsletter_button_url) {
+        data.subscribe_to_newsletter_button_url = normalizeToFrontendUrl(data.subscribe_to_newsletter_button_url);
+      }
+      if (data.register_for_market_access_button_url) {
+        data.register_for_market_access_button_url = normalizeToFrontendUrl(data.register_for_market_access_button_url);
       }
     }
 
@@ -454,13 +501,13 @@ function transformPost(wpPost: WordPressPost): Post {
     id: wpPost.id,
     slug: wpPost.slug,
     title: wpPost.title.rendered,
-    content: normalizeWpUrl(wpPost.content.rendered),
-    excerpt: normalizeWpUrl(wpPost.excerpt.rendered),
+    content: normalizeToFrontendUrl(wpPost.content.rendered),
+    excerpt: normalizeToFrontendUrl(wpPost.excerpt.rendered),
     date: wpPost.date,
     modified: wpPost.modified,
     author: wpPost.author,
     featuredMedia: wpPost.featured_media,
-    link: normalizeWpUrl(wpPost.link),
+    link: normalizeToFrontendUrl(wpPost.link),
     categories: wpPost.categories || [],
     tags: wpPost.tags || [],
     format: wpPost.format || 'standard',
@@ -1145,25 +1192,38 @@ export async function getMenu(slug: string): Promise<WordPressMenu | null> {
 
   try {
     // Use direct fetch to avoid 415 errors
-    // Use timeout to fail fast (3s)
+    // Use timeout to fail fast (10s)
     const response = await fetchWithTimeout(url, {
       next: { revalidate: 60 },
       headers: {
         'Accept': 'application/json'
       }
-    });
+    }, 10000);
 
     if (!response.ok) {
       if (response.status === 404) return null;
-      console.warn(`Warning: Failed to fetch menu "${slug}". Status: ${response.status}`);
+      console.warn(`Failed to fetch menu "${slug}":`, response.status);
       return null;
     }
 
-    return await response.json();
-  } catch (error) {
-    if (error instanceof WordPressError && (error.status === 404 || error.status === 401)) {
-      return null;
+    const menu: WordPressMenu = await response.json();
+
+    // Helper to recursively normalize menu item URLs
+    const normalizeItems = (items: WordPressMenuItem[]): WordPressMenuItem[] => {
+      return items.map(item => ({
+        ...item,
+        url: normalizeToFrontendUrl(item.url),
+        child_items: item.child_items ? normalizeItems(item.child_items) : undefined
+      }));
+    };
+
+    if (menu && menu.items) {
+      menu.items = normalizeItems(menu.items);
     }
+
+    return menu;
+  } catch (error) {
+    // Only log warning to avoid huge stack traces in dev console for timeouts
     console.warn(`Error fetching menu "${slug}":`, error instanceof Error ? error.message : error);
     return null;
   }
@@ -1176,7 +1236,7 @@ export async function getMenu(slug: string): Promise<WordPressMenu | null> {
 /**
  * Fetch with timeout helper
  */
-async function fetchWithTimeout(url: string, options: RequestInit = {}, timeout = 3000): Promise<Response> {
+async function fetchWithTimeout(url: string, options: RequestInit = {}, timeout = 8000): Promise<Response> {
   const controller = new AbortController();
   const id = setTimeout(() => controller.abort(), timeout);
   try {
@@ -1197,10 +1257,10 @@ export async function getSiteSettings(): Promise<any> {
   const url = `${WP_API_URL}/settings`;
 
   try {
-    // Use timeout to fail fast (3s) instead of hanging for 10s
+    // Use timeout to fail fast (10s) 
     const response = await fetchWithTimeout(url, {
       next: { revalidate: 60 },
-    });
+    }, 10000);
 
     // Gracefully handle 401s (which are expected for public unauthenticated requests to settings)
     if (!response.ok) {
@@ -1368,13 +1428,13 @@ export async function getAllPosts(limit: number = 5): Promise<PostWithDetails[]>
         id: post.id,
         slug: post.slug,
         title: post.title.rendered,
-        content: post.content.rendered,
-        excerpt: post.excerpt.rendered,
+        content: normalizeToFrontendUrl(post.content.rendered),
+        excerpt: normalizeToFrontendUrl(post.excerpt.rendered),
         date: post.date,
         modified: post.modified,
         author: post.author,
         featuredMedia: post.featured_media,
-        link: post.link,
+        link: normalizeToFrontendUrl(post.link),
         categories: post.categories || [],
         tags: post.tags || [],
         categoryDetails,
@@ -1579,24 +1639,24 @@ export async function getHomePageData(): Promise<HomePageData | null> {
       // Dynamic Content Sections
       trending_now_section: {
         title: trendingSection.title || 'Trending Now',
-        view_all_url: normalizeWpUrl(trendingSection.view_all_url || ''),
+        view_all_url: normalizeToFrontendUrl(trendingSection.view_all_url || ''),
         posts: trendingPosts
       },
       world_news_grid_section: {
         title: worldGridSection.title || 'World News',
-        view_all_url: normalizeWpUrl(worldGridSection.view_all_url || ''),
+        view_all_url: normalizeToFrontendUrl(worldGridSection.view_all_url || ''),
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         posts: (worldGridSection.posts || []).map((p: any) => transformPodsPost(p))
       },
       world_news_list_section: {
         title: worldListSection.title || 'World News',
-        view_all_url: normalizeWpUrl(worldListSection.view_all_url || ''),
+        view_all_url: normalizeToFrontendUrl(worldListSection.view_all_url || ''),
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         posts: (worldListSection.posts || []).map((p: any) => transformPodsPost(p))
       },
       business_section: {
         title: businessSection.title || 'Business',
-        view_all_url: normalizeWpUrl(businessSection.view_all_url || ''),
+        view_all_url: normalizeToFrontendUrl(businessSection.view_all_url || ''),
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         posts: (businessSection.posts || []).map((p: any) => transformPodsPost(p))
       }
