@@ -249,8 +249,16 @@ export interface Page {
     description: string;
     og_title: string;
     og_description: string;
-    og_image: Array<{ url: string }>;
+    og_image: Array<{
+      url: string;
+      width?: number;
+      height?: number;
+      alt?: string;
+      type?: string;
+    }>;
     twitter_image: string;
+    twitter_title?: string;
+    twitter_description?: string;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     schema: any;
   };
@@ -354,8 +362,16 @@ export interface Post {
     description: string;
     og_title: string;
     og_description: string;
-    og_image: Array<{ url: string }>;
+    og_image: Array<{
+      url: string;
+      width?: number;
+      height?: number;
+      alt?: string;
+      type?: string;
+    }>;
     twitter_image: string;
+    twitter_title?: string;
+    twitter_description?: string;
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     schema: any;
   };

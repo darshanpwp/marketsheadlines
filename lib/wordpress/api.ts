@@ -133,6 +133,8 @@ function transformPage(wpPage: WordPressPage): Page {
       og_description: wpPage.yoast_head_json.og_description,
       og_image: wpPage.yoast_head_json.og_image,
       twitter_image: wpPage.yoast_head_json.twitter_image,
+      twitter_title: wpPage.yoast_head_json.twitter_title,
+      twitter_description: wpPage.yoast_head_json.twitter_description,
       schema: wpPage.yoast_head_json.schema,
     } : undefined,
   };
@@ -471,6 +473,8 @@ function transformPost(wpPost: WordPressPost): Post {
       og_description: wpPost.yoast_head_json.og_description,
       og_image: wpPost.yoast_head_json.og_image,
       twitter_image: wpPost.yoast_head_json.twitter_image,
+      twitter_title: wpPost.yoast_head_json.twitter_title,
+      twitter_description: wpPost.yoast_head_json.twitter_description,
       schema: wpPost.yoast_head_json.schema,
     } : undefined,
   };
