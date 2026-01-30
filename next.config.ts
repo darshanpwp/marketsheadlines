@@ -23,23 +23,23 @@ const nextConfig: NextConfig = {
     return [
       {
         source: '/feed',
-        destination: `${WORDPRESS_URL}/feed`,
+        destination: `${WORDPRESS_URL}/feed/`,
       },
       {
         source: '/rss',
-        destination: `${WORDPRESS_URL}/feed`,
+        destination: `${WORDPRESS_URL}/feed/`,
       },
       {
         source: '/category/:path*/feed',
-        destination: `${WORDPRESS_URL}/category/:path*/feed`,
+        destination: `${WORDPRESS_URL}/category/:path*/feed/`,
       },
       {
         source: '/tag/:path*/feed',
-        destination: `${WORDPRESS_URL}/tag/:path*/feed`,
+        destination: `${WORDPRESS_URL}/tag/:path*/feed/`,
       },
       {
         source: '/author/:path*/feed',
-        destination: `${WORDPRESS_URL}/author/:path*/feed`,
+        destination: `${WORDPRESS_URL}/author/:path*/feed/`,
       },
     ];
   },
