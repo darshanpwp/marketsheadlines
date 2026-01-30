@@ -55,11 +55,25 @@ export function normalizeWpUrl(urlInput: string | undefined | null): string {
 
 function normalizeMedia(media: WordPressMedia | undefined): WordPressMedia | undefined {
   if (!media) return undefined;
-  return {
+
+  // Deep clone to avoid mutating original if needed, but here we just spread
+  const normalizedMedia = {
     ...media,
     source_url: normalizeWpUrl(media.source_url),
     guid: { ...media.guid, rendered: normalizeWpUrl(media.guid?.rendered) }
   } as WordPressMedia;
+
+  // Normalize sizes if they exist
+  if (normalizedMedia.media_details?.sizes) {
+    const sizes = normalizedMedia.media_details.sizes;
+    Object.keys(sizes).forEach(key => {
+      if (sizes[key] && sizes[key].source_url) {
+        sizes[key].source_url = normalizeWpUrl(sizes[key].source_url);
+      }
+    });
+  }
+
+  return normalizedMedia;
 }
 
 
@@ -1177,7 +1191,7 @@ async function fetchWithTimeout(url: string, options: RequestInit = {}, timeout 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function getSiteSettings(): Promise<any> {
   const url = `${WP_API_URL}/settings`;
-  console.log(`[DEBUG] getSiteSettings fetching: ${url}`);
+
   try {
     // Use timeout to fail fast (3s) instead of hanging for 10s
     const response = await fetchWithTimeout(url, {

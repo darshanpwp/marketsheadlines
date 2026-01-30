@@ -127,7 +127,7 @@ export default async function Home() {
                 {(homePageData?.get_market_intelligence_button_text || homePageData?.explore_coverage_button_text) && (
                   <div className="d-flex flex-wrap gap-3">
                     {homePageData?.get_market_intelligence_button_text && (
-                      <Link href={homePageData?.get_market_intelligence_button_url || '#'} className="btn btn-premium-primary">
+                      <Link href="#newsletter-section" className="btn btn-premium-primary">
                         {homePageData.get_market_intelligence_button_text}
                         <i className="fa-solid fa-chevron-right ms-2 small"></i>
                       </Link>

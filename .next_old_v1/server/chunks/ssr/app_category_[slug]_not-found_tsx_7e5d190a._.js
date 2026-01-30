@@ -1,3 +1,0 @@
-module.exports=[35271,a=>{"use strict";var b=a.i(7997),c=a.i(95936);function d(){return(0,b.jsx)("div",{className:"d-flex align-items-center justify-content-center min-vh-100 bg-white",children:(0,b.jsxs)("div",{className:"text-center",children:[(0,b.jsx)("h1",{className:"display-1 fw-bold",children:"404"}),(0,b.jsx)("h2",{className:"h3 fw-semibold mb-3",children:"Category Not Found"}),(0,b.jsx)("p",{className:"text-secondary mb-4",children:"The category you're looking for doesn't exist."}),(0,b.jsx)(c.default,{href:"/posts",className:"btn btn-dark btn-lg px-4",children:"Back to Posts"})]})})}a.s(["default",()=>d])}];
-
-//# sourceMappingURL=app_category_%5Bslug%5D_not-found_tsx_7e5d190a._.js.map
