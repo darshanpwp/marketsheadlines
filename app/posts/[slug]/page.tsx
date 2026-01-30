@@ -8,7 +8,6 @@ import MarketOverview from '@/components/MarketOverview';
 import TrendingStories from '@/components/TrendingStories';
 import AuthorBox from '@/components/AuthorBox';
 import NewsletterCTA from '@/components/NewsletterCTA';
-import NewsletterForm from '@/components/NewsletterForm';
 import GlobalCallToAction from '@/components/GlobalCallToAction';
 import { PaginatedResponse, PostWithDetails } from '@/types/wordpress';
 
@@ -221,32 +220,10 @@ export default async function PostDetailPage({ params }: Props) {
       </div>
 
       {/* Newsletter Subscription Section */}
-      {(homePageData?.show_newsletter_section !== '0') && (
-        <section className="container-fluid p-80 newsletter-section-main" id="newsletter-section">
-          <div className="container">
-            <div className="row justify-content-center">
-              <div className="col-lg-8 text-center text-white">
-                <h2 className="display-5 fw-semibold text-white mb-3 newsletter-title">
-                  {homePageData?.newsletter_heading || 'Stay Ahead of the Markets'}
-                </h2>
-                <div
-                  className="fs-18 mb-4 col-9 m-auto opacity-90"
-                  dangerouslySetInnerHTML={{ __html: homePageData?.newsletter_description || 'Get expert insights, breaking news, and market analysis delivered directly to your inbox' }}
-                />
-
-                <NewsletterForm
-                  defaultDaily={homePageData?.default_daily_market_brief === '1'}
-                  defaultWeekly={homePageData?.default_weekly_deep_dive === '1'}
-                  defaultBreaking={homePageData?.default_breaking_news_alerts === '1'}
-                />
-              </div>
-            </div>
-          </div>
-        </section>
-      )}
-
-      {/* Global Call to Action Section */}
-      <GlobalCallToAction settings={globalSettings} />
+      {/* Global Call to Action Section - Wrapped to serve as anchor for CTA buttons */}
+      <div id="newsletter-section">
+        <GlobalCallToAction settings={globalSettings} />
+      </div>
 
     </article>
   );
