@@ -6,9 +6,9 @@
   // Brand Colors - Deep Navy / Clean White Theme
   --primary-navy: #0F172A; // Deep Midnight Blue
   --primary-navy-soft: #0F172A0D;
-  --secondary-blue: #1E40AF; // Brighter blue for interactions
-  --primary-bg-blue: #1E3A8A; // Primary blue for cards
-  --primary-text-blue: #1E3A8A; // Primary blue for text
+  --secondary-blue: #0b0d8c; // Brighter blue for interactions
+  --primary-bg-blue: #0b0d8c; // Primary blue for cards
+  --primary-text-blue: #0b0d8c; // Primary blue for text
   --white: #FFFFFF;
   --bg-light: #F8FAFC;
   --accent-grey: #F1F5F9;
@@ -601,7 +601,7 @@ body .btn-primary {
   // Hero content responsive adjustments
   .hero-content {
     @media (max-width: 768px) {
-      text-align: center;
+      // text-align: center;
 
       .hero-headline {
         font-size: 2rem;

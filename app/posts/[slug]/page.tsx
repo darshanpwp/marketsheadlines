@@ -1,4 +1,4 @@
-import { getPostBySlug, getPostsByCategory, getMarketTickers, getGlobalThemeSettings, normalizeWpUrl } from '@/lib/wordpress/api';
+import { getPostBySlug, getPostsByCategory, getMarketTickers, getGlobalThemeSettings, getHomePageData, normalizeWpUrl } from '@/lib/wordpress/api';
 import { notFound } from 'next/navigation';
 import { Metadata } from 'next';
 import Image from 'next/image';
@@ -11,7 +11,7 @@ import NewsletterCTA from '@/components/NewsletterCTA';
 import GlobalCallToAction from '@/components/GlobalCallToAction';
 import { PaginatedResponse, PostWithDetails } from '@/types/wordpress';
 
-import { DEFAULT_POST_IMAGE } from '@/lib/constants';
+import { DEFAULT_POST_IMAGE, SITE_URL } from '@/lib/constants';
 
 type Props = {
   params: Promise<{ slug: string }>;
@@ -44,6 +44,7 @@ export default async function PostDetailPage({ params }: Props) {
   const post = await getPostBySlug(slug);
   const tickers = await getMarketTickers();
   const globalSettings = await getGlobalThemeSettings();
+  const homePageData = await getHomePageData();
   // Use global default image from Pods settings, with a fallback hardcoded URL
   const defaultImageUrl = normalizeWpUrl(globalSettings?.blog_default_image?.guid) || DEFAULT_POST_IMAGE;
 
@@ -90,7 +91,7 @@ export default async function PostDetailPage({ params }: Props) {
 
               {/* Meta and Share Row */}
               <div className="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-4 py-4 border-top border-bottom mb-5">
-                <div className="d-flex align-items-center gap-2">
+                <div className="d-flex align-items-center gap-2 flex-wrap">
                   {post.authorDetails && (
                     <div className="d-flex align-items-center gap-2">
                       <span className="fw-bold post-meta-author">{post.authorDetails.name}</span>
@@ -111,13 +112,13 @@ export default async function PostDetailPage({ params }: Props) {
                 {/* Social Share Icons */}
                 <div className="d-flex gap-2 align-items-center">
                   <span className="text-secondary small fw-bold text-uppercase opacity-50 me-2 share-tag">Share:</span>
-                  <Link href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(process.env.NEXT_PUBLIC_SITE_URL + '/posts/' + post.slug)}`} target="_blank" className="post-share-btn" title="LinkedIn">
+                  <Link href={`https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(SITE_URL + '/posts/' + post.slug)}`} target="_blank" className="post-share-btn" title="LinkedIn">
                     <i className="fa-brands fa-linkedin-in"></i>
                   </Link>
-                  <Link href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(process.env.NEXT_PUBLIC_SITE_URL + '/posts/' + post.slug)}`} target="_blank" className="post-share-btn" title="Twitter">
+                  <Link href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(SITE_URL + '/posts/' + post.slug)}`} target="_blank" className="post-share-btn" title="Twitter">
                     <i className="fa-brands fa-x-twitter"></i>
                   </Link>
-                  <Link href={`mailto:?subject=${encodeURIComponent(post.title)}&body=${encodeURIComponent(process.env.NEXT_PUBLIC_SITE_URL + '/posts/' + post.slug)}`} className="post-share-btn" title="Email">
+                  <Link href={`mailto:?subject=${encodeURIComponent(post.title)}&body=${encodeURIComponent(SITE_URL + '/posts/' + post.slug)}`} className="post-share-btn" title="Email">
                     <i className="fa-solid fa-envelope"></i>
                   </Link>
                 </div>
@@ -139,6 +140,7 @@ export default async function PostDetailPage({ params }: Props) {
                   fill
                   className="object-fit-cover"
                   priority
+                  unoptimized={true} // Ensure image loads even if optimization fails, keeping full resolution
                   sizes="100vw"
                 />
               </div>
@@ -217,8 +219,11 @@ export default async function PostDetailPage({ params }: Props) {
         </div>
       </div>
 
-      {/* Global Call to Action Section */}
-      <GlobalCallToAction settings={globalSettings} />
+      {/* Newsletter Subscription Section */}
+      {/* Global Call to Action Section - Wrapped to serve as anchor for CTA buttons */}
+      <div id="newsletter-section">
+        <GlobalCallToAction settings={globalSettings} />
+      </div>
 
     </article>
   );

@@ -1,6 +1,0 @@
-{
-  "version": 3,
-  "sources": [],
-  "sections": [
-    {"offset": {"line": 4, "column": 0}, "map": {"version":3,"sources":["file:///C:/wamp64/www/Marketheadlines/wp-next-headless/app/category/%5Bslug%5D/not-found.tsx"],"sourcesContent":["import Link from 'next/link';\r\n\r\nexport default function NotFound() {\r\n  return (\r\n    <div className=\"d-flex align-items-center justify-content-center min-vh-100 bg-white\">\r\n      <div className=\"text-center\">\r\n        <h1 className=\"display-1 fw-bold\">404</h1>\r\n        <h2 className=\"h3 fw-semibold mb-3\">\r\n          Category Not Found\r\n        </h2>\r\n        <p className=\"text-secondary mb-4\">\r\n          The category you're looking for doesn't exist.\r\n        </p>\r\n        <Link\r\n          href=\"/posts\"\r\n          className=\"btn btn-dark btn-lg px-4\"\r\n        >\r\n          Back to Posts\r\n        </Link>\r\n      </div>\r\n    </div>\r\n  );\r\n}\r\n\r\n"],"names":[],"mappings":";;;;;AAAA;;;AAEe,SAAS;IACtB,qBACE,8OAAC;QAAI,WAAU;kBACb,cAAA,8OAAC;YAAI,WAAU;;8BACb,8OAAC;oBAAG,WAAU;8BAAoB;;;;;;8BAClC,8OAAC;oBAAG,WAAU;8BAAsB;;;;;;8BAGpC,8OAAC;oBAAE,WAAU;8BAAsB;;;;;;8BAGnC,8OAAC,0LAAI;oBACH,MAAK;oBACL,WAAU;8BACX;;;;;;;;;;;;;;;;;AAMT"}}]
-}

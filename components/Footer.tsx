@@ -73,7 +73,7 @@ export default async function Footer() {
         <hr className="my-4 border-secondary opacity-25" />
 
         <div className="text-center">
-          <p className="color-menu-f mb-0 small">
+          <p className="color-menu-f mb-0 small" suppressHydrationWarning>
             {settings?.footer_copyright || `© ${new Date().getFullYear()} Markets Headlines, Inc. All rights reserved.`}
           </p>
         </div>

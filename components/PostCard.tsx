@@ -1,5 +1,7 @@
 'use client';
 
+import { useState } from 'react';
+
 import Link from 'next/link';
 import Image from 'next/image';
 import { PostWithDetails } from '@/types/wordpress';
@@ -30,6 +32,17 @@ export default function PostCard({ post, showExcerpt = false, filterCategory, de
   // Use dynamic default image or hardcoded fallback as last resort
   const fallbackImage = defaultImageUrl || DEFAULT_POST_IMAGE;
 
+  // Try to use a smaller image size (medium_large or medium) to improve load time
+  const mediaDetails = post.featuredMediaDetails?.media_details?.sizes;
+  const bestImage = mediaDetails?.['medium_large']?.source_url
+    || mediaDetails?.['medium']?.source_url
+    || mediaDetails?.['large']?.source_url
+    || post.featuredMediaDetails?.source_url
+    || fallbackImage;
+
+  // State to handle image loading errors (404s, etc)
+  const [imgSrc, setImgSrc] = useState(bestImage);
+
   return (
     <article className="card bg-white h-100 shadow-sm border-0 hover-lift overflow-hidden">
       {/* Image Link */}
@@ -37,9 +50,14 @@ export default function PostCard({ post, showExcerpt = false, filterCategory, de
         <Link href={`/posts/${post.slug}`} className="text-decoration-none">
           <div className="position-relative aspect-video overflow-hidden">
             <Image
-              src={post.featuredMediaDetails?.source_url || fallbackImage}
+              src={imgSrc}
+              onError={(e) => {
+                console.error('Image load error for:', imgSrc);
+                setImgSrc(fallbackImage);
+              }}
               alt={post.featuredMediaDetails?.alt_text || post.title}
               fill
+              unoptimized={true} // Bypass Next.js optimization to prevent server timeouts
               className="object-fit-cover"
               sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 25vw"
             />

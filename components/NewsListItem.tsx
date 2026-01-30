@@ -26,7 +26,7 @@ export default function NewsListItem({ post, index }: NewsListItemProps) {
 
             {/* Content */}
             <div className="flex-grow-1 min-w-0">
-              <div className="d-flex align-items-center gap-2 mb-2">
+              <div className="d-flex align-items-center gap-2 mb-2 flex-wrap">
                 {category && (
                   <span className="badge news-category-pill">
                     {category.name}
