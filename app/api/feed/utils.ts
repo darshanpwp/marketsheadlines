@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 
-const WP_URL = 'https://news.marketsheadlines.com';
+const WP_URL = process.env.NEXT_PUBLIC_WORDPRESS_URL || 'https://news.marketsheadlines.com';
 
 /**
  * Fetches an RSS feed from WordPress and replaces the backend URL with the frontend URL.
