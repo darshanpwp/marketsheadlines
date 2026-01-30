@@ -22,7 +22,7 @@ export function truncateText(text: string, maxLength: number): string {
  */
 export function formatDate(date: string | Date): string {
   const dateObj = typeof date === 'string' ? new Date(date) : date;
-  
+
   return dateObj.toLocaleDateString('en-US', {
     year: 'numeric',
     month: 'long',
@@ -46,7 +46,7 @@ export function formatRelativeTime(date: string | Date): string {
   if (diffMins < 60) return `${diffMins} minute${diffMins > 1 ? 's' : ''} ago`;
   if (diffHours < 24) return `${diffHours} hour${diffHours > 1 ? 's' : ''} ago`;
   if (diffDays < 7) return `${diffDays} day${diffDays > 1 ? 's' : ''} ago`;
-  
+
   return formatDate(dateObj);
 }
 
@@ -58,4 +58,34 @@ export function calculateReadingTime(content: string): number {
   const text = stripHtml(content);
   const wordCount = text.trim().split(/\s+/).length;
   return Math.ceil(wordCount / wordsPerMinute);
+}
+
+/**
+ * Decode HTML entities
+ */
+export function decodeHtmlEntities(text: string): string {
+  if (!text) return '';
+
+  const entities: { [key: string]: string } = {
+    '&amp;': '&',
+    '&#038;': '&',
+    '&lt;': '<',
+    '&gt;': '>',
+    '&quot;': '"',
+    '&#039;': "'",
+    '&#8217;': "'",
+    '&#8216;': "'",
+    '&#8220;': '“',
+    '&#8221;': '”',
+    '&#8211;': '–',
+    '&#8212;': '—',
+    '&hellip;': '…',
+    '&#8230;': '…',
+    '&nbsp;': ' ',
+    '&copy;': '©'
+  };
+
+  return text.replace(/&[#a-zA-Z0-9]+;/g, (match) => {
+    return entities[match] || match;
+  });
 }

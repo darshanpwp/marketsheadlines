@@ -21,6 +21,7 @@ import type {
   WordPressMenuItem
 } from '@/types/wordpress';
 import { SITE_URL } from '@/lib/constants';
+import { decodeHtmlEntities } from '@/lib/utils';
 
 export const WORDPRESS_URL = process.env.NEXT_PUBLIC_WORDPRESS_URL || 'https://news.marketsheadlines.com';
 const WP_API_URL = process.env.NEXT_PUBLIC_WP_API_URL || `${WORDPRESS_URL}/wp-json/wp/v2`;
@@ -152,7 +153,7 @@ function transformPage(wpPage: WordPressPage): Page {
   return {
     id: wpPage.id,
     slug: wpPage.slug,
-    title: wpPage.title.rendered,
+    title: decodeHtmlEntities(wpPage.title.rendered),
     content: normalizeToFrontendUrl(wpPage.content.rendered),
     excerpt: normalizeToFrontendUrl(wpPage.excerpt.rendered),
     date: wpPage.date,
@@ -227,7 +228,7 @@ export async function getPagesWithDetails(perPage: number = 10, page: number = 1
 
       return {
         ...page,
-        authorDetails: embedded?.author?.[0] as WordPressUser | undefined,
+        authorDetails: transformUser(embedded?.author?.[0] as WordPressUser | undefined),
         featuredMediaDetails: normalizeMedia(embedded?.['wp:featuredmedia']?.[0]),
       } as PageWithDetails;
     });
@@ -266,7 +267,7 @@ export async function getPageBySlug(slug: string): Promise<PageWithDetails | nul
 
     return {
       ...page,
-      authorDetails: embedded?.author?.[0] as WordPressUser | undefined,
+      authorDetails: transformUser(embedded?.author?.[0] as WordPressUser | undefined),
       featuredMediaDetails: embedded?.['wp:featuredmedia']?.[0],
     } as PageWithDetails;
   } catch (error) {
@@ -340,8 +341,15 @@ export async function getGlobalThemeSettings(): Promise<GlobalThemeSettings | nu
       if (data.footer_logo) {
         if (typeof data.footer_logo === 'string') {
           data.footer_logo = normalizeWpUrl(data.footer_logo);
-        } else if (data.footer_logo.guid) {
-          data.footer_logo.guid = normalizeWpUrl(data.footer_logo.guid);
+        } else if (typeof data.footer_logo === 'object') {
+          // Handle object case - prefer guid, then url, then source_url
+          const url = data.footer_logo.guid || data.footer_logo.url || data.footer_logo.source_url;
+          if (url) {
+            data.footer_logo = normalizeWpUrl(url);
+          } else {
+            // Fallback if no URL found in object
+            data.footer_logo = null;
+          }
         }
       }
 
@@ -448,6 +456,18 @@ export async function getMediaById(id: number): Promise<WordPressMedia | null> {
 }
 
 /**
+ * Transform WordPress User/Author
+ */
+function transformUser(user: WordPressUser | undefined): WordPressUser | undefined {
+  if (!user) return undefined;
+  return {
+    ...user,
+    name: decodeHtmlEntities(user.name),
+    description: decodeHtmlEntities(user.description)
+  };
+}
+
+/**
  * Fetch user/author by ID
  */
 export async function getUserById(id: number): Promise<WordPressUser | null> {
@@ -500,7 +520,7 @@ function transformPost(wpPost: WordPressPost): Post {
   return {
     id: wpPost.id,
     slug: wpPost.slug,
-    title: wpPost.title.rendered,
+    title: decodeHtmlEntities(wpPost.title.rendered),
     content: normalizeToFrontendUrl(wpPost.content.rendered),
     excerpt: normalizeToFrontendUrl(wpPost.excerpt.rendered),
     date: wpPost.date,
@@ -612,7 +632,7 @@ export async function getPostsWithDetails(perPage: number = 10, page: number = 1
 
       return {
         ...post,
-        authorDetails: embedded?.author?.[0] as WordPressUser | undefined,
+        authorDetails: transformUser(embedded?.author?.[0] as WordPressUser | undefined),
         featuredMediaDetails: normalizeMedia(embedded?.['wp:featuredmedia']?.[0]),
         categoryDetails,
         tagDetails,
@@ -676,7 +696,7 @@ export async function getPostBySlug(slug: string): Promise<PostWithDetails | nul
 
     return {
       ...post,
-      authorDetails: embedded?.author?.[0] as WordPressUser | undefined,
+      authorDetails: transformUser(embedded?.author?.[0] as WordPressUser | undefined),
       featuredMediaDetails: normalizeMedia(embedded?.['wp:featuredmedia']?.[0]),
       categoryDetails,
       tagDetails,
@@ -762,7 +782,7 @@ export async function getPostsByCategory(categoryId: number, perPage: number = 1
 
       return {
         ...post,
-        authorDetails: embedded?.author?.[0] as WordPressUser | undefined,
+        authorDetails: transformUser(embedded?.author?.[0] as WordPressUser | undefined),
         featuredMediaDetails: normalizeMedia(embedded?.['wp:featuredmedia']?.[0]),
         categoryDetails,
         tagDetails,
@@ -819,7 +839,7 @@ export async function getPostsByTag(tagId: number, perPage: number = 10, page: n
 
       return {
         ...post,
-        authorDetails: embedded?.author?.[0] as WordPressUser | undefined,
+        authorDetails: transformUser(embedded?.author?.[0] as WordPressUser | undefined),
         featuredMediaDetails: normalizeMedia(embedded?.['wp:featuredmedia']?.[0]),
         categoryDetails,
         tagDetails,
@@ -875,7 +895,7 @@ export async function getPostsByAuthor(authorId: number, perPage: number = 10, p
 
       return {
         ...post,
-        authorDetails: embedded?.author?.[0] as WordPressUser | undefined,
+        authorDetails: transformUser(embedded?.author?.[0] as WordPressUser | undefined),
         featuredMediaDetails: normalizeMedia(embedded?.['wp:featuredmedia']?.[0]),
         categoryDetails,
         tagDetails,
@@ -997,9 +1017,9 @@ function transformCPT(wpCPT: WordPressCPT): CPT {
   return {
     id: wpCPT.id,
     slug: wpCPT.slug,
-    title: wpCPT.title.rendered,
-    content: normalizeWpUrl(wpCPT.content.rendered),
-    excerpt: normalizeWpUrl(wpCPT.excerpt?.rendered),
+    title: decodeHtmlEntities(wpCPT.title.rendered),
+    content: normalizeToFrontendUrl(wpCPT.content.rendered),
+    excerpt: normalizeToFrontendUrl(wpCPT.excerpt?.rendered),
     date: wpCPT.date,
     modified: wpCPT.modified,
     author: wpCPT.author,
@@ -1212,6 +1232,7 @@ export async function getMenu(slug: string): Promise<WordPressMenu | null> {
     const normalizeItems = (items: WordPressMenuItem[]): WordPressMenuItem[] => {
       return items.map(item => ({
         ...item,
+        title: decodeHtmlEntities(item.title),
         url: normalizeToFrontendUrl(item.url),
         child_items: item.child_items ? normalizeItems(item.child_items) : undefined
       }));
@@ -1287,8 +1308,8 @@ export async function getSiteSettings(): Promise<any> {
 export async function getSiteIdentity(): Promise<{ title: string; description: string; logoUrl: string | null }> {
   const settings = await getSiteSettings();
 
-  const title = settings?.title || 'Market Headlines';
-  const description = settings?.description || '';
+  const title = decodeHtmlEntities(settings?.title || 'Market Headlines');
+  const description = decodeHtmlEntities(settings?.description || '');
 
   let logoUrl = null;
   if (settings?.site_logo) {
@@ -1335,9 +1356,9 @@ export async function getMarketHeadlinesSettings(): Promise<MarketHeadlinesSetti
       description: '', // Default
       url: WP_API_URL, // Default to API URL if general settings aren't fetched
       logo: undefined,
-      footer_title: rawData.footer_title || '',
-      footer_sub_title: rawData.footer_sub_title || '',
-      footer_copyright: rawData.footer_copyright || '',
+      footer_title: decodeHtmlEntities(rawData.footer_title || ''),
+      footer_sub_title: decodeHtmlEntities(rawData.footer_sub_title || ''),
+      footer_copyright: decodeHtmlEntities(rawData.footer_copyright || ''),
       social: rawData.social_media_urls || [],
       // Handle footer_logo object or string
       footer_logo: typeof rawData.footer_logo === 'object' && rawData.footer_logo?.guid
@@ -1427,7 +1448,7 @@ export async function getAllPosts(limit: number = 5): Promise<PostWithDetails[]>
       return {
         id: post.id,
         slug: post.slug,
-        title: post.title.rendered,
+        title: decodeHtmlEntities(post.title.rendered),
         content: normalizeToFrontendUrl(post.content.rendered),
         excerpt: normalizeToFrontendUrl(post.excerpt.rendered),
         date: post.date,
@@ -1555,7 +1576,7 @@ export async function getHomePageData(): Promise<HomePageData | null> {
       return {
         id: simplePost.id,
         slug: slug,
-        title: simplePost.title,
+        title: decodeHtmlEntities(simplePost.title),
         content: '', // Not needed for cards
         excerpt: '', // Can be populated if API provides it later
         date: '',
@@ -1606,31 +1627,31 @@ export async function getHomePageData(): Promise<HomePageData | null> {
 
     return {
       // Market Intelligence Section
-      market_intelligence_heading: marketSection.market_intelligence_heading || '',
-      market_intelligence_main_heading: marketSection.market_intelligence_main_heading || '',
+      market_intelligence_heading: decodeHtmlEntities(marketSection.market_intelligence_heading || ''),
+      market_intelligence_main_heading: decodeHtmlEntities(marketSection.market_intelligence_main_heading || ''),
       market_intelligence_description: marketSection.market_intelligence_description || '',
       market_intelligence_features_text: marketFeatures,
-      get_market_intelligence_button_text: marketSection.get_market_intelligence_button_text || '',
+      get_market_intelligence_button_text: decodeHtmlEntities(marketSection.get_market_intelligence_button_text || ''),
       get_market_intelligence_button_url: normalizeWpUrl(marketSection.get_market_intelligence_button_url),
-      explore_coverage_button_text: marketSection.explore_coverage_button_text || '',
+      explore_coverage_button_text: decodeHtmlEntities(marketSection.explore_coverage_button_text || ''),
       explore_coverage_button_url: normalizeWpUrl(marketSection.explore_coverage_button_url),
       market_intelligence_image: normalizeWpUrl((marketSection.market_intelligence_image && typeof marketSection.market_intelligence_image === 'object')
         ? (marketSection.market_intelligence_image.guid || marketSection.market_intelligence_image.source_url || '')
         : (typeof marketSection.market_intelligence_image === 'string' ? marketSection.market_intelligence_image : '')),
 
       // Investors & Organizations Section
-      for_investors_organizations_heading: investorsSection.for_investors_organizations_heading || '',
-      for_investors_organizations_main_heading: investorsSection.for_investors_organizations_main_heading || '',
+      for_investors_organizations_heading: decodeHtmlEntities(investorsSection.for_investors_organizations_heading || ''),
+      for_investors_organizations_main_heading: decodeHtmlEntities(investorsSection.for_investors_organizations_main_heading || ''),
       for_investors_organizations_description: investorsSection.for_investors_organizations_description || '',
       for_investors_organizations_features: investorsFeatures,
-      request_a_quote_button_text: investorsSection.request_a_quote_button_text || '',
+      request_a_quote_button_text: decodeHtmlEntities(investorsSection.request_a_quote_button_text || ''),
       request_a_quote_button_url: normalizeWpUrl(investorsSection.request_a_quote_button_url),
-      register_for_access_button_text: investorsSection.register_for_access_button_text || '',
+      register_for_access_button_text: decodeHtmlEntities(investorsSection.register_for_access_button_text || ''),
       register_for_access_button_url: normalizeWpUrl(investorsSection.register_for_access_button_url),
 
       // Newsletter Section
       show_newsletter_section: newsletterSection.show_newsletter_section || '0',
-      newsletter_heading: newsletterSection.newsletter_heading || '',
+      newsletter_heading: decodeHtmlEntities(newsletterSection.newsletter_heading || ''),
       newsletter_description: newsletterSection.newsletter_description || '',
       default_daily_market_brief: newsletterSection.default_daily_market_brief || '0',
       default_weekly_deep_dive: newsletterSection.default_weekly_deep_dive || '0',
@@ -1638,24 +1659,24 @@ export async function getHomePageData(): Promise<HomePageData | null> {
 
       // Dynamic Content Sections
       trending_now_section: {
-        title: trendingSection.title || 'Trending Now',
+        title: decodeHtmlEntities(trendingSection.title || 'Trending Now'),
         view_all_url: normalizeToFrontendUrl(trendingSection.view_all_url || ''),
         posts: trendingPosts
       },
       world_news_grid_section: {
-        title: worldGridSection.title || 'World News',
+        title: decodeHtmlEntities(worldGridSection.title || 'World News'),
         view_all_url: normalizeToFrontendUrl(worldGridSection.view_all_url || ''),
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         posts: (worldGridSection.posts || []).map((p: any) => transformPodsPost(p))
       },
       world_news_list_section: {
-        title: worldListSection.title || 'World News',
+        title: decodeHtmlEntities(worldListSection.title || 'World News'),
         view_all_url: normalizeToFrontendUrl(worldListSection.view_all_url || ''),
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         posts: (worldListSection.posts || []).map((p: any) => transformPodsPost(p))
       },
       business_section: {
-        title: businessSection.title || 'Business',
+        title: decodeHtmlEntities(businessSection.title || 'Business'),
         view_all_url: normalizeToFrontendUrl(businessSection.view_all_url || ''),
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         posts: (businessSection.posts || []).map((p: any) => transformPodsPost(p))

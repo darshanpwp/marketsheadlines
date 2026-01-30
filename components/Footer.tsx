@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import Image from 'next/image';
-import { getMenu, getMarketHeadlinesSettings, WORDPRESS_URL } from '@/lib/wordpress/api';
+import { getMenu, getGlobalThemeSettings, WORDPRESS_URL } from '@/lib/wordpress/api';
 import { WordPressMenu, WordPressMenuItem } from '@/types/wordpress';
 
 /**
@@ -10,7 +10,7 @@ export default async function Footer() {
   // Fetch settings and the single 'quick-links' menu
   const [quickLinksMenu, settings] = await Promise.all([
     getMenu('quick-links'),
-    getMarketHeadlinesSettings()
+    getGlobalThemeSettings()
   ]);
 
   const quickLinksItems = quickLinksMenu?.items || [];
@@ -23,26 +23,30 @@ export default async function Footer() {
         <div className="row g-5">
           {/* Logo & Tagline (Left Column) */}
           <div className="col-lg-4 mb-4 mb-lg-0">
-            {settings?.footer_logo || settings?.logo ? (
-              <div className="mb-3 position-relative" style={{ width: '180px', height: '60px' }}>
-                <Link href="/" className="d-block w-100 h-100 position-relative" suppressHydrationWarning>
-                  <Image
-                    src={settings?.footer_logo || settings?.logo || ''}
-                    alt={settings?.name || 'Market Headlines'}
-                    fill
-                    className="object-fit-contain object-position-left"
-                    sizes="(max-width: 768px) 150px, 180px"
-                    suppressHydrationWarning
-                  />
-                </Link>
-              </div>
-            ) : (
-              <h3 className="h4 fw-bold mb-3 text-white">
-                <Link href="/" className="text-white text-decoration-none">
-                  {settings?.footer_title || 'M|H MARKETS & HEADLINES'}
-                </Link>
-              </h3>
-            )}
+            {(() => {
+              const rawLogo = settings?.footer_logo || settings?.logo;
+              const logoSrc = (typeof rawLogo === 'string' && rawLogo.trim() !== '') ? rawLogo : null;
+              return logoSrc ? (
+                <div className="mb-3 position-relative" style={{ width: '180px', height: '60px' }}>
+                  <Link href="/" className="d-block w-100 h-100 position-relative" suppressHydrationWarning>
+                    <Image
+                      src={logoSrc}
+                      alt={settings?.name || 'Market Headlines'}
+                      fill
+                      className="object-fit-contain object-position-left"
+                      sizes="(max-width: 768px) 150px, 180px"
+                      suppressHydrationWarning
+                    />
+                  </Link>
+                </div>
+              ) : (
+                <h3 className="h4 fw-bold mb-3 text-white">
+                  <Link href="/" className="text-white text-decoration-none">
+                    {settings?.footer_title || 'M|H MARKETS & HEADLINES'}
+                  </Link>
+                </h3>
+              );
+            })()}
             <p className="color-menu-f opacity-75">
               {settings?.footer_sub_title || 'Your trusted source for global financial news and market intelligence.'}
             </p>

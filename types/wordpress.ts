@@ -208,12 +208,13 @@ export interface WordPressSearchResult {
  * Represents Global Theme Settings from custom Pods endpoint.
  */
 export interface GlobalThemeSettings {
-  footer_logo?: {
-    guid: string;
-    alt?: string;
-  };
+  name?: string;
+  logo?: string;
+  footer_logo?: string | null;
+  footer_title?: string;
   footer_sub_title?: string;
   footer_copyright?: string;
+  social?: string[];
   social_media_urls?: string[];
   blog_default_image?: {
     guid: string;
