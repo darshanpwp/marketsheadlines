@@ -1,8 +1,10 @@
 import Link from 'next/link';
 import Image from 'next/image';
+import type { Metadata } from 'next';
 import {
   getPostsWithDetails, getHomePageData,
   getMarketTickers, getGlobalThemeSettings,
+  getPage,
   WORDPRESS_URL
 } from '@/lib/wordpress/api';
 import { DEFAULT_POST_IMAGE } from '@/lib/constants';
@@ -16,6 +18,42 @@ import NewsletterForm from '@/components/NewsletterForm';
 import ErrorBoundary from '@/components/ErrorBoundary';
 
 export const revalidate = 60; // Revalidate every 60 seconds
+
+export async function generateMetadata(): Promise<Metadata> {
+  // Fetch the dedicated Home Page (ID: 3504679) to get SEO data
+  const homePage = await getPage(3504679);
+
+  if (homePage?.seo) {
+    return {
+      title: homePage.seo.title,
+      description: homePage.seo.description,
+      openGraph: {
+        title: homePage.seo.og_title,
+        description: homePage.seo.og_description,
+        images: homePage.seo.og_image?.map(img => ({
+          url: img.url,
+          width: img.width,
+          height: img.height,
+          alt: img.alt || homePage.title,
+        })),
+        url: '/',
+        type: 'website',
+      },
+      twitter: {
+        card: 'summary_large_image',
+        title: homePage.seo.twitter_title || homePage.seo.title,
+        description: homePage.seo.twitter_description || homePage.seo.description,
+        images: [homePage.seo.twitter_image || homePage.seo.og_image?.[0]?.url || ''],
+      },
+    };
+  }
+
+  // Fallback if SEO data is missing or page fetch fails
+  return {
+    title: 'Market Headlines - Global Financial News & Market Intelligence',
+    description: 'Get expert insights, breaking news, and market analysis delivered directly to your inbox.',
+  };
+}
 
 export default async function Home() {
   const [postsResponse, homePageData, marketTickers, globalSettings] = await Promise.all([
