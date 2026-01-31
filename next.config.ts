@@ -41,6 +41,11 @@ const nextConfig: NextConfig = {
         source: '/author/:path*/feed',
         destination: '/api/feed/author/:path*/feed',
       },
+      // Proxy wp-content matches to backend for images in feeds
+      {
+        source: '/wp-content/:path*',
+        destination: `${WORDPRESS_URL}/wp-content/:path*`,
+      },
     ];
   },
 };
