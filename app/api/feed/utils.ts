@@ -4,6 +4,7 @@ const WP_URL = process.env.NEXT_PUBLIC_WORDPRESS_URL || 'https://news.marketshea
 
 /**
  * Fetches an RSS feed from WordPress and replaces the backend URL with the frontend URL.
+ * Also injects <company:symbol> tags and fixes broken links.
  * 
  * @param path - The path to the feed on the WordPress site (e.g., '/feed', '/category/tech/feed')
  * @param request - The incoming Next.js request
@@ -34,15 +35,96 @@ export async function proxyFeed(path: string, request: Request) {
         const url = new URL(request.url);
         const siteUrl = `${url.protocol}//${url.host}`;
 
-        // Replace all instances of the WP URL with the Site URL
-        // Handle both http and https, and be case-insensitive
+        // --- TRANSFORMATION LOGIC ---
+
+        // 1. Add Namespace Definition if missing
+        let modifiedXml = xml;
+        if (!modifiedXml.includes('xmlns:company')) {
+            modifiedXml = modifiedXml.replace(
+                /<rss version="2.0"/,
+                '<rss version="2.0" xmlns:company="http://www.marketsheadlines.com/company"'
+            );
+        }
+
+        // 2. Fix Empty Links logic
+        // The backend returns <link></link> in channel and image. We replace these.
+        // We look for <link></link> and assume it belongs to channel/image because items usually have valid links.
+        // But to be safe, we can do global replace since an empty link is never valid.
+        modifiedXml = modifiedXml.replace(/<link><\/link>/g, `<link>${siteUrl}</link>`);
+
+        // 3. Global URL Replacement (Backend -> Frontend)
         const wpHostname = WP_URL.replace(/^https?:\/\//, '');
         const escapedWpHostname = wpHostname.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        const regexUrl = new RegExp(`https?://${escapedWpHostname}`, 'gi');
+        modifiedXml = modifiedXml.replace(regexUrl, siteUrl);
 
-        // Match https://hostname or http://hostname
-        const regex = new RegExp(`https?://${escapedWpHostname}`, 'gi');
+        // 4. Inject <company:symbol> tags
+        // We need to parse items to find text like (NASDAQ: AAPL) and inject tags.
+        // Using a regex to split items is safer than full DOM parsing for simple injection.
 
-        const modifiedXml = xml.replace(regex, siteUrl);
+        // Regex to find <item> blocks
+        const itemRegex = /<item>[\s\S]*?<\/item>/g;
+
+        modifiedXml = modifiedXml.replace(itemRegex, (itemXml) => {
+            // Check if company:symbol already exists (if backend starts supporting it)
+            if (itemXml.includes('<company:symbol>')) {
+                return itemXml;
+            }
+
+            const symbols = new Set<string>();
+            // Regex to find stock symbols in content
+            // Matches: (NASDAQ: VWAV), (NYSE: LMT), (TSX: AG), etc.
+            // \b ensures we match word boundaries for the exchange
+            const symbolRegex = /\((NASDAQ|NYSE|TSX|TSXV|CSE|OTC[A-Z]*):\s*([A-Z0-9]+)\)/gi;
+
+            let match;
+            // Search in the whole item XML (title + description + content)
+            while ((match = symbolRegex.exec(itemXml)) !== null) {
+                // match[1] = Exchange (e.g. NASDAQ), match[2] = Symbol (e.g. VWAV)
+                const exchange = match[1].toUpperCase();
+                const ticker = match[2].toUpperCase();
+                symbols.add(`${exchange}:${ticker}`);
+            }
+
+            if (symbols.size === 0) {
+                return itemXml;
+            }
+
+            // Construct new tags
+            const tags = Array.from(symbols)
+                .map(s => `<company:symbol>${s}</company:symbol>`)
+                .join('\n\t\t');
+
+            // Insert after <category> tags
+            if (itemXml.includes('</category>')) {
+                // Find the last occurrence of </category> to append after it
+                const lastCategoryIndex = itemXml.lastIndexOf('</category>');
+
+                // Inspect indentation of the category tag to match it
+                const lineStart = itemXml.lastIndexOf('\n', lastCategoryIndex);
+                let indentation = '\t\t'; // Default
+                if (lineStart !== -1) {
+                    const indentationMatch = itemXml.substring(lineStart + 1, lastCategoryIndex).match(/^\s+/);
+                    if (indentationMatch) {
+                        indentation = indentationMatch[0];
+                    }
+                }
+
+                // Re-construct tags with correct indentation
+                const indentedTags = Array.from(symbols)
+                    .map(s => `${indentation}<company:symbol>${s}</company:symbol>`)
+                    .join('\n');
+
+                // We use string slicing to insert after the last category
+                return itemXml.slice(0, lastCategoryIndex + 11) + `\n${indentedTags}` + itemXml.slice(lastCategoryIndex + 11);
+            } else if (itemXml.includes('<guid')) {
+                // Fallback to inserting before <guid> if no category tags
+                return itemXml.replace('<guid', `${tags}\n\t\t<guid`);
+            } else {
+                // Fallback: append to end of item
+                return itemXml.replace('</item>', `\t${tags}\n</item>`);
+            }
+        });
 
         // Return the modified XML with correct content type
         return new NextResponse(modifiedXml, {
