@@ -1,0 +1,19 @@
+HTTP/1.1 401 Unauthorized
+Connection: Keep-Alive
+Keep-Alive: timeout=5, max=100
+Content-Type: application/json; charset=UTF-8
+X-Robots-Tag: noindex
+Link: <https://news.marketsheadlines.com/wp-json/>; rel="https://api.w.org/"
+X-Content-Type-Options: nosniff
+Access-Control-Expose-Headers: X-WP-Total, X-WP-TotalPages, Link
+Access-Control-Allow-Headers: Authorization, X-WP-Nonce, Content-Disposition, Content-MD5, Content-Type
+Allow: GET
+Vary: Origin,User-Agent
+X-LiteSpeed-Cache-Control: no-cache
+Cache-Control: no-cache, must-revalidate, max-age=0, no-store, private
+Content-Length: 96
+Date: Sat, 31 Jan 2026 09:44:46 GMT
+Server: LiteSpeed
+alt-svc: h3=":443"; ma=2592000, h3-29=":443"; ma=2592000, h3-Q050=":443"; ma=2592000, h3-Q046=":443"; ma=2592000, h3-Q043=":443"; ma=2592000, quic=":443"; ma=2592000; v="43,46"
+
+{"code":"rest_not_logged_in","message":"You are not currently logged in.","data":{"status":401}}

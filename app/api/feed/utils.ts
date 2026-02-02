@@ -15,11 +15,23 @@ export async function proxyFeed(path: string, request: Request) {
         // Construct the full WordPress feed URL
         const wpFeedUrl = `${WP_URL}${path}`;
 
+        // Create headers object
+        const headers: HeadersInit = {
+            'User-Agent': 'MarketHeadlines-NextJS-Proxy',
+        };
+
+        // Add Basic Auth if credentials are provided
+        const authUser = process.env.WORDPRESS_AUTH_USER;
+        const authPass = process.env.WORDPRESS_AUTH_PASS;
+
+        if (authUser && authPass) {
+            const token = Buffer.from(`${authUser}:${authPass}`).toString('base64');
+            headers['Authorization'] = `Basic ${token}`;
+        }
+
         // Fetch the feed from WordPress
         const response = await fetch(wpFeedUrl, {
-            headers: {
-                'User-Agent': 'MarketHeadlines-NextJS-Proxy',
-            },
+            headers,
             next: { revalidate: 300 } // Cache for 5 minutes
         });
 

@@ -33,8 +33,8 @@ export default function GlobalCallToAction({ settings }: Props) {
         return normalized;
     };
 
-    const displaySubscribeUrl = normalizeUrl(subscribeUrl);
-    const displayRegisterUrl = normalizeUrl(registerUrl);
+    const displaySubscribeUrl = "/#newsletter-section";
+    const displayRegisterUrl = "/#newsletter-section";
 
     // Remove the entire section if no valid content is available (checking heading or buttons)
     if ((!displayHeading && !displayDescription) && (!subscribeText && !registerText)) {

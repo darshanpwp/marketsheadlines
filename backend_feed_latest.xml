@@ -9,10 +9,10 @@
 
 <channel>
 	<title>USA News Group Archives - Markets &amp; Headlines</title>
-	<atom:link href="https://news.marketsheadlines.com/category/usanewsgroup/feed/" rel="self" type="application/rss+xml" />
+	<atom:link href="https://news.marketsheadlines.com/category/usanewsgroup/feed/?nocache=999" rel="self" type="application/rss+xml" />
 	<link></link>
 	<description>Headlines</description>
-	<lastBuildDate>Sat, 31 Jan 2026 07:41:54 +0000</lastBuildDate>
+	<lastBuildDate>Sat, 31 Jan 2026 08:13:34 +0000</lastBuildDate>
 	<language>en-US</language>
 	<sy:updatePeriod>
 	hourly	</sy:updatePeriod>
@@ -41,8 +41,7 @@
 		<company:symbol>NYSE:LMT</company:symbol>
 		<company:symbol>NYSE:TDG</company:symbol>
 		<company:symbol>NYSE:HII</company:symbol>
-		<company:symbol>testfeeddata12</company:symbol>
-		<company:symbol>NASDAQ:SVRE</company:symbol>		<guid isPermaLink="false">https://news.marketsheadlines.com/?p=3504910</guid>
+		<company:symbol>123</company:symbol>		<guid isPermaLink="false">https://news.marketsheadlines.com/?p=3504910</guid>
 
 					<description><![CDATA[<p>VANCOUVER, British Columbia, Jan. 30, 2026 &#8212; USA News Group News Commentary – Total defense spending is approaching a historic $1 trillion milestone as congressional appropriators advance a new $839 billion defense bill[1]. This massive fiscal expansion is driving global commercial aftermarket MRO demand toward a 3.2% compound annual growth rate through 2035[2]. These structural tailwinds have [&#8230;]</p>
 <p>The post <a href="https://news.marketsheadlines.com/1-trillion-defense-surge-record-aftermarket-demand-and-ai-tech-integration/">$1 Trillion Defense Surge: Record Aftermarket Demand and AI Tech Integration</a> appeared first on <a href="https://news.marketsheadlines.com">Markets &amp; Headlines</a>.</p>
@@ -105,8 +104,7 @@
 		<company:symbol>TSXV:BZ</company:symbol>
 		<company:symbol>OTCPK:BENZF</company:symbol>
 		<company:symbol>TSXV:GLDC</company:symbol>
-		<company:symbol>OTCQX:CGGLCF</company:symbol>
-		<company:symbol>OTCQX:CGLCF</company:symbol>		<guid isPermaLink="false">https://www.marketsheadlines.com/?p=3504762</guid>
+		<company:symbol>OTCQX:CGGLCF</company:symbol>		<guid isPermaLink="false">https://www.marketsheadlines.com/?p=3504762</guid>
 
 					<description><![CDATA[<p>VANCOUVER, British Columbia, Jan. 29, 2026  &#8212; USANewsGroup.com News Commentary – The gold market is entering a major shift where supply shortages are driving investors toward high-quality assets. The World Gold Council now projects that gold could surge another 15% to 30% from current levels[1]. This tightening supply is causing a massive re-rating of companies that control [&#8230;]</p>
 <p>The post <a href="https://news.marketsheadlines.com/junior-miners-take-center-stage-as-record-gold-prices-trigger-search-for-high-grade-discovery/">Junior Miners Take Center Stage as Record Gold Prices Trigger Search for High-Grade Discovery</a> appeared first on <a href="https://news.marketsheadlines.com">Markets &amp; Headlines</a>.</p>
@@ -167,8 +165,7 @@
 		<company:symbol>TSXV:GPH</company:symbol>
 		<company:symbol>OTCQX:GPHOF</company:symbol>
 		<company:symbol>NYSE:LEU</company:symbol>
-		<company:symbol>NASDAQ:CENX</company:symbol>
-		<company:symbol>TSX:PPTA</company:symbol>		<guid isPermaLink="false">https://www.marketsheadlines.com/?p=3504760</guid>
+		<company:symbol>NASDAQ:CENX</company:symbol>		<guid isPermaLink="false">https://www.marketsheadlines.com/?p=3504760</guid>
 
 					<description><![CDATA[<p>VANCOUVER, BC, Jan. 29, 2026  &#8212; The Pentagon moved a massive $4.5 billion into critical minerals during the final months of 2025[1]. According to S&#38;P Global, government backing for strategic mineral projects will reach record levels throughout 2026 as Western nations work to secure their own processing power[2]. This structural reset is favoring companies that can bridge [&#8230;]</p>
 <p>The post <a href="https://news.marketsheadlines.com/strategic-mineral-stocks-gain-ground-as-pentagon-pushes-for-secure-defense-supply-chains/">Strategic Mineral Stocks Gain Ground as Pentagon Pushes for Secure Defense Supply Chains</a> appeared first on <a href="https://news.marketsheadlines.com">Markets &amp; Headlines</a>.</p>
@@ -339,8 +336,7 @@
 		<company:symbol>NYSE:PAAS</company:symbol>
 		<company:symbol>TSX:PAAS</company:symbol>
 		<company:symbol>NYSE-A:VZLA</company:symbol>
-		<company:symbol>TSX:VZLA</company:symbol>
-		<company:symbol>NYSE:VZLA</company:symbol>		<guid isPermaLink="false">https://www.marketsheadlines.com/?p=3504738</guid>
+		<company:symbol>TSX:VZLA</company:symbol>		<guid isPermaLink="false">https://www.marketsheadlines.com/?p=3504738</guid>
 
 					<description><![CDATA[<p>VANCOUVER, British Columbia, Jan. 27, 2026 &#8212; USANewsGroup.com News Commentary — The global silver market has slammed into its sixth year of structural deficit[1]. Industrial demand is now crushing mine production by 95 million ounces every year, forcing prices past $90 per ounce in early 2026. The U.S. Geological Survey recently added silver to its Critical Minerals [&#8230;]</p>
 <p>The post <a href="https://news.marketsheadlines.com/silver-mining-stocks-surge-as-critical-mineral-status-and-supply-deficits-redefine-valuations/">Silver Mining Stocks Surge as Critical Mineral Status and Supply Deficits Redefine Valuations</a> appeared first on <a href="https://news.marketsheadlines.com">Markets &amp; Headlines</a>.</p>
@@ -570,14 +566,7 @@
 				<category><![CDATA[USA News Group]]></category>
 
 		<company:symbol>TSXV:RUA</company:symbol>
-		<company:symbol>OTCQB:NZAUF</company:symbol>
-		<company:symbol>CSE:QSE</company:symbol>
-		<company:symbol>OTCQB:QSEGF</company:symbol>
-		<company:symbol>NASDAQ:VWAV</company:symbol>
-		<company:symbol>CSE:ARS</company:symbol>
-		<company:symbol>OTCQB:ARSMF</company:symbol>
-		<company:symbol>CSE:GOH</company:symbol>
-		<company:symbol>OTCQB:GHVNF</company:symbol>		<guid isPermaLink="false">https://www.marketsheadlines.com/?p=3504713</guid>
+		<company:symbol>OTCQB:NZAUF</company:symbol>		<guid isPermaLink="false">https://www.marketsheadlines.com/?p=3504713</guid>
 
 					<description><![CDATA[<p>VANCOUVER, British Columbia, Jan. 22, 2026  &#8212; USANewsGroup.com Market Intelligence Brief – The digital economy just hit the wall of physics. Paper confidence is dying in real-time. Gold just crossed $4,700/oz in the opening weeks of January. Street consensus now targets $5,000 within the year. AI hyperscalers require 300+ gigawatts of baseload power that the existing grid cannot deliver. This creates [&#8230;]</p>
 <p>The post <a href="https://news.marketsheadlines.com/the-scarcity-cycle-5-assets-for-the-physical-reset/">THE SCARCITY CYCLE: 5 Assets for the Physical Reset</a> appeared first on <a href="https://news.marketsheadlines.com">Markets &amp; Headlines</a>.</p>
