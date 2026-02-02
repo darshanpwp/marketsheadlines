@@ -13,7 +13,7 @@ export default function NewsletterCTA() {
                     Access regulatory filings, exchange updates, and curated market insights beyond the headlines.
                 </p>
                 <Link
-                    href="#newsletter-section"
+                    href="/#newsletter-section"
                     className="btn btn-premium-primary d-inline-flex align-items-center gap-2 fw-bold px-4 py-3"
                 >
                     <span>Get Market Intelligence</span>

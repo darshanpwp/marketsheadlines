@@ -1,0 +1,17 @@
+HTTP/1.1 200 OK
+Connection: Keep-Alive
+Keep-Alive: timeout=5, max=100
+Content-Type: application/rss+xml; charset=UTF-8
+ETag: "1fee586c96940a949a17681d28b2c8f7"
+Link: <https://news.marketsheadlines.com/wp-json/>; rel="https://api.w.org/"
+Link: <https://news.marketsheadlines.com/wp-json/wp/v2/categories/1191>; rel="alternate"; title="JSON"; type="application/json"
+Expires: Wed, 11 Jan 1984 05:00:00 GMT
+Cache-Control: no-cache, must-revalidate, max-age=0, no-store, private
+X-Litespeed-Cache: miss
+Content-Length: 76
+Date: Sat, 31 Jan 2026 09:53:44 GMT
+Server: LiteSpeed
+Vary: User-Agent
+alt-svc: h3=":443"; ma=2592000, h3-29=":443"; ma=2592000, h3-Q050=":443"; ma=2592000, h3-Q046=":443"; ma=2592000, h3-Q043=":443"; ma=2592000, quic=":443"; ma=2592000; v="43,46"
+
+<?xml version="1.0" encoding="UTF-8" ?><status>Service unavailable.</status>
