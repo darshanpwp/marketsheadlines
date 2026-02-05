@@ -416,23 +416,57 @@ export async function getSiteIcon(): Promise<string> {
 }
 /**
  * Fetch all page slugs for static generation
+ * Recursively fetches all pages if total pages > 100
  */
 export async function getAllPageSlugs(): Promise<string[]> {
-  const url = `${WP_API_URL}/pages?status=publish&per_page=100`;
+  const perPage = 100;
+  let page = 1;
+  let hasMore = true;
+  let allSlugs: string[] = [];
 
-  try {
-    // Use direct fetch to avoid 415 errors
-    const response = await fetch(url, {
-      next: { revalidate: 60 }, // Cache for 1 hour
-      headers: { 'Accept': 'application/json' }
-    });
+  while (hasMore) {
+    const url = `${WP_API_URL}/pages?status=publish&per_page=${perPage}&page=${page}`;
 
-    const pages: WordPressPage[] = await response.json();
-    return pages.map((page) => page.slug);
-  } catch (error) {
-    console.error('Error fetching page slugs:', error);
-    return [];
+    try {
+      const response = await fetch(url, {
+        next: { revalidate: 60 },
+        headers: { 'Accept': 'application/json' }
+      });
+
+      if (!response.ok) {
+        if (response.status === 400 && page > 1) {
+          hasMore = false;
+          break;
+        }
+        console.error(`Error fetching page slugs page ${page}:`, response.statusText);
+        hasMore = false;
+        break;
+      }
+
+      const totalPages = parseInt(response.headers.get('X-WP-TotalPages') || '1', 10);
+      const pages = await response.json() as WordPressPage[];
+
+      if (!Array.isArray(pages) || pages.length === 0) {
+        hasMore = false;
+        break;
+      }
+
+      const slugs = pages.map((p) => p.slug);
+      allSlugs = [...allSlugs, ...slugs];
+
+      if (page >= totalPages) {
+        hasMore = false;
+      } else {
+        page++;
+      }
+
+    } catch (error: unknown) {
+      console.error('Error fetching page slugs:', error);
+      hasMore = false;
+    }
   }
+
+  return allSlugs;
 }
 
 /**
@@ -713,27 +747,60 @@ export async function getPostBySlug(slug: string): Promise<PostWithDetails | nul
 /**
  * Fetch all post slugs for static generation
  */
+/**
+ * Fetch all post slugs for static generation
+ * Recursively fetches all pages if total posts > 100
+ */
 export async function getAllPostSlugs(): Promise<string[]> {
-  const url = `${WP_API_URL}/posts?status=publish&per_page=100`;
+  const perPage = 100;
+  let page = 1;
+  let hasMore = true;
+  let allSlugs: string[] = [];
 
-  try {
-    // Use direct fetch to avoid 415 errors
-    const response = await fetch(url, {
-      next: { revalidate: 60 }, // Cache for 1 hour
-      headers: { 'Accept': 'application/json' }
-    });
+  while (hasMore) {
+    const url = `${WP_API_URL}/posts?status=publish&per_page=${perPage}&page=${page}`;
 
-    if (!response.ok) return [];
+    try {
+      const response = await fetch(url, {
+        next: { revalidate: 60 },
+        headers: { 'Accept': 'application/json' }
+      });
 
-    const posts = await response.json() as WordPressPost[];
-    if (!Array.isArray(posts)) {
-      return [];
+      if (!response.ok) {
+        if (response.status === 400 && page > 1) {
+          // Reached end of pagination normally
+          hasMore = false;
+          break;
+        }
+        console.error(`Error fetching post slugs page ${page}:`, response.statusText);
+        hasMore = false;
+        break;
+      }
+
+      const totalPages = parseInt(response.headers.get('X-WP-TotalPages') || '1', 10);
+      const posts = await response.json() as WordPressPost[];
+
+      if (!Array.isArray(posts) || posts.length === 0) {
+        hasMore = false;
+        break;
+      }
+
+      const slugs = posts.map((post) => post.slug);
+      allSlugs = [...allSlugs, ...slugs];
+
+      if (page >= totalPages) {
+        hasMore = false;
+      } else {
+        page++;
+      }
+
+    } catch (error: unknown) {
+      console.error('Error fetching post slugs:', error);
+      hasMore = false;
     }
-    return posts.map((post) => post.slug);
-  } catch (error: unknown) {
-    console.error('Error fetching post slugs:', error);
-    return [];
   }
+
+  return allSlugs;
 }
 
 /**

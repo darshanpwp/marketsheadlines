@@ -692,3 +692,81 @@
         height: 600px;
     }
 }
+
+// 12. Standard Page Content Typography
+.standard-page-content {
+    h2 {
+        font-size: 2.5rem;
+        font-weight: 700;
+        margin-top: 3rem;
+        margin-bottom: 1.5rem;
+        color: var(--primary-navy);
+        font-family: var(--bs-font-serif);
+    }
+
+    h3 {
+        font-size: 1.8rem;
+        font-weight: 600;
+        margin-top: 2.5rem;
+        margin-bottom: 1.25rem;
+        color: var(--text-dark);
+        font-family: var(--bs-font-serif);
+    }
+
+    h4 {
+        font-size: 1.4rem;
+        font-weight: 600;
+        margin-top: 2rem;
+        margin-bottom: 1rem;
+        color: var(--text-dark);
+    }
+
+    p {
+        font-size: 1.15rem; // Slightly larger for readability
+        line-height: 1.8;
+        margin-bottom: 1.5rem;
+        color: var(--text-dark);
+    }
+
+    strong, b {
+        font-weight: 600;
+        color: var(--primary-navy); // Optional: make bold text pop slightly with brand color
+    }
+
+    ul, ol {
+        margin-bottom: 1.5rem;
+        padding-left: 1.5rem;
+
+        li {
+            font-size: 1.15rem;
+            line-height: 1.7;
+            margin-bottom: 0.5rem;
+            color: var(--text-dark);
+        }
+    }
+
+    blockquote {
+        border-left: 4px solid var(--primary-navy);
+        padding-left: 1.5rem;
+        margin: 2rem 0;
+        font-style: italic;
+        font-size: 1.25rem;
+        color: var(--text-muted);
+    }
+
+    figure {
+        margin: 2.5rem 0;
+        
+        img {
+            border-radius: 8px;
+            box-shadow: var(--premium-shadow);
+        }
+        
+        figcaption {
+            text-align: center;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            margin-top: 0.75rem;
+        }
+    }
+}
