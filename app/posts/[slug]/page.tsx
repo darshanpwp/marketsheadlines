@@ -36,6 +36,9 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       description: post.seo?.og_description || post.excerpt?.replace(/<[^>]*>/g, '').slice(0, 160) || post.title,
       images: post.seo?.og_image ? post.seo.og_image.map(img => img.url) : (post.featuredMediaDetails?.source_url ? [post.featuredMediaDetails.source_url] : []),
     },
+    alternates: {
+      canonical: `${SITE_URL}/posts/${post.slug}`,
+    },
   };
 }
 
