@@ -13,13 +13,13 @@ export async function generateMetadata(): Promise<Metadata> {
 
     if (!page) {
         return {
-            title: 'About Us - Market Headlines',
+            title: 'About Us',
             description: 'Learn more about Market Headlines, your source for global financial news.',
         };
     }
 
     return {
-        title: page.seo?.title || `${page.title} - Market Headlines`,
+        title: page.seo?.title ? { absolute: page.seo.title } : page.title,
         description: page.seo?.description || page.excerpt?.replace(/<[^>]*>/g, '').slice(0, 160),
         openGraph: {
             title: page.seo?.og_title || page.title,
