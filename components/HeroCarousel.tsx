@@ -27,9 +27,10 @@ export default function HeroCarousel({ posts, defaultImageUrl }: HeroCarouselPro
                     data-bs-ride="carousel"
                     data-bs-interval="5000"
                     data-bs-pause="hover"
+                    suppressHydrationWarning
                 >
                     {/* Carousel Indicators */}
-                    <div className="carousel-indicators">
+                    <div className="carousel-indicators" suppressHydrationWarning>
                         {posts.map((_, index) => (
                             <button
                                 key={index}
@@ -44,14 +45,15 @@ export default function HeroCarousel({ posts, defaultImageUrl }: HeroCarouselPro
                     </div>
 
                     {/* Carousel Inner */}
-                    <div className="carousel-inner">
+                    <div className="carousel-inner" suppressHydrationWarning>
                         {posts.map((post, index) => (
                             <div
                                 key={post.id}
                                 className={`carousel-item ${index === 0 ? 'active' : ''} position-relative hero-item`}
+                                suppressHydrationWarning
                             >
                                 {/* Background Image */}
-                                <div className="hero-bg position-absolute w-100 h-100 top-0 start-0 overflow-hidden z-0">
+                                <div className="hero-bg position-absolute w-100 h-100 top-0 start-0 overflow-hidden z-0" suppressHydrationWarning>
                                     <Image
                                         src={post.featuredMediaDetails?.source_url || fallbackImage}
                                         alt={post.title}
@@ -61,13 +63,13 @@ export default function HeroCarousel({ posts, defaultImageUrl }: HeroCarouselPro
                                     />
 
                                     {/* Brand Navy Overlay with Gradient */}
-                                    <div className="hero-overlay position-absolute w-100 h-100 top-0 start-0 hero-gradient-overlay z-1"></div>
+                                    <div className="hero-overlay position-absolute w-100 h-100 top-0 start-0 hero-gradient-overlay z-1" suppressHydrationWarning></div>
                                 </div>
 
                                 {/* Content Overlay */}
-                                <div className="container hero-content-container position-relative z-3">
-                                    <div className="row align-items-center h-100">
-                                        <div className="col-lg-7 col-md-9 text-white py-5 hero-content">
+                                <div className="container hero-content-container position-relative z-3" suppressHydrationWarning>
+                                    <div className="row align-items-center h-100" suppressHydrationWarning>
+                                        <div className="col-lg-7 col-md-9 text-white py-5 hero-content" suppressHydrationWarning>
                                             {post.categoryDetails?.[0] && (
                                                 <span className="badge primary-bg-blue text-white rounded-pill px-3 py-2 mb-4 fw-bold shadow-sm">
                                                     {post.categoryDetails[0].name}
@@ -79,11 +81,12 @@ export default function HeroCarousel({ posts, defaultImageUrl }: HeroCarouselPro
                                             />
                                             <div
                                                 className="lead hero-excerpt opacity-90 fw-light line-clamp-1 max-w-100"
+                                                suppressHydrationWarning
                                                 dangerouslySetInnerHTML={{
                                                     __html: post.excerpt || 'Stay informed with the latest market insights and financial news.'
                                                 }}
                                             />
-                                            <div className="d-flex align-items-center flex-wrap gap-2 mb-4 pt-4 text-white opacity-90 max-w-fit">
+                                            <div className="d-flex align-items-center flex-wrap gap-2 mb-4 pt-4 text-white opacity-90 max-w-fit" suppressHydrationWarning>
                                                 {post.authorDetails && (
                                                     <>
                                                         <span className="fw-bold text-uppercase small tracking-wider">By {post.authorDetails.name}</span>
@@ -115,7 +118,7 @@ export default function HeroCarousel({ posts, defaultImageUrl }: HeroCarouselPro
                     </div>
 
                     {/* Custom Carousel Controls (Bottom Right) */}
-                    <div className="carousel-custom-controls d-none d-md-flex gap-2">
+                    <div className="carousel-custom-controls d-none d-md-flex gap-2" suppressHydrationWarning>
                         <button
                             className="btn-custom-control prev"
                             type="button"

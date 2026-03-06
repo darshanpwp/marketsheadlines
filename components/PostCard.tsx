@@ -44,7 +44,7 @@ export default function PostCard({ post, showExcerpt = false, filterCategory, de
   const [imgSrc, setImgSrc] = useState(bestImage);
 
   return (
-    <article className="card bg-white h-100 shadow-sm border-0 hover-lift overflow-hidden">
+    <article className="card bg-white h-100 shadow-sm border-0 hover-lift overflow-hidden" suppressHydrationWarning>
       {/* Image Link */}
       <div className="position-relative">
         <Link href={`/posts/${post.slug}`} className="text-decoration-none">

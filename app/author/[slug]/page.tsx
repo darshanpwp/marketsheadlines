@@ -62,7 +62,7 @@ export default async function AuthorArchivePage({ params, searchParams }: Props)
             {/* Author Header */}
             <div className="archive-header mb-5 bg-gradient-c py-5">
                 <div className="container">
-                    <div className="row align-items-center">
+                    <div className="row align-items-center flex-wrap">
                         <div className="col-auto mb-3 mb-md-0">
                             {author.avatar_urls?.['96'] ? (
                                 <Image
