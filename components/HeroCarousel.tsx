@@ -83,13 +83,23 @@ export default function HeroCarousel({ posts, defaultImageUrl }: HeroCarouselPro
                                                     __html: post.excerpt || 'Stay informed with the latest market insights and financial news.'
                                                 }}
                                             />
-                                            {post.authorDetails && (
-                                                <div className="d-flex align-items-center gap-3 mb-4 pt-4 max-w-fit">
-                                                    <span className="fw-bold text-uppercase small tracking-wider">By {post.authorDetails.name}</span>
-                                                    <span className="text-white opacity-50">•</span>
-                                                    <span className="small opacity-75">{calculateReadingTime(post.content)} min read</span>
-                                                </div>
-                                            )}
+                                            <div className="d-flex align-items-center flex-wrap gap-2 mb-4 pt-4 text-white opacity-90 max-w-fit">
+                                                {post.authorDetails && (
+                                                    <>
+                                                        <span className="fw-bold text-uppercase small tracking-wider">By {post.authorDetails.name}</span>
+                                                        <span className="opacity-50 px-2">•</span>
+                                                    </>
+                                                )}
+                                                <time className="small tracking-wider text-uppercase" dateTime={post.date}>
+                                                    {new Date(post.date).toLocaleDateString('en-US', {
+                                                        month: 'short',
+                                                        day: 'numeric',
+                                                        year: 'numeric'
+                                                    })}
+                                                </time>
+                                                <span className="opacity-50 px-2">•</span>
+                                                <span className="small tracking-wider">{calculateReadingTime(post.content)} min read</span>
+                                            </div>
                                             <Link
                                                 href={`/posts/${post.slug}`}
                                                 className="btn btn-white-primary rounded-2"
