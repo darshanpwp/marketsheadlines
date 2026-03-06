@@ -25,7 +25,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
   if (homePage?.seo) {
     return {
-      title: homePage.seo.title,
+      title: { absolute: homePage.seo.title },
       description: homePage.seo.description,
       openGraph: {
         title: homePage.seo.og_title,
@@ -50,7 +50,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
   // Fallback if SEO data is missing or page fetch fails
   return {
-    title: 'Market Headlines - Global Financial News & Market Intelligence',
+    title: { absolute: 'Market Headlines - Global Financial News & Market Intelligence' },
     description: 'Get expert insights, breaking news, and market analysis delivered directly to your inbox.',
   };
 }

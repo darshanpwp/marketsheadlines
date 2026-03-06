@@ -25,8 +25,11 @@ export async function generateMetadata(): Promise<Metadata> {
   const siteIcon = await getSiteIcon();
 
   return {
-    title: "WP Next Headless - Market Headlines",
-    description: "WordPress headless CMS with Next.js",
+    title: {
+      template: "%s | Market Headlines",
+      default: "Market Headlines - Global Financial News & Market Intelligence",
+    },
+    description: "Global Financial News & Market Intelligence delivered directly to your inbox.",
     icons: {
       icon: siteIcon || '/favicon.ico',
     },

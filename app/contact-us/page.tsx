@@ -12,12 +12,12 @@ export async function generateMetadata(): Promise<Metadata> {
 
     if (!page) {
         return {
-            title: 'Contact Us - Market Headlines',
+            title: 'Contact Us',
         };
     }
 
     return {
-        title: page.seo?.title || `${page.title} - Market Headlines`,
+        title: page.seo?.title ? { absolute: page.seo.title } : page.title,
         description: page.seo?.description || 'Get in touch with Market Headlines.',
         openGraph: {
             title: page.seo?.og_title || page.title,

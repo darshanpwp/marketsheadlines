@@ -29,7 +29,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   }
 
   return {
-    title: post.seo?.title || `${post.title} - Market Headlines`,
+    title: post.seo?.title ? { absolute: post.seo.title } : post.title,
     description: post.seo?.description || post.excerpt?.replace(/<[^>]*>/g, '').slice(0, 160) || post.title,
     openGraph: {
       title: post.seo?.og_title || post.title,

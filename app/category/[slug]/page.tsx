@@ -26,7 +26,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   }
 
   return {
-    title: `${category.name} - Market Headlines`,
+    title: category.name,
     description: `Read the latest news and updates in ${category.name}.`,
   };
 }

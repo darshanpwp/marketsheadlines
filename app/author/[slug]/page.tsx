@@ -26,10 +26,10 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     }
 
     return {
-        title: `${author.name} - Market Headlines`,
+        title: author.name,
         description: author.description || `Articles by ${author.name}`,
         openGraph: {
-            title: `${author.name} - Market Headlines`,
+            title: author.name,
             description: author.description || `Read the latest articles by ${author.name} on Market Headlines.`,
             images: author.avatar_urls?.['96'] ? [author.avatar_urls['96']] : [],
         },
